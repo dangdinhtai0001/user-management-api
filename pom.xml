@@ -20,6 +20,7 @@
         <module>common</module>
         <module>core</module>
         <module>base</module>
+        <module>business</module>
     </modules>
 
     <name>spring-api-template</name>
@@ -36,6 +37,7 @@
         <module.common.version>0.1.1</module.common.version>
         <module.core.version>0.7.0</module.core.version>
         <module.base.version>0.7.0</module.base.version>
+        <module.business.version>0.0.0</module.business.version>
         <module.services.version>0.6.0</module.services.version>
         <module.root.version>0.0.0</module.root.version>
         <!--        module version-->

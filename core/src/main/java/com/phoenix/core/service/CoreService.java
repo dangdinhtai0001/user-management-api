@@ -10,6 +10,7 @@ import com.phoenix.core.model.query.OrderDirection;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchCriteriaRequest;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public interface CoreService {
      * @param code Mã lỗi lưu ở bảng fw_exception
      * @return {@link DefaultException}
      */
-    DefaultException findExceptionByCode(String code);
+    <T extends Serializable> DefaultException<T> findExceptionByCode(String code);
 
     String getPropertyOfRequestBodyByKey(Map requestBody, String key);
 
