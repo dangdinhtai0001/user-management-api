@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.25, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: user_management
+-- Host: localhost    Database: user_management
 -- ------------------------------------------------------
--- Server version	8.0.22
+-- Server version	8.0.25
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,22 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `department`
+--
+
+DROP TABLE IF EXISTS `department`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `department` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `path` varchar(50) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `department_id_uindex` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `fw_exception`
@@ -32,6 +48,20 @@ CREATE TABLE `fw_exception` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `fw_parameter`
+--
+
+DROP TABLE IF EXISTS `fw_parameter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fw_parameter` (
+  `key_` varchar(255) COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `value_` varchar(255) COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  PRIMARY KEY (`key_`,`value_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `fw_resource_action`
 --
 
@@ -42,9 +72,12 @@ CREATE TABLE `fw_resource_action` (
   `id` int NOT NULL AUTO_INCREMENT,
   `action` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
   `resource` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `bean_name` varchar(255) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `display_action` varchar(255) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `display_resource` varchar(255) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +106,7 @@ DROP TABLE IF EXISTS `fw_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fw_user` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `hash_algorithm` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
   `password_reminder_expire` datetime DEFAULT NULL,
@@ -117,7 +150,7 @@ DROP TABLE IF EXISTS `fw_user_group_mapping`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fw_user_group_mapping` (
-  `user_id` bigint NOT NULL,
+  `user_id` int NOT NULL,
   `group_id` int NOT NULL,
   PRIMARY KEY (`user_id`,`group_id`),
   KEY `fw_user_group_mapping_fw_user_id_fk_idx` (`user_id`),
@@ -198,6 +231,24 @@ CREATE TABLE `spring_session_attributes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `title`
+--
+
+DROP TABLE IF EXISTS `title`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `title` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `department_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `title_id_uindex` (`id`),
+  KEY `title_department_id_fk` (`department_id`),
+  CONSTRAINT `title_department_id_fk` FOREIGN KEY (`department_id`) REFERENCES `department` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `user_profile`
 --
 
@@ -210,18 +261,31 @@ CREATE TABLE `user_profile` (
   `last_name` varchar(32) DEFAULT NULL,
   `email` varchar(96) DEFAULT NULL,
   `mobile_number` varchar(32) DEFAULT NULL,
-  `address_id` int DEFAULT NULL,
-  UNIQUE KEY `user_profile_user_id_uindex` (`user_id`)
+  `address` varchar(1000) DEFAULT NULL,
+  `hired_date` datetime DEFAULT NULL,
+  UNIQUE KEY `user_profile_user_id_uindex` (`user_id`),
+  CONSTRAINT `user_profile_fw_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `fw_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping events for database 'user_management'
+-- Table structure for table `user_title`
 --
 
---
--- Dumping routines for database 'user_management'
---
+DROP TABLE IF EXISTS `user_title`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_title` (
+  `user_id` int NOT NULL,
+  `title_id` int NOT NULL,
+  `from_date` date DEFAULT NULL,
+  `to_date` date DEFAULT NULL,
+  KEY `user_title_title_id_fk` (`title_id`),
+  KEY `user_title_fw_user_id_fk` (`user_id`),
+  CONSTRAINT `user_title_fw_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `fw_user` (`id`),
+  CONSTRAINT `user_title_title_id_fk` FOREIGN KEY (`title_id`) REFERENCES `title` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Final view structure for view `fw_resource_policies`
@@ -250,4 +314,4 @@ CREATE TABLE `user_profile` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-04  0:29:48
+-- Dump completed on 2021-10-08 20:35:11
