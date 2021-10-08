@@ -19,6 +19,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
 import java.lang.annotation.Annotation;
@@ -72,12 +73,14 @@ public class DefaultApplicationListener implements EnvironmentAware {
     private void scanApplicationResources() {
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
 
-        AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(ApplicationResource.class);
-        scanner.addIncludeFilter(annotationTypeFilter);
+        AnnotationTypeFilter annotationApplicationResourceTypeFilter = new AnnotationTypeFilter(ApplicationResource.class);
+        scanner.addIncludeFilter(annotationApplicationResourceTypeFilter);
 
+        Class<?> aClass;
         List<String> listClassName = new LinkedList<>();
         for (BeanDefinition beanDefinition : scanner.findCandidateComponents(ApplicationConstant.BASE_PACKAGE_NAME)) {
             String className = beanDefinition.getBeanClassName();
+
             listClassName.add(className);
         }
 

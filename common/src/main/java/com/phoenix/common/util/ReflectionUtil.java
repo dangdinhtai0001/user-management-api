@@ -287,7 +287,7 @@ public class ReflectionUtil {
      */
     public static <T> T getFieldValue(Object instance, String fieldName, Class<T> type) throws IllegalAccessException {
         Field field = findFieldByName(fieldName, instance.getClass());
-
+        field.setAccessible(true);
         return type.cast(field.get(instance));
     }
 
@@ -302,6 +302,30 @@ public class ReflectionUtil {
     public static Annotation getAnnotationOfField(String fieldName, Class ObjectClass, Class annotationClass) {
         Field field = findFieldByName(fieldName, ObjectClass);
         return field.getAnnotation(annotationClass);
+    }
+
+    /**
+     * @param instanceClass Class cần lấy ra mảng các annotation
+     * @return Mảng các annotation của class
+     */
+    public static Annotation[] getAnnotationOfClass(Class<?> instanceClass) {
+        return instanceClass.getDeclaredAnnotations();
+    }
+
+    /**
+     * @param instanceClass Class cần xét
+     * @param annotationClass Class của annotation
+     * @return {@link Annotation} Annotation đầu tiên có class là annotationClass
+     */
+    public static Annotation getAnnotationOfClass(Class<?> instanceClass, Class<?> annotationClass) {
+        Annotation[] annotations = annotationClass.getDeclaredAnnotations();
+
+        for (Annotation annotation : annotations){
+            if(annotation.annotationType().equals(annotationClass)){
+                return annotation;
+            }
+        }
+        return null;
     }
 
     // -------------------------------------------------------------------------------------------------------------

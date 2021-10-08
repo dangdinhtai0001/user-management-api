@@ -15,6 +15,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,13 +42,15 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
     public Long saveDataByListClassName(List<String> listClassName) {
         List<ResourceActionModel> resourceActionList = new LinkedList<>();
         List<String> allMethodsNamesList = new LinkedList<>();
-        Class aClass;
+        Class<?> instanceClass;
         List<String> methodsName;
 
         for (String className : listClassName) {
             try {
-                aClass = Class.forName(className);
-                methodsName = ReflectionUtil.getAllDeclaredMethodsMethodNames(aClass);
+                instanceClass = Class.forName(className);
+                methodsName = ReflectionUtil.getAllDeclaredMethodsMethodNames(instanceClass);
+
+                getServiceBeanName(instanceClass, Service.class, "value");
 
                 allMethodsNamesList.addAll(methodsName);
 
@@ -89,5 +94,25 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
         resourceAction.setDescription(description);
 
         return resourceAction;
+    }
+
+    private String getServiceBeanName(Class<?> aClass, Class<?> annotationClass, String attribute) {
+        Annotation annotation = ReflectionUtil.getAnnotationOfClass(aClass, annotationClass);
+
+        if(annotation == null){
+            return null;
+        }
+
+        for (Method method : annotationClass.getDeclaredMethods()) {
+            if (attribute.equals(method.getName())) {
+                try {
+                    return String.valueOf(method.invoke(annotation));
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    return null;
+                }
+            }
+        }
+
+        return null;
     }
 }

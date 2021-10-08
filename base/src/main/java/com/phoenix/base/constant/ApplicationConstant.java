@@ -4,7 +4,7 @@ public class ApplicationConstant {
     public static final String REQUEST_HEADER_AUTHORIZATION = "Authorization";
     public static final String JWT_TOKEN_TYPE = "Bearer ";
 
-    public static final String BASE_PACKAGE_NAME = "com.phoenix.api";
+    public static final String BASE_PACKAGE_NAME = "com.phoenix";
 
     public static final String PASSWORD_ENCODER_PBKDF2_ID = "pbkdf2";
     public static final String PASSWORD_ENCODER_BCRYPT_ID = "bcrypt";
@@ -16,6 +16,5 @@ public class ApplicationConstant {
     public static final String USER_DETAILS_STATUS_EXPIRED = "EXPIRED";
 
 
-    public static final String[] PUBLIC_URLS_MATCHER = {
-            "/**/ping", "/**/login", "/common/ping", "/auth/refresh"};
+    public static final String PARAM_KEY_PUBLIC_URLS_MATCHER = "PUBLIC_URLS_MATCHER";
 }

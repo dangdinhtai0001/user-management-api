@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController("AuthenticationController")
@@ -27,19 +28,19 @@ public class AuthenticationControllerImp extends AbstractCoreController implemen
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Map loginRequest, HttpSession session) throws ApplicationException {
+    public ResponseEntity<?> login(@RequestBody Map loginRequest, HttpSession session) throws ApplicationException {
         return sendResponse(authenticationService.login(loginRequest, session));
     }
 
     @Override
     @PostMapping("/refresh")
-    public ResponseEntity refreshToken(@RequestBody Map refreshTokenRequest, HttpSession session) throws ApplicationException {
+    public ResponseEntity<?> refreshToken(@RequestBody Map refreshTokenRequest, HttpSession session) throws ApplicationException {
         return sendResponse(authenticationService.refreshToken(refreshTokenRequest, session));
     }
 
     @Override
     @PostMapping("/logout")
-    public ResponseEntity logout(Map logoutRequest, HttpSession session) throws ApplicationException {
+    public ResponseEntity<?> logout(Map logoutRequest, HttpSession session) throws ApplicationException {
         return null;
     }
 }

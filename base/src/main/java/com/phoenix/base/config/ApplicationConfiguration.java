@@ -1,7 +1,9 @@
 package com.phoenix.base.config;
 
+import com.google.common.collect.Multimap;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.repository.ExceptionRepository;
+import com.phoenix.base.repository.ParameterRepository;
 import com.phoenix.base.repository.imp.ExceptionRepositoryImp;
 import com.phoenix.base.service.AuthorizationService;
 import com.phoenix.common.auth.JwtProvider;
@@ -15,9 +17,7 @@ import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.model.Model;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.*;
 
 import java.util.List;
 
@@ -35,13 +35,15 @@ public class ApplicationConfiguration {
 
     private final ExceptionRepository exceptionRepository;
     private final AuthorizationService authorizationService;
+    private final ParameterRepository parameterRepository;
 
     public ApplicationConfiguration(
             @Qualifier(BeanIds.EXCEPTION_REPOSITORY_IMP) ExceptionRepositoryImp exceptionRepositoryImp,
-            @Qualifier(BeanIds.AUTHORIZATION_SERVICES) AuthorizationService authorizationService
-    ) {
+            @Qualifier(BeanIds.AUTHORIZATION_SERVICES) AuthorizationService authorizationService,
+            @Qualifier(BeanIds.APPLICATION_PARAMETER_REPOSITORY_IMP) ParameterRepository parameterRepository) {
         this.exceptionRepository = exceptionRepositoryImp;
         this.authorizationService = authorizationService;
+        this.parameterRepository = parameterRepository;
     }
 
     /**
@@ -94,5 +96,10 @@ public class ApplicationConfiguration {
     public UUIDFactory getUUIDFactory() {
         log.info("create UUID factory");
         return new ConcurrentUUIDFactory();
+    }
+
+    @Bean(value = BeanIds.APPLICATION_PARAMETER)
+    public Multimap<String, String> getApplicationParameters() {
+        return parameterRepository.findAll();
     }
 }

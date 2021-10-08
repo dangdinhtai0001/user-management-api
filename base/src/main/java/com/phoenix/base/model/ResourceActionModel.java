@@ -1,8 +1,7 @@
 package com.phoenix.base.model;
 
+import com.google.common.base.Objects;
 import lombok.*;
-
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +12,9 @@ public class ResourceActionModel {
     private Long id;
     private String resource;
     private String action;
+    private String beanName;
+    private String displayResource;
+    private String displayAction;
     private String description;
 
     @Override
@@ -20,11 +22,11 @@ public class ResourceActionModel {
         if (this == o) return true;
         if (!(o instanceof ResourceActionModel)) return false;
         ResourceActionModel that = (ResourceActionModel) o;
-        return Objects.equals(getResource(), that.getResource()) && Objects.equals(getAction(), that.getAction());
+        return Objects.equal(id, that.id) && Objects.equal(resource, that.resource) && Objects.equal(action, that.action) && Objects.equal(beanName, that.beanName) && Objects.equal(displayResource, that.displayResource) && Objects.equal(displayAction, that.displayAction) && Objects.equal(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getResource(), getAction(), getDescription());
+        return Objects.hashCode(id, resource, action, beanName, displayResource, displayAction, description);
     }
 }

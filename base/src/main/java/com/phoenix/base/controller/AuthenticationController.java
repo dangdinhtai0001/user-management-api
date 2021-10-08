@@ -9,11 +9,11 @@ import java.util.Map;
 
 public interface AuthenticationController {
 
-    ResponseEntity login(Map loginRequest, HttpSession session) throws ApplicationException;
+    ResponseEntity<?> login(Map loginRequest, HttpSession session) throws ApplicationException;
 
-    ResponseEntity refreshToken(Map refreshTokenRequest, HttpSession session) throws ApplicationException;
+    ResponseEntity<?> refreshToken(Map refreshTokenRequest, HttpSession session) throws ApplicationException;
 
-    ResponseEntity logout(Map logoutRequest, HttpSession session) throws ApplicationException;
+    ResponseEntity<?> logout(Map logoutRequest, HttpSession session) throws ApplicationException;
 
 }
 
