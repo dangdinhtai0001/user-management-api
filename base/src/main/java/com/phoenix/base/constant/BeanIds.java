@@ -39,6 +39,7 @@ public class BeanIds {
     public static final String RESOURCE_ACTION_REPOSITORY_IMP = "FW_RESOURCE_ACTION_REPOSITORY_IMP";
     public static final String MENU_REPOSITORY_IMP = "FW_MENU_REPOSITORY_IMP";
     public static final String USER_REPOSITORY_IMP = "USER_REPOSITORY_IMP";
+    public static final String APPLICATION_PARAMETER_REPOSITORY_IMP = "APPLICATION_PARAMETER_REPOSITORY_IMP";
 
 
     //====================================================

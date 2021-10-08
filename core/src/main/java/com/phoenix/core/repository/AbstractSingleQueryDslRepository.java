@@ -83,7 +83,7 @@ public abstract class AbstractSingleQueryDslRepository extends AbstractCoreQuery
      * @return (something like : QFwResourceAction.class)
      */
     protected abstract <T extends RelationalPathBase<T>> Class<T> getRelationalPathBaseClass();
-
+    //protected abstract  Class<? extends RelationalPathBase<?>> getRelationalPathBaseClass();
 
     /**
      * @return (something like : QFwResourceAction.fwResourceAction)

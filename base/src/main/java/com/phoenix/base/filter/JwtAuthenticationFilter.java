@@ -1,7 +1,6 @@
 package com.phoenix.base.filter;
 
 import com.phoenix.base.constant.ApplicationConstant;
-import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.common.auth.JwtProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -23,17 +22,21 @@ import java.util.Arrays;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider tokenProvider;
     private final UserDetailsService userDetailsService;
+    private final String[] publicUrlsMatchers;
 
     public JwtAuthenticationFilter(
             JwtProvider tokenProvider,
-            UserDetailsService userDetailsService) {
+            UserDetailsService userDetailsService,
+            String[] publicUrlsMatchers
+    ) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
+        this.publicUrlsMatchers = publicUrlsMatchers;
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return Arrays.stream(ApplicationConstant.PUBLIC_URLS_MATCHER)
+        return Arrays.stream(publicUrlsMatchers)
                 .anyMatch(e -> new AntPathMatcher().match(e, request.getServletPath()));
     }
 

@@ -1,6 +1,7 @@
 package com.phoenix.base.config;
 
 
+import com.google.common.collect.Multimap;
 import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.entry_point.DefaultAccessDeniedEntryPoint;
@@ -11,6 +12,7 @@ import com.phoenix.common.auth.JwtProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,10 +29,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Application security config
@@ -42,23 +41,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final DefaultAccessDeniedEntryPoint defaultAccessDeniedEntryPoint;
+    private final Multimap<String, String> applicationParameters;
 
 
     public SecurityConfiguration(
             @Qualifier(BeanIds.JWT_PROVIDER) JwtProvider tokenProvider,
             @Qualifier(BeanIds.DEFAULT_USER_DETAIL_SERVICES) UserDetailsService userDetailsService,
             @Qualifier(BeanIds.JWT_AUTHENTICATION_ENTRY_POINT) JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-            @Qualifier(BeanIds.DEFAULT_ACCESS_DENIED_ENTRY_POINT) DefaultAccessDeniedEntryPoint defaultAccessDeniedEntryPoint
+            @Qualifier(BeanIds.DEFAULT_ACCESS_DENIED_ENTRY_POINT) DefaultAccessDeniedEntryPoint defaultAccessDeniedEntryPoint,
+            @Qualifier(BeanIds.APPLICATION_PARAMETER) Multimap<String, String> applicationParameters
     ) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.defaultAccessDeniedEntryPoint = defaultAccessDeniedEntryPoint;
+        this.applicationParameters = applicationParameters;
     }
 
     @Bean(name = BeanIds.JWT_AUTHENTICATION_FILTER)
+    @DependsOn(BeanIds.APPLICATION_PARAMETER)
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider, userDetailsService);
+        String[] publicUrlsMatcher = applicationParameters.get(ApplicationConstant.PARAM_KEY_PUBLIC_URLS_MATCHER).toArray(new String[]{});
+
+        return new JwtAuthenticationFilter(tokenProvider, userDetailsService, publicUrlsMatcher);
     }
 
     @Bean(name = BeanIds.DEFAULT_AUTHENTICATION_MANAGER)
@@ -82,11 +87,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String[] publicUrlsMatcher = applicationParameters.get(ApplicationConstant.PARAM_KEY_PUBLIC_URLS_MATCHER).toArray(new String[]{});
+
         http.cors().and().csrf().disable();
 
         http
                 .authorizeRequests()
-                .antMatchers(ApplicationConstant.PUBLIC_URLS_MATCHER).permitAll()
+//                .antMatchers(ApplicationConstant.PUBLIC_URLS_MATCHER).permitAll()
+                .antMatchers(publicUrlsMatcher).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
