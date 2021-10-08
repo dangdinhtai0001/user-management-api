@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class ExceptionModel implements DefaultException {
+public class ExceptionModel implements DefaultException<Long> {
     private Long id;
     private String code;
     private String message;

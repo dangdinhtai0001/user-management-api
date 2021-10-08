@@ -30,8 +30,12 @@ import java.util.stream.Collectors;
  */
 public class ReflectionUtil {
 
+    // -------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------ Constructor
+    // -------------------------------------------------------------------------------------------------------------
+
     /**
-     * @param aClass Class cần tạo instance mới. Lưu ý, class này cần pahri có hàm dựng không đối số
+     * @param aClass Class cần tạo instance mới. Lưu ý, class này cần phải có hàm dựng không đối số
      * @return Instance của class
      * @throws NoSuchMethodException     Nếu không tồn tại hàm dựng không đối số
      * @throws InvocationTargetException khi khởi tạo instance mới
@@ -43,43 +47,96 @@ public class ReflectionUtil {
         return constructor.newInstance();
     }
 
+    // -------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------ Methods
+    // -------------------------------------------------------------------------------------------------------------
+
     /**
      * @param aClass Class cần xử lí
-     * @return List tên các declared method của class
+     * @return List<String> tên các declared method của class
      */
-    public static List getAllDeclaredMethodsMethodNames(Class aClass) {
+    public static List<String> getAllDeclaredMethodsMethodNames(Class<?> aClass) {
         return Arrays.stream(aClass.getDeclaredMethods()).map(Method::getName).collect(Collectors.toList());
     }
 
     /**
-     * @param aClass Class cần xử lí
-     * @return List các declared method của class
+     * @param aClass         Class chứa method cần tìm
+     * @param methodName     Tên methods
+     * @param parameterTypes Mảng các Class các tham số của hàm (Theo đúng thứ tự)
+     * @return {@link Method} Bao gồm cả public và private methods
+     * @throws NoSuchMethodException Khi không tìm thấy method trên class đấy
      */
-    public static List getAllDeclaredMethodsMethods(Class aClass) {
-        return Arrays.asList(aClass.getDeclaredMethods());
+    public static Method getMethod(Class<?> aClass, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+        return aClass.getMethod(methodName, parameterTypes);
     }
 
     /**
-     * @param aClass Class cần xử lí
-     * @return List tên các method của class
+     * @param className      Tên class chứa method cần tìm
+     * @param methodName     Tên methods
+     * @param parameterTypes Mảng các Class các tham số của hàm (Theo đúng thứ tự)
+     * @return Bao gồm cả public và private methods
+     * @throws NoSuchMethodException  Khi không tìm thấy method trên class đấy
+     * @throws ClassNotFoundException Khi không tìm thấy class
      */
-    public static List getAllMethodNames(Class aClass) {
-        return Arrays.stream(aClass.getMethods()).map(Method::getName).collect(Collectors.toList());
+    public static Method getMethod(String className, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException {
+        Class<?> aClass = Class.forName(className);
+        return aClass.getMethod(methodName, parameterTypes);
+    }
+
+
+    /**
+     * @param instance {@link Object} Instace của class chứa hàm cần thực thi
+     * @param method   {@link Method} Đối tượng Method của hàm cần thực thi
+     * @param args     {@link Object} danh sách các tham số
+     * @return {@link Object} Kết quả trả về của hàm
+     * @throws InvocationTargetException if the underlying method throws an exception.
+     * @throws IllegalAccessException    ___
+     */
+    public static Object invokeMethod(Object instance, Method method, Object... args) throws InvocationTargetException, IllegalAccessException {
+        return method.invoke(instance, args);
     }
 
     /**
-     * @param aClass Class cần xử lí
-     * @return List tên các method của class
+     * @param instance   Instance của class chứa hàm cần thực thi
+     * @param methodName Tên hàm cần thực thi
+     * @param args       Danh sách tham số (Đúng thứ tự)
+     * @return {@link Object}
+     * @throws NoSuchMethodException     Khi không tìm tháy hàm
+     * @throws InvocationTargetException ___
+     * @throws IllegalAccessException    ___
      */
-    public static List getAllMethods(Class aClass) {
-        return Arrays.asList(aClass.getMethods());
+    public static Object invokeMethod(Object instance, String methodName, Object... args)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class<?>[] parameterTypes = Arrays.stream(args).map(Object::getClass).toArray(Class<?>[]::new);
+
+        Method method = getMethod(instance.getClass(), methodName, parameterTypes);
+        return invokeMethod(instance, method, args);
     }
+
+    /**
+     * @param instance   Instance của class chứa hàm cần thực thi
+     * @param methodName Tên hàm cần thực thi
+     * @param returnType Kiểu trả về
+     * @param args       Danh sách tham số (Đúng thứ tự)
+     * @return Kết cả đã đc cast sang T
+     * @throws NoSuchMethodException     Khi không tìm tháy hàm
+     * @throws InvocationTargetException ___
+     * @throws IllegalAccessException    ___
+     */
+    public static <T> T invokeMethod(Object instance, String methodName, Class<T> returnType, Object... args)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        return returnType.cast(invokeMethod(instance, methodName, args));
+    }
+
+    // -------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------ Fields
+    // -------------------------------------------------------------------------------------------------------------
 
     /**
      * @param aClass Class cần xử lí
      * @return Mảng chứa tất cả các field của class (Không bao gồm các field của supper class)
      */
-    public static Field[] getDeclaredFields(Class aClass) {
+    public static Field[] getDeclaredFields(Class<?> aClass) {
         return aClass.getDeclaredFields();
     }
 
@@ -101,29 +158,21 @@ public class ReflectionUtil {
         return list;
     }
 
-    public static <T extends Annotation> Annotation getAnnotationOfField(Field field, Class<T> annotationClass) {
-        return field.getAnnotation(annotationClass);
-    }
-
-    public static Annotation getAnnotationOfField(String fieldName, Class ObjectClass, Class annotationClass) {
-        Field field = findFieldByName(fieldName, ObjectClass);
-        return field.getAnnotation(annotationClass);
-    }
-
     /**
      * @param instanceClass Class cần xét
      * @param name          tên trường
      * @return class của field
      * @throws NoSuchFieldException khi không tìm thấy field
      */
-    public static <T> Class getTypeOfFieldByName(Class<T> instanceClass, String name) throws NoSuchFieldException {
+    public static <T> Class<?> getTypeOfFieldByName(Class<T> instanceClass, String name) throws NoSuchFieldException {
         List<Field> fields = getAllFields(instanceClass);
 
         Field field = fields.stream()
                 .filter(f -> f.getName().equals(name))
                 .findAny()
                 .orElse(null);
-        return field.getType();
+        // Nếu field == null thì return null
+        return field == null ? null : field.getType();
     }
 
     /**
@@ -131,7 +180,7 @@ public class ReflectionUtil {
      * @param aClass Class cần xử lí
      * @return Field có tên == name, nếu không tìm thấy trả về null
      */
-    public static Field findFieldByName(String name, Class aClass) {
+    public static Field findFieldByName(String name, Class<?> aClass) {
         List<Field> list = getAllFields(aClass);
 
         Optional<Field> optional = list.stream()
@@ -150,7 +199,7 @@ public class ReflectionUtil {
      */
     public static void setField(Object obj, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
         Field field;
-        Class objClass;
+        Class<?> objClass;
 
         objClass = obj.getClass();
         try {
@@ -160,7 +209,7 @@ public class ReflectionUtil {
         }
 
         if (field == null) {
-            throw new NoSuchFieldException(String.format("Can't find field: %s of class: ", fieldName, objClass.getSimpleName()));
+            throw new NoSuchFieldException(String.format("Can't find field: %s of class: %s", fieldName, objClass.getSimpleName()));
         }
 
         field.setAccessible(true);
@@ -176,8 +225,8 @@ public class ReflectionUtil {
      * @param obj          Instance để set giá trị
      * @throws NoSuchFieldException nếu không tìm thấy field
      */
-    public static void setField(String fieldName, Class classOfField, String value, Object obj) throws NoSuchFieldException, IllegalAccessException {
-        Class objClass = obj.getClass();
+    public static void setField(String fieldName, Class<?> classOfField, String value, Object obj) throws NoSuchFieldException, IllegalAccessException {
+        Class<?> objClass = obj.getClass();
         Field field;
 
         try {
@@ -187,7 +236,7 @@ public class ReflectionUtil {
         }
 
         if (field == null) {
-            throw new NoSuchFieldException(String.format("Can't find field: %s of class: ", fieldName, objClass.getSimpleName()));
+            throw new NoSuchFieldException(String.format("Can't find field: %s of class: %s", fieldName, objClass.getSimpleName()));
         }
 
         field.setAccessible(true);
@@ -203,7 +252,6 @@ public class ReflectionUtil {
         } else {
             field.set(obj, classOfField.cast(value));
         }
-
     }
 
     /**
@@ -216,6 +264,49 @@ public class ReflectionUtil {
     public static void setField(Field field, String value, Object obj) throws NoSuchFieldException, IllegalAccessException {
         setField(field.getName(), field.getType(), value, obj);
     }
+
+    /**
+     * @param instance  instance cần lấy giá trị
+     * @param fieldName Tên field cần lấy giá trị
+     * @return gia trị của field của instance
+     * @throws IllegalAccessException xem tại {@link Field#get(Object)}
+     */
+    public static Object getFieldValue(Object instance, String fieldName) throws IllegalAccessException {
+        Field field = findFieldByName(fieldName, instance.getClass());
+
+        return field.get(instance);
+    }
+
+    /**
+     * @param instance  instance cần lấy giá trị
+     * @param fieldName Tên field cần lấy giá trị
+     * @param type      Kiểu dữ liệu của field
+     * @param <T>       Kiểu dữ liệu của Field
+     * @return gia trị của field của instance (Đã được cast sang type)
+     * @throws IllegalAccessException xem tại {@link Field#get(Object)}
+     */
+    public static <T> T getFieldValue(Object instance, String fieldName, Class<T> type) throws IllegalAccessException {
+        Field field = findFieldByName(fieldName, instance.getClass());
+
+        return type.cast(field.get(instance));
+    }
+
+    // -------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------ Annotation
+    // -------------------------------------------------------------------------------------------------------------
+
+    public static <T extends Annotation> Annotation getAnnotationOfField(Field field, Class<T> annotationClass) {
+        return field.getAnnotation(annotationClass);
+    }
+
+    public static Annotation getAnnotationOfField(String fieldName, Class ObjectClass, Class annotationClass) {
+        Field field = findFieldByName(fieldName, ObjectClass);
+        return field.getAnnotation(annotationClass);
+    }
+
+    // -------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------ Others
+    // -------------------------------------------------------------------------------------------------------------
 
     /**
      * @param map    {@link Map} chứa thông tin của đối tượng cần convert với key => tên trường, value => giá trị của trường đó
@@ -293,29 +384,5 @@ public class ReflectionUtil {
         return result;
     }
 
-    /**
-     * @param instance  instance cần lấy giá trị
-     * @param fieldName Tên field cần lấy giá trị
-     * @return gia trị của field của instance
-     * @throws IllegalAccessException xem tại {@link Field#get(Object)}
-     */
-    public static Object getFieldValue(Object instance, String fieldName) throws IllegalAccessException {
-        Field field = findFieldByName(fieldName, instance.getClass());
 
-        return field.get(instance);
-    }
-
-    /**
-     * @param instance  instance cần lấy giá trị
-     * @param fieldName Tên field cần lấy giá trị
-     * @param type      Kiểu dữ liệu của field
-     * @param <T>       Kiểu dữ liệu của Field
-     * @return gia trị của field của instance (Đã được cast sang type)
-     * @throws IllegalAccessException xem tại {@link Field#get(Object)}
-     */
-    public static <T> T getFieldValue(Object instance, String fieldName, Class<T> type) throws IllegalAccessException {
-        Field field = findFieldByName(fieldName, instance.getClass());
-
-        return type.cast(field.get(instance));
-    }
 }

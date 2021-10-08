@@ -11,6 +11,7 @@ public class BeanIds {
     public static final String AUTHORIZATION_ENFORCE = "FW_AUTHORIZATION_ENFORCE";
     public static final String SQL_QUERY_FACTORY = "SQL_QUERY_FACTORY";
     public static final String KIE_CONTAINER = "KIE_CONTAINER";
+    public static final String APPLICATION_PARAMETER = "APPLICATION_PARAMETER";
     public static final String KIE_FILE_SYSTEM = "KIE_FILE_SYSTEM";
 
     // ====================================================
