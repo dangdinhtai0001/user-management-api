@@ -20,7 +20,7 @@ public abstract class AbstractCoreController implements CoreController {
 
     @Override
     @ExceptionHandler({ApplicationException.class})
-    public ResponseEntity handleException(ApplicationException exception) {
+    public ResponseEntity<?> handleException(ApplicationException exception) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
 
         responseBody.put("code", exception.getCode());
@@ -33,7 +33,7 @@ public abstract class AbstractCoreController implements CoreController {
     }
 
     @Override
-    public ResponseEntity sendResponse(Object response) {
+    public <T> ResponseEntity<T> sendResponse(T response) {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

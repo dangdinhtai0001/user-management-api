@@ -399,8 +399,10 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
 
             for (int i = 0; i < properties.length; i++) {
                 try {
-                    ReflectionUtil.setField(instance, properties[i],
-                            record.get(i, ReflectionUtil.getTypeOfFieldByName(instanceClass, properties[i])));
+                    if (instance != null) {
+                        ReflectionUtil.setField(instance, properties[i],
+                                record.get(i, ReflectionUtil.getTypeOfFieldByName(instanceClass, properties[i])));
+                    }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();
                 }

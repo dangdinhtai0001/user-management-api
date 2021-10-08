@@ -4,7 +4,7 @@ import com.phoenix.core.exception.ApplicationException;
 import org.springframework.http.ResponseEntity;
 
 public interface CoreController {
-    ResponseEntity handleException(ApplicationException exception);
+    <T> ResponseEntity<T> handleException(ApplicationException exception);
 
-    ResponseEntity sendResponse(Object response);
+    <T> ResponseEntity<T> sendResponse(T response);
 }
