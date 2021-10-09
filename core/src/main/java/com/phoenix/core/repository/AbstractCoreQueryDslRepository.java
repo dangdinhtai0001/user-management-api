@@ -241,7 +241,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
     }
 
     @Override
-    public QueryBase<?> addWhereClause(SQLQuery<?> query, List<Predicate> predicates) {
+    public SQLQuery<?> addWhereClause(SQLQuery<?> query, List<Predicate> predicates) {
         for (Predicate predicate : predicates) {
             query.where(predicate);
         }

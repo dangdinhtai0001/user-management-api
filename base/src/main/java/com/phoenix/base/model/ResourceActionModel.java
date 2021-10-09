@@ -9,12 +9,12 @@ import lombok.*;
 @Setter
 @ToString
 public class ResourceActionModel {
-    private Long id;
-    private String resource;
+    private Integer id;
     private String action;
+    private String resource;
     private String beanName;
-    private String displayResource;
     private String displayAction;
+    private String displayResource;
     private String description;
 
     @Override
@@ -22,11 +22,13 @@ public class ResourceActionModel {
         if (this == o) return true;
         if (!(o instanceof ResourceActionModel)) return false;
         ResourceActionModel that = (ResourceActionModel) o;
-        return Objects.equal(id, that.id) && Objects.equal(resource, that.resource) && Objects.equal(action, that.action) && Objects.equal(beanName, that.beanName) && Objects.equal(displayResource, that.displayResource) && Objects.equal(displayAction, that.displayAction) && Objects.equal(description, that.description);
+        return Objects.equal(resource, that.resource)
+                && Objects.equal(action, that.action);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, resource, action, beanName, displayResource, displayAction, description);
+        return Objects.hashCode(resource, action);
     }
 }

@@ -2,6 +2,7 @@ package com.phoenix.base.config;
 
 import com.google.common.collect.Multimap;
 import com.phoenix.base.constant.BeanIds;
+import com.phoenix.base.model.ResourceActionModel;
 import com.phoenix.base.repository.ExceptionRepository;
 import com.phoenix.base.repository.ParameterRepository;
 import com.phoenix.base.repository.imp.ExceptionRepositoryImp;
@@ -17,9 +18,13 @@ import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.model.Model;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration(value = "ApplicationConfiguration")
 @Log4j2
@@ -44,6 +49,21 @@ public class ApplicationConfiguration {
         this.exceptionRepository = exceptionRepositoryImp;
         this.authorizationService = authorizationService;
         this.parameterRepository = parameterRepository;
+    }
+
+
+    @Bean(value = BeanIds.APPLICATION_SERVICE_METADATA)
+    public Map<String, ResourceActionModel> getServiceMetadata() {
+        return new HashMap<>();
+    }
+
+
+    /**
+     * @return : MultiMap các parameteters của ứng dụng
+     */
+    @Bean(value = BeanIds.APPLICATION_PARAMETER)
+    public Multimap<String, String> getApplicationParameters() {
+        return parameterRepository.findAll();
     }
 
     /**
@@ -96,10 +116,5 @@ public class ApplicationConfiguration {
     public UUIDFactory getUUIDFactory() {
         log.info("create UUID factory");
         return new ConcurrentUUIDFactory();
-    }
-
-    @Bean(value = BeanIds.APPLICATION_PARAMETER)
-    public Multimap<String, String> getApplicationParameters() {
-        return parameterRepository.findAll();
     }
 }

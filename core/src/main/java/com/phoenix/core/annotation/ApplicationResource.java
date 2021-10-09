@@ -8,5 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ApplicationResource {
+    String displayResource() default "";
+    String displayAction() default "";
     String description() default "";
 }

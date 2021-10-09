@@ -1,5 +1,5 @@
 package com.phoenix.base.service;
 
-public interface PingService {
+public interface CommonService {
     String ping();
 }

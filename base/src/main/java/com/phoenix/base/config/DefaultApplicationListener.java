@@ -76,8 +76,7 @@ public class DefaultApplicationListener implements EnvironmentAware {
         AnnotationTypeFilter annotationApplicationResourceTypeFilter = new AnnotationTypeFilter(ApplicationResource.class);
         scanner.addIncludeFilter(annotationApplicationResourceTypeFilter);
 
-        Class<?> aClass;
-        List<String> listClassName = new LinkedList<>();
+        List<Object> listClassName = new LinkedList<>();
         for (BeanDefinition beanDefinition : scanner.findCandidateComponents(ApplicationConstant.BASE_PACKAGE_NAME)) {
             String className = beanDefinition.getBeanClassName();
 

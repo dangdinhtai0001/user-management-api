@@ -313,19 +313,38 @@ public class ReflectionUtil {
     }
 
     /**
-     * @param instanceClass Class cần xét
+     * @param instanceClass   Class cần xét
      * @param annotationClass Class của annotation
      * @return {@link Annotation} Annotation đầu tiên có class là annotationClass
      */
     public static Annotation getAnnotationOfClass(Class<?> instanceClass, Class<?> annotationClass) {
-        Annotation[] annotations = annotationClass.getDeclaredAnnotations();
+        Annotation[] annotations = instanceClass.getDeclaredAnnotations();
 
-        for (Annotation annotation : annotations){
-            if(annotation.annotationType().equals(annotationClass)){
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().equals(annotationClass)) {
                 return annotation;
             }
         }
         return null;
+    }
+
+    public static Object getValueOfAnnotationAttribute(Class<?> instanceClass, Class<?> annotationClass, String attribute)
+            throws Exception {
+        Annotation annotation = getAnnotationOfClass(instanceClass, annotationClass);
+        Class<? extends Annotation> type;
+        if (annotation != null) {
+            type = annotation.annotationType();
+        } else {
+            throw new Exception("Cant not found annotation.");
+        }
+
+        for (Method method : type.getDeclaredMethods()) {
+            if (method.getName().contentEquals(attribute)) {
+                return method.invoke(annotation, (Object[]) null);
+            }
+        }
+
+        throw new Exception("Cant not found attribute.");
     }
 
     // -------------------------------------------------------------------------------------------------------------

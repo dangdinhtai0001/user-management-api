@@ -58,14 +58,16 @@ public abstract class AbstractCoreService implements CoreService {
 
     @Override
     public Tuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException {
-        Class objectClass = object.getClass();
+        Class<?> objectClass = object.getClass();
 
-        Class[] types = new Class[fields.length];
+        Class<?>[] types = new Class[fields.length];
         Object[] args = new Object[fields.length];
 
         for (int i = 0; i < fields.length; i++) {
             types[i] = ReflectionUtil.getTypeOfFieldByName(objectClass, fields[i]);
-            args[i] = ReflectionUtil.getFieldValue(object, fields[i], types[i]);
+            if (types[i] != null) {
+                args[i] = ReflectionUtil.getFieldValue(object, fields[i], types[i]);
+            }
         }
 
         return new TriTupleImpl(fields, types, args);
