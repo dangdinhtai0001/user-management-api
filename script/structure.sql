@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.25, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
 -- Host: localhost    Database: user_management
 -- ------------------------------------------------------
--- Server version	8.0.25
+-- Server version	8.0.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `department`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `department` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  `path` varchar(50) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `path` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `department_id_uindex` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
@@ -55,8 +55,8 @@ DROP TABLE IF EXISTS `fw_parameter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fw_parameter` (
-  `key_` varchar(255) COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  `value_` varchar(255) COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `key_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `value_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
   PRIMARY KEY (`key_`,`value_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -72,12 +72,12 @@ CREATE TABLE `fw_resource_action` (
   `id` int NOT NULL AUTO_INCREMENT,
   `action` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
   `resource` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  `bean_name` varchar(255) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  `display_action` varchar(255) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  `display_resource` varchar(255) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `bean_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `display_action` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `display_resource` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -239,7 +239,7 @@ DROP TABLE IF EXISTS `title`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `title` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `department_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title_id_uindex` (`id`),
@@ -288,6 +288,14 @@ CREATE TABLE `user_title` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping events for database 'user_management'
+--
+
+--
+-- Dumping routines for database 'user_management'
+--
+
+--
 -- Final view structure for view `fw_resource_policies`
 --
 
@@ -314,4 +322,4 @@ CREATE TABLE `user_title` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-08 20:35:11
+-- Dump completed on 2021-10-09 16:01:36

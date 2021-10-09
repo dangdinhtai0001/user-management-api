@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.25, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
 -- Host: localhost    Database: user_management
 -- ------------------------------------------------------
--- Server version	8.0.25
+-- Server version	8.0.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -50,7 +50,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `fw_resource_action` WRITE;
 /*!40000 ALTER TABLE `fw_resource_action` DISABLE KEYS */;
-INSERT INTO `fw_resource_action` VALUES (7,'ping','com.phoenix.base.service.imp.CommonServiceImpl',NULL,NULL,NULL,NULL),(8,'findAllCasbinRules','com.phoenix.base.repository.imp.AuthorizationRepositoryImp',NULL,NULL,NULL,NULL),(9,'logout','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(10,'login','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(11,'refreshToken','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(12,'generateToken','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(13,'loadModelFromPath','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(14,'getModelTextFromFilePath','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(15,'clearPolicies','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(16,'loadPolicies','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(17,'enforce','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(18,'loadUserByUsername','com.phoenix.base.service.imp.DefaultUserDetailService',NULL,NULL,NULL,NULL),(19,'ping','com.phoenix.base.service.imp.CommonServiceImpl',NULL,NULL,NULL,NULL),(20,'getCurrentSecurityToken','com.phoenix.base.service.imp.ResourceActionServiceImp',NULL,NULL,NULL,NULL),(21,'saveDataByListClassName','com.phoenix.base.service.imp.ResourceActionServiceImp',NULL,NULL,NULL,NULL),(22,'getResourceAction','com.phoenix.base.service.imp.ResourceActionServiceImp',NULL,NULL,NULL,NULL),(23,'findAllCasbinRules','com.phoenix.base.repository.imp.AuthorizationRepositoryImp',NULL,NULL,NULL,NULL),(24,'generateToken','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(25,'refreshToken','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(26,'login','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(27,'logout','com.phoenix.base.service.imp.AuthenticationServiceImpl',NULL,NULL,NULL,NULL),(28,'loadPolicies','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(29,'clearPolicies','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(30,'enforce','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(31,'loadModelFromPath','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(32,'getModelTextFromFilePath','com.phoenix.base.service.imp.AuthorizationServiceImp',NULL,NULL,NULL,NULL),(33,'loadUserByUsername','com.phoenix.base.service.imp.DefaultUserDetailService',NULL,NULL,NULL,NULL),(34,'ping','com.phoenix.base.service.imp.CommonServiceImpl',NULL,NULL,NULL,NULL),(35,'saveDataByListClassName','com.phoenix.base.service.imp.ResourceActionServiceImp',NULL,NULL,NULL,NULL),(36,'getResourceAction','com.phoenix.base.service.imp.ResourceActionServiceImp',NULL,NULL,NULL,NULL),(37,'getCurrentSecurityToken','com.phoenix.base.service.imp.ResourceActionServiceImp',NULL,NULL,NULL,NULL),(38,'ping','com.phoenix.base.service.imp.CommonServiceImpl',NULL,NULL,NULL,NULL),(39,'ping','com.phoenix.base.service.imp.CommonServiceImpl',NULL,NULL,NULL,NULL);
+INSERT INTO `fw_resource_action` VALUES (1,'ping','com.phoenix.base.service.imp.CommonServiceImpl','CommonService','ping','common','Ping service');
 /*!40000 ALTER TABLE `fw_resource_action` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,6 +106,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `spring_session` WRITE;
 /*!40000 ALTER TABLE `spring_session` DISABLE KEYS */;
+INSERT INTO `spring_session` VALUES ('aa9cbb32-8a03-45fb-b1da-f5acee75c81b','cd868941-ac0d-4d7e-b00d-e583cae82fc7',1633769585901,1633769650549,1800,1633771450549,NULL);
 /*!40000 ALTER TABLE `spring_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,6 +116,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `spring_session_attributes` WRITE;
 /*!40000 ALTER TABLE `spring_session_attributes` DISABLE KEYS */;
+INSERT INTO `spring_session_attributes` VALUES ('aa9cbb32-8a03-45fb-b1da-f5acee75c81b','SPRING_SECURITY_SAVED_REQUEST',_binary '¬\í\0sr\0Aorg.springframework.security.web.savedrequest.DefaultSavedRequest@HDù6d”\0I\0\nserverPortL\0contextPatht\0Ljava/lang/String;L\0cookiest\0Ljava/util/ArrayList;L\0headerst\0Ljava/util/Map;L\0localesq\0~\0L\0methodq\0~\0L\0\nparametersq\0~\0L\0pathInfoq\0~\0L\0queryStringq\0~\0L\0\nrequestURIq\0~\0L\0\nrequestURLq\0~\0L\0schemeq\0~\0L\0\nserverNameq\0~\0L\0servletPathq\0~\0xp\0\0št\0/api/v0sr\0java.util.ArrayListx\Ò™\Ça\0I\0sizexp\0\0\0w\0\0\0sr\09org.springframework.security.web.savedrequest.SavedCookie@+‚ŸÀ´f\0I\0maxAgeZ\0secureI\0versionL\0commentq\0~\0L\0domainq\0~\0L\0nameq\0~\0L\0pathq\0~\0L\0valueq\0~\0xpÿÿÿÿ\0\0\0\0\0ppt\0SESSIONpt\00Y2Q4Njg5NDEtYWMwZC00ZDdlLWIwMGQtZTU4M2NhZTgyZmM3xsr\0java.util.TreeMapÁö>-%j\æ\0L\0\ncomparatort\0Ljava/util/Comparator;xpsr\0*java.lang.String$CaseInsensitiveComparatorw\\}\\P\å\Î\0\0xpw\0\0\0t\0acceptsq\0~\0\0\0\0w\0\0\0t\0*/*xt\0accept-encodingsq\0~\0\0\0\0w\0\0\0t\0gzip, deflate, brxt\0\nconnectionsq\0~\0\0\0\0w\0\0\0t\0\nkeep-alivext\0hostsq\0~\0\0\0\0w\0\0\0t\0127.0.0.1:8090xt\0\rpostman-tokensq\0~\0\0\0\0w\0\0\0t\0$f1eefd64-f373-46ff-a90c-2fc1ec7049f0xt\0\nuser-agentsq\0~\0\0\0\0w\0\0\0t\0PostmanRuntime/7.28.4xxsq\0~\0\0\0\0w\0\0\0sr\0java.util.Locale~ø`œ0ù\ì\0I\0hashcodeL\0countryq\0~\0L\0\nextensionsq\0~\0L\0languageq\0~\0L\0scriptq\0~\0L\0variantq\0~\0xpÿÿÿÿt\0USt\0\0t\0enq\0~\0\'q\0~\0\'xxt\0GETsq\0~\0pw\0\0\0\0xppt\0/api/v0/common/ping2t\0)http://127.0.0.1:8090/api/v0/common/ping2t\0httpt\0	127.0.0.1t\0\r/common/ping2');
 /*!40000 ALTER TABLE `spring_session_attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,6 +146,14 @@ LOCK TABLES `user_title` WRITE;
 /*!40000 ALTER TABLE `user_title` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_title` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping events for database 'user_management'
+--
+
+--
+-- Dumping routines for database 'user_management'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -154,4 +164,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-08 20:35:32
+-- Dump completed on 2021-10-09 16:01:50
