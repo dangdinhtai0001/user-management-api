@@ -27,7 +27,7 @@
 
     <properties>
         <!--        global variables-->
-        <global.java.version>1.8</global.java.version>
+        <global.java.version>11</global.java.version>
         <global.jacoco.skip>false</global.jacoco.skip>
         <global.maven.test.skip>true</global.maven.test.skip>
         <global.project.build.sourceEncoding>UTF-8</global.project.build.sourceEncoding>
