@@ -18,27 +18,24 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class AbstractCoreService implements CoreService {
-
-    public abstract List<DefaultException> getExceptions();
+    protected Map<String, DefaultException<Long>> exceptionTranslator;
 
     @Override
     public ApplicationException getApplicationException(String code) {
-        DefaultException exception = findExceptionByCode(code);
+        DefaultException<Long> exception = findExceptionByCode(code);
 
         return new ApplicationException(exception.getMessage(), code,
                 HttpStatus.valueOf(exception.getHttpCode()));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public DefaultException findExceptionByCode(String code) {
-        return getExceptions()
-                .stream()
-                .filter(exceptionEntity -> code.equals(exceptionEntity.getCode()))
-                .findFirst().orElse(null);
+    public DefaultException<Long> findExceptionByCode(String code) {
+        return exceptionTranslator.getOrDefault(code, null);
     }
 
     @Override
-    public String getPropertyOfRequestBodyByKey(Map requestBody, String key) {
+    public String getPropertyOfRequestBodyByKey(@SuppressWarnings("rawtypes") Map requestBody, String key) {
         Object value = requestBody.get(key);
 
         if (value == null) {

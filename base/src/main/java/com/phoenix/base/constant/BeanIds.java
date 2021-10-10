@@ -4,7 +4,7 @@ public class BeanIds {
     //====================================================
     // Application config
     //====================================================
-    public static final String ALL_EXCEPTION = "FW_ALL_EXCEPTION";
+    public static final String EXCEPTION_TRANSLATOR = "FW_EXCEPTION_TRANSLATOR";
     public static final String JWT_PROVIDER = "FW_JWT_PROVIDER";
     public static final String JWT_SECRET_KEY = "FW_SECRET_KEY";
     public static final String UUID_FACTORY = "FW_UUID_FACTORY";
@@ -18,6 +18,7 @@ public class BeanIds {
     // ====================================================
     // controller
     //====================================================
+    public static final String BASE_CONTROLLER = "FW_BASE_CONTROLLER";
 
     //====================================================
     // services

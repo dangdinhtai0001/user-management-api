@@ -24,11 +24,9 @@ public class ApplicationAuthorizationAspect extends BaseService {
     private final AuthorizationService authorizationService;
 
     protected ApplicationAuthorizationAspect(
-            ApplicationContext applicationContext,
             @Qualifier(BeanIds.AUTHORIZATION_ENFORCE) Enforcer authorizationEnforcer,
             @Qualifier(BeanIds.AUTHORIZATION_SERVICES) AuthorizationService authorizationService
     ) {
-        super(applicationContext);
         this.authorizationEnforcer = authorizationEnforcer;
         this.authorizationService = authorizationService;
     }

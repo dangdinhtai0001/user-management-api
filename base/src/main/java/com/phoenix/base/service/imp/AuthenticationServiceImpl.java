@@ -35,14 +35,11 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     private final DefaultUserDetailsRepository defaultUserDetailsRepository;
 
     protected AuthenticationServiceImpl(
-            ApplicationContext applicationContext,
             @Qualifier(BeanIds.JWT_PROVIDER) JwtProvider jwtProvider,
             @Qualifier(BeanIds.UUID_FACTORY) UUIDFactory uuidFactory,
             @Qualifier(BeanIds.DEFAULT_AUTHENTICATION_MANAGER) AuthenticationManager authenticationManager,
             @Qualifier(BeanIds.BASE_USER_REPOSITORY_IMP) DefaultUserDetailsRepository defaultUserDetailsRepository
     ) {
-        super(applicationContext);
-
         this.jwtProvider = jwtProvider;
         this.uuidFactory = uuidFactory;
         this.authenticationManager = authenticationManager;

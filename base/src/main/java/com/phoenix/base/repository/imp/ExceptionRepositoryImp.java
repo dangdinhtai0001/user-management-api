@@ -21,6 +21,7 @@ public class ExceptionRepositoryImp extends AbstractSingleQueryDslRepository imp
         super(queryFactory);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<ExceptionModel> findAll() {
         String[] columns = {"id", "code_", "message_", "httpCode"};
@@ -30,12 +31,14 @@ public class ExceptionRepositoryImp extends AbstractSingleQueryDslRepository imp
         return parseResult(queryResult, ExceptionModel.class, fields);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Class<QFwException> getRelationalPathBaseClass() {
         return QFwException.class;
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
     protected RelationalPathBase<QFwException> getRelationalPathBase() {
         return new QFwException("fw_exception", getDefaultSchemaName());

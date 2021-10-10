@@ -32,7 +32,6 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
     protected ResourceActionServiceImp(
             ApplicationContext applicationContext,
             @Qualifier(BeanIds.RESOURCE_ACTION_REPOSITORY_IMP) ResourceActionRepository resourceActionRepository) {
-        super(applicationContext);
         this.applicationContext = applicationContext;
         this.resourceActionRepository = resourceActionRepository;
     }
@@ -93,7 +92,8 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
             long r = resourceActionRepository.insertAll(tuples);
 
             //Set giá trị này vào bean
-            setServiceMetadata(allResource);
+            setServiceMetadata(exitsResourceAction);
+            setServiceMetadata(resourceActionList);
 
             return r;
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -123,7 +123,7 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
 
     /**
      * @param aClass : Class cần lấy value của @Service
-     * @return String tên của bean
+     * @return thuộc tính value của @service
      */
     private String getServiceBeanName(Class<?> aClass) {
         Annotation annotation = ReflectionUtil.getAnnotationOfClass(aClass, Service.class);

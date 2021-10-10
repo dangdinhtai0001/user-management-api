@@ -41,11 +41,13 @@ public class ResourceActionRepositoryImp extends AbstractSingleQueryDslRepositor
         return defaultInsert(tuples);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Class<QFwResourceAction> getRelationalPathBaseClass() {
         return QFwResourceAction.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected RelationalPathBase<QFwResourceAction> getRelationalPathBase() {
         return new QFwResourceAction("fw_resource_action", getDefaultSchemaName());

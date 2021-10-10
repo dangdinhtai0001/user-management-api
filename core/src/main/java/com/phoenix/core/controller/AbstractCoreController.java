@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public abstract class AbstractCoreController implements CoreController {
 
+    @SuppressWarnings("unchecked")
     @Override
     @ExceptionHandler({ApplicationException.class})
     public ResponseEntity<?> handleException(ApplicationException exception) {

@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,12 +82,18 @@ public class ApplicationConfiguration {
     }
 
     /**
-     * @return : List thông tin các Exception được định nghĩa trong database
+     * @return : thông tin các Exception được định nghĩa trong database
      */
-    @Bean(value = BeanIds.ALL_EXCEPTION)
-    public List<DefaultException> getAllException() {
+    @Bean(value = BeanIds.EXCEPTION_TRANSLATOR)
+    public Map<String, DefaultException<Long>> exceptionTranslator() {
         log.info("Get all exception from database");
-        return exceptionRepository.findAll();
+        List<DefaultException<Long>> list = exceptionRepository.findAll();
+        Map<String, DefaultException<Long>> map = new LinkedHashMap<>();
+
+        for (DefaultException<Long> exception : list) {
+            map.put(exception.getCode(), exception);
+        }
+        return map;
     }
 
     /**

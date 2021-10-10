@@ -4,26 +4,26 @@ import com.phoenix.base.constant.BeanIds;
 import com.phoenix.core.model.DefaultAuthenticationToken;
 import com.phoenix.core.model.DefaultException;
 import com.phoenix.core.service.AbstractCoreService;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Map;
 
 @Component
 public class BaseService extends AbstractCoreService {
-    private final ApplicationContext appContext;
-
-    protected BaseService(ApplicationContext applicationContext) {
-        this.appContext = applicationContext;
-    }
-
     @Override
     public DefaultAuthenticationToken getCurrentSecurityToken() {
         return null;
     }
 
-    @Override
-    public List<DefaultException> getExceptions() {
-        return (List<DefaultException>) appContext.getBean(BeanIds.ALL_EXCEPTION);
+    @Autowired
+    public void setExceptionTranslator(
+            @Qualifier(BeanIds.EXCEPTION_TRANSLATOR) Map<String, DefaultException<Long>> exceptionTranslator) {
+        this.exceptionTranslator = exceptionTranslator;
+    }
+
+    public Map<String, DefaultException<Long>> getExceptionTranslator() {
+        return exceptionTranslator;
     }
 }
