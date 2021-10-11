@@ -49,7 +49,8 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
         Class<?> instanceClass;
         List<String> methodsName;
         String beanName;
-        String displayResource, displayAction, description;
+        String displayResource, displayAction, httpMethod, description;
+        boolean isEnabled;
 
         for (Object className : listClassName) {
             try {
@@ -63,17 +64,17 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
                 description = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "description");
                 displayResource = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "displayResource");
                 displayAction = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "displayAction");
+                httpMethod = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "httpMethod");
+                isEnabled = (boolean) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "isEnabled");
 
                 for (String methodName : methodsName) {
-                    resourceActionList.add(getResourceAction(String.valueOf(className), methodName, beanName, displayResource, displayAction, description));
+                    resourceActionList.add(buildResourceAction(String.valueOf(className), methodName, beanName, displayResource, displayAction, httpMethod, isEnabled, description));
                 }
 
             } catch (Exception e) {
                 log.error(e);
             }
         }
-
-        List<ResourceActionModel> allResource = new LinkedList<>(resourceActionList);
 
         //Tạo bộ điều kiện để query
         // Chưa rõ vì sao chạy vs list object còn list String thì không
@@ -82,7 +83,7 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
         criteriaList.add(new SearchCriteria("action", SearchOperation.IN, allMethodsNamesList));
 
         //Tìm các bản ghi đã tồn tại trong database
-        String[] fields = {"id", "action", "resource", "beanName", "displayAction", "displayResource", "description"};
+        String[] fields = {"id", "action", "resource", "beanName", "displayAction", "displayResource", "httpMethod", "enabled", "description"};
         List<ResourceActionModel> exitsResourceAction = resourceActionRepository.findAll(criteriaList, fields);
 
         resourceActionList.removeAll(exitsResourceAction);
@@ -107,8 +108,10 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
     //******************************** region private methods
     //******************************************************************************************************
 
-    private ResourceActionModel getResourceAction(String resource, String action, String beanName,
-                                                  String displayResource, String displayAction, String description) {
+    private ResourceActionModel buildResourceAction(String resource, String action, String beanName,
+                                                    String displayResource, String displayAction,
+                                                    String httpMethod, boolean isEnabled,
+                                                    String description) {
         ResourceActionModel resourceAction = new ResourceActionModel();
 
         resourceAction.setResource(resource);
@@ -116,6 +119,8 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
         resourceAction.setBeanName(beanName);
         resourceAction.setDisplayResource(displayResource);
         resourceAction.setDisplayAction(displayAction);
+        resourceAction.setHttpMethod(httpMethod);
+        resourceAction.setEnabled(isEnabled);
         resourceAction.setDescription(description);
 
         return resourceAction;
@@ -146,8 +151,10 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
     }
 
     private void setServiceMetadata(List<ResourceActionModel> list) {
+        String key;
         for (ResourceActionModel model : list) {
-            applicationContext.getBean(BeanIds.APPLICATION_SERVICE_METADATA, HashMap.class).put(model.getDisplayResource(), model);
+            key = model.getDisplayResource() + "|" + model.getDisplayAction();
+            applicationContext.getBean(BeanIds.APPLICATION_SERVICE_METADATA, HashMap.class).put(key, model);
         }
 
     }

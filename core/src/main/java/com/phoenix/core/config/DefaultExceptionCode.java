@@ -8,5 +8,8 @@ public class DefaultExceptionCode {
     public static final String DATABASE_ERROR = "DB_001";
     public static final String INVALID_REFRESH_JWT = "AUTH_005";
     public static final String BAD_REQUEST = "COM_001";
-    public static final String INTERNAL_ERROR = "COM_001";
+    public static final String INTERNAL_ERROR = "COM_002";
+    public static final String NOT_FOUND = "COM_003";
+    public static final String METHOD_NOT_ALLOWED = "COM_004";
+    public static final String NOT_ACCEPTABLE = "COM_005";
 }

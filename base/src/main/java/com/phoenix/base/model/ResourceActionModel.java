@@ -15,6 +15,8 @@ public class ResourceActionModel {
     private String beanName;
     private String displayAction;
     private String displayResource;
+    private String httpMethod;
+    private Boolean enabled;
     private String description;
 
     @Override

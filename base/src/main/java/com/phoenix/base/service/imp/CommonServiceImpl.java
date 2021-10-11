@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @ApplicationResource(
         displayResource = "common",
         displayAction = "ping",
+        httpMethod = "GET",
         description = "Ping service"
 )
 public class CommonServiceImpl implements CommonService {

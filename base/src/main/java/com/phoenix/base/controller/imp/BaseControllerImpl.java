@@ -4,9 +4,11 @@ import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.controller.BaseController;
 import com.phoenix.base.model.ResourceActionModel;
 import com.phoenix.common.util.ReflectionUtil;
+import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.controller.AbstractCoreController;
 import com.phoenix.core.exception.ApplicationException;
 import com.phoenix.core.model.DefaultException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 @RestController(value = BeanIds.BASE_CONTROLLER)
+@Log4j2
 public class BaseControllerImpl extends AbstractCoreController implements BaseController {
 
     private final ApplicationContext applicationContext;
@@ -60,33 +63,41 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
         Object result;
 
         try {
-            ResourceActionModel metadata = serviceMetadata.getOrDefault(resource, null);
-
-            if (metadata == null) {
-                throw new ApplicationException("Can't not found this path.", "404", HttpStatus.NOT_FOUND);
-            }
+            ResourceActionModel metadata = validateRequest(resource, action, request);
 
             Object beanObject = applicationContext.getBean(metadata.getBeanName());
 
             result = ReflectionUtil.invokeMethod(beanObject, action);
         } catch (NoSuchMethodException | NoSuchBeanDefinitionException e) {
-            throw new ApplicationException("Can't not found this path.", "404", HttpStatus.NOT_FOUND);
+            throw getApplicationException(DefaultExceptionCode.NOT_FOUND);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-            throw new ApplicationException("Internal server error", "500", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error(e);
+            throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
         }
 
         return sendResponse(result);
     }
 
-    private String validateRequest(String resource, String action) throws ApplicationException {
-        ResourceActionModel metadata = serviceMetadata.getOrDefault(resource, null);
+    private ResourceActionModel validateRequest(String resource, String action, HttpServletRequest request) throws ApplicationException {
+        String key = resource + "|" + action;
+        ResourceActionModel metadata = serviceMetadata.getOrDefault(key, null);
 
+        // Nếu resource không có trong database thì trả về lỗi NOT_FOUND
         if (metadata == null) {
-            throw getApplicationException("");
+            throw getApplicationException(DefaultExceptionCode.NOT_FOUND);
         }
 
-        return null;
+        // Nếu metadata có enabled == false thì trả về lỗi NOT_ACCEPTABLE
+        if (!metadata.getEnabled()) {
+            throw getApplicationException(DefaultExceptionCode.NOT_ACCEPTABLE);
+        }
+
+        // Nếu request có method không đúng thì trả về lỗi METHOD_NOT_ALLOW
+        if (!request.getMethod().equals(metadata.getHttpMethod())) {
+            throw getApplicationException(DefaultExceptionCode.METHOD_NOT_ALLOWED);
+        }
+
+        return metadata;
     }
 
     private ApplicationException getApplicationException(String code) {

@@ -9,6 +9,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface ApplicationResource {
     String displayResource() default "";
+
     String displayAction() default "";
+
     String description() default "";
+
+    String httpMethod() default "";
+
+    boolean isEnabled() default true;
 }
