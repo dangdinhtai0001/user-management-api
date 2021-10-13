@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.25, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
 -- Host: localhost    Database: user_management
 -- ------------------------------------------------------
--- Server version	8.0.25
+-- Server version	8.0.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -50,7 +50,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `fw_resource_action` WRITE;
 /*!40000 ALTER TABLE `fw_resource_action` DISABLE KEYS */;
-INSERT INTO `fw_resource_action` VALUES (1,'ping','com.phoenix.base.service.imp.CommonServiceImpl','CommonService','ping','common','GET',1,'Ping service');
+INSERT INTO `fw_resource_action` VALUES (1,'ping','com.phoenix.base.service.imp.CommonServiceImpl','CommonService','ping','common','GET',1,'Ping service'),(2,'create','com.phoenix.base.service.imp.UserServiceImpl','FW_USER_SERVICES','create','user','POST',1,'User service'),(3,'find','com.phoenix.base.service.imp.UserServiceImpl','FW_USER_SERVICES','find','user','POST',1,'User service');
 /*!40000 ALTER TABLE `fw_resource_action` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,6 +60,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `fw_user` WRITE;
 /*!40000 ALTER TABLE `fw_user` DISABLE KEYS */;
+INSERT INTO `fw_user` VALUES (6,'raw','123456',NULL,NULL,NULL,'27dc08ce-c12d-476b-8a70-86939d808fdb',1,'test','NONE','2021-10-13 21:23:28','NONE','2021-10-13 22:38:28');
 /*!40000 ALTER TABLE `fw_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,6 +70,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `fw_user_group` WRITE;
 /*!40000 ALTER TABLE `fw_user_group` DISABLE KEYS */;
+INSERT INTO `fw_user_group` VALUES (1,'administrator');
 /*!40000 ALTER TABLE `fw_user_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,6 +108,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `spring_session` WRITE;
 /*!40000 ALTER TABLE `spring_session` DISABLE KEYS */;
+INSERT INTO `spring_session` VALUES ('32769716-662e-4880-976d-35303c289992','1e10b622-4f62-4856-956a-c18fa9b51c6d',1634138836355,1634144197458,1800,1634145997458,'test');
 /*!40000 ALTER TABLE `spring_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,6 +118,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `spring_session_attributes` WRITE;
 /*!40000 ALTER TABLE `spring_session_attributes` DISABLE KEYS */;
+INSERT INTO `spring_session_attributes` VALUES ('32769716-662e-4880-976d-35303c289992','SPRING_SECURITY_CONTEXT',_binary '¨\Ì\0sr\0=org.springframework.security.core.context.SecurityContextImpl\0\0\0\0\0\0&\0L\0authenticationt\02Lorg/springframework/security/core/Authentication;xpsr\0Oorg.springframework.security.authentication.UsernamePasswordAuthenticationToken\0\0\0\0\0\0&\0L\0credentialst\0Ljava/lang/Object;L\0	principalq\0~\0xr\0Gorg.springframework.security.authentication.AbstractAuthenticationToken”™(~nGd\0Z\0\rauthenticatedL\0authoritiest\0Ljava/util/Collection;L\0detailsq\0~\0xpsr\0&java.util.Collections$UnmodifiableList¸%1µ\Ïé\0L\0listt\0Ljava/util/List;xr\0,java.util.Collections$UnmodifiableCollectionB\0Ä\À^˜\0L\0cq\0~\0xpsr\0java.util.ArrayListxÅ\“ô\«aù\0I\0sizexp\0\0\0w\0\0\0sr\0Borg.springframework.security.core.authority.SimpleGrantedAuthority\0\0\0\0\0\0&\0L\0rolet\0Ljava/lang/String;xpt\0nullxq\0~\0\rsr\0Horg.springframework.security.web.authentication.WebAuthenticationDetails\0\0\0\0\0\0&\0L\0\rremoteAddressq\0~\0L\0	sessionIdq\0~\0xpt\0	127.0.0.1t\0$1e10b622-4f62-4856-956a-c18fa9b51c6dt\0{raw}123456t\0test');
 /*!40000 ALTER TABLE `spring_session_attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,6 +148,14 @@ LOCK TABLES `user_title` WRITE;
 /*!40000 ALTER TABLE `user_title` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_title` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping events for database 'user_management'
+--
+
+--
+-- Dumping routines for database 'user_management'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -154,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-13 21:05:48
+-- Dump completed on 2021-10-14  0:02:10
