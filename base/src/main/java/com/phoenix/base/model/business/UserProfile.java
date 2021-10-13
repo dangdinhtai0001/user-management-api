@@ -1,4 +1,4 @@
-package com.phoenix.business.model;
+package com.phoenix.base.model.business;
 
 import lombok.*;
 

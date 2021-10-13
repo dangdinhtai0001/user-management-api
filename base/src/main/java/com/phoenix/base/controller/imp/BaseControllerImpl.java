@@ -48,7 +48,8 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
     /**
      * @param resource Tên service
      * @param action   Tên hàm trong service đó
-     * @param request
+     * @param request Đối tượng request (Để lấy method của request)
+     * @param requestBody Body
      * @return Hàm này sẽ thực hiện
      * Hứng request đến path /resource/action
      * Validate thông tin dựa trên metadata đc lưu trong database
@@ -59,7 +60,7 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
     public ResponseEntity<?> control(
             @PathVariable(name = "resource") String resource,
             @PathVariable(name = "action") String action,
-            @RequestBody(required = false) Object body,
+            @RequestBody(required = false) Object requestBody,
             HttpServletRequest request
     ) throws ApplicationException {
         Object result;
@@ -69,9 +70,13 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
 
             Object beanObject = applicationContext.getBean(metadata.getBeanName());
 
-            result = ReflectionUtil.invokeMethod(beanObject, action);
+            if (requestBody == null) {
+                result = ReflectionUtil.invokeMethod(beanObject, action);
+            } else {
+                result = ReflectionUtil.invokeMethod(beanObject, action, requestBody);
+            }
         } catch (NoSuchMethodException | NoSuchBeanDefinitionException e) {
-            throw getApplicationException(DefaultExceptionCode.NOT_FOUND);
+            throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         } catch (InvocationTargetException | IllegalAccessException e) {
             log.error(e);
             throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
