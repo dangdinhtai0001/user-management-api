@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,6 +59,7 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
     public ResponseEntity<?> control(
             @PathVariable(name = "resource") String resource,
             @PathVariable(name = "action") String action,
+            @RequestBody(required = false) Object body,
             HttpServletRequest request
     ) throws ApplicationException {
         Object result;
