@@ -23,6 +23,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +56,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     }
 
     @Override
+    @Transactional
     public Optional<UserPrincipal> findUserPrincipalByUsername(String username) {
         RelationalPathBase<QFwUser> userPath = getRelationalPathMap().get(QFwUser.fwUser.getTableName(), RelationalPathBase.class);
         RelationalPathBase<QFwUserStatus> userStatusPath = getRelationalPathMap().get(QFwUserStatus.fwUserStatus.getTableName(), RelationalPathBase.class);
@@ -79,7 +81,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
         Tuple record = queryResult.get(0);
         UserPrincipal userPrincipal = new UserPrincipal();
 
-        userPrincipal.setId(record.get(0, Long.class));
+        userPrincipal.setId(record.get(0, Integer.class));
         userPrincipal.setUsername(record.get(1, String.class));
         userPrincipal.setPassword(record.get(2, String.class));
         userPrincipal.setHashAlgorithm(record.get(3, String.class));
@@ -92,6 +94,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     }
 
     @Override
+    @Transactional
     public List findGroupIdsByUsername(String username) {
         PathBuilder userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
         PathBuilder userGroupPathBuilder = getPathBuilder(QFwUserGroup.class, QFwUserGroup.fwUserGroup);
@@ -115,6 +118,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     }
 
     @Override
+    @Transactional
     public int updateRefreshTokenByUsername(String refreshToken, String username) {
         RelationalPathBase<QFwUser> relationalPath = getRelationalPathBase(QFwUser.class, QFwUser.fwUser);
 
@@ -130,6 +134,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     }
 
     @Override
+    @Transactional
     public Optional findRefreshTokenByUsername(String username) {
         PathBuilder userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
 

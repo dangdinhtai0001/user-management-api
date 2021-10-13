@@ -1,5 +1,6 @@
 package com.phoenix.base.controller.imp;
 
+import com.google.gson.internal.LinkedTreeMap;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.controller.BaseController;
 import com.phoenix.base.model.ResourceActionModel;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 @RestController(value = BeanIds.BASE_CONTROLLER)
@@ -46,9 +48,9 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
     }
 
     /**
-     * @param resource Tên service
-     * @param action   Tên hàm trong service đó
-     * @param request Đối tượng request (Để lấy method của request)
+     * @param resource    Tên service
+     * @param action      Tên hàm trong service đó
+     * @param request     Đối tượng request (Để lấy method của request)
      * @param requestBody Body
      * @return Hàm này sẽ thực hiện
      * Hứng request đến path /resource/action
@@ -76,6 +78,8 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
                 result = ReflectionUtil.invokeMethod(beanObject, action, requestBody);
             }
         } catch (NoSuchMethodException | NoSuchBeanDefinitionException e) {
+            //log.warn(e.getMessage());
+            log.warn(e);
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         } catch (InvocationTargetException | IllegalAccessException e) {
             log.error(e);

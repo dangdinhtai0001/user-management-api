@@ -63,12 +63,12 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
 
                 description = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "description");
                 displayResource = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "displayResource");
-                displayAction = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "displayAction");
+                //displayAction = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "displayAction");
                 httpMethod = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "httpMethod");
                 isEnabled = (boolean) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "isEnabled");
 
                 for (String methodName : methodsName) {
-                    resourceActionList.add(buildResourceAction(String.valueOf(className), methodName, beanName, displayResource, displayAction, httpMethod, isEnabled, description));
+                    resourceActionList.add(buildResourceAction(String.valueOf(className), methodName, beanName, displayResource, methodName, httpMethod, isEnabled, description));
                 }
 
             } catch (Exception e) {

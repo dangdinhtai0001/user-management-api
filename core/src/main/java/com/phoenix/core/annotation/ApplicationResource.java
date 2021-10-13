@@ -14,7 +14,7 @@ public @interface ApplicationResource {
 
     String description() default "";
 
-    String httpMethod() default "";
+    String httpMethod() default "POST";
 
     boolean isEnabled() default true;
 }

@@ -58,7 +58,7 @@ public class DefaultUserDetails implements UserDetails {
         return userPrincipal.getStatus().equals(ApplicationConstant.USER_DETAILS_STATUS_ENABLED);
     }
 
-    public Long getId() {
+    public Integer getId() {
         return userPrincipal.getId();
     }
 

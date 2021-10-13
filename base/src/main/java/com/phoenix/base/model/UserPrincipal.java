@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @ToString
 public class UserPrincipal implements Serializable {
-    private Long id;
+    private Integer id;
     private String username;
     private String password;
     private String hashAlgorithm;
@@ -21,7 +21,7 @@ public class UserPrincipal implements Serializable {
     private List<String> groups;
     private List<String> permissions;
 
-    public UserPrincipal(Long id, String username, String password, String hashAlgorithm, String passwordSalt,
+    public UserPrincipal(Integer id, String username, String password, String hashAlgorithm, String passwordSalt,
                          String status, List<String> groups, List<String> permissions) {
         this.id = id;
         this.username = username;
