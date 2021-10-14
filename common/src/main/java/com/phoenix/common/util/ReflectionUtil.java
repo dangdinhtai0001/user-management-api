@@ -18,10 +18,7 @@ package com.phoenix.common.util;
 import com.phoenix.common.structure.Pair;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,8 +52,20 @@ public class ReflectionUtil {
      * @param aClass Class cần xử lí
      * @return List<String> tên các declared method của class
      */
-    public static List<String> getAllDeclaredMethodsMethodNames(Class<?> aClass) {
+    public static List<String> getAllDeclaredMethodNames(Class<?> aClass) {
         return Arrays.stream(aClass.getDeclaredMethods()).map(Method::getName).collect(Collectors.toList());
+    }
+
+    /**
+     * @param aClass Class cần xử lí
+     * @return List<String> tên các public  method của class
+     */
+    public static List<String> getAllPublicMethodNames(Class<?> aClass) {
+        return Arrays.stream(aClass.getDeclaredMethods())
+//                .filter(p -> "public".equals(Modifier.toString(p.getModifiers())))
+                .filter(p -> Modifier.isPublic(p.getModifiers()))
+                .map(Method::getName)
+                .collect(Collectors.toList());
     }
 
     /**

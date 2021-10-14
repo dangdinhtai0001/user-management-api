@@ -27,7 +27,7 @@ public interface CoreService {
      */
     <T extends Serializable> DefaultException<T> findExceptionByCode(String code);
 
-    String getPropertyOfRequestBodyByKey(@SuppressWarnings("rawtypes") Map requestBody, String key);
+    <T> T getPropertyOfRequestBodyByKey(Map<?, ?> requestBody, String key, Class<T> typeOfResponse);
 
     List<SearchCriteria> getListOfSearchCriteria(List<SearchCriteriaRequest> listConditionRequests);
 

@@ -10,7 +10,6 @@ import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchOperation;
 import com.phoenix.core.repository.AbstractCoreQueryDslRepository;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -95,14 +94,14 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
 
     @Override
     @Transactional
-    public List findGroupIdsByUsername(String username) {
-        PathBuilder userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
-        PathBuilder userGroupPathBuilder = getPathBuilder(QFwUserGroup.class, QFwUserGroup.fwUserGroup);
-        PathBuilder userGroupMappingPathBuilder = getPathBuilder(QFwUserGroupMapping.class, QFwUserGroupMapping.fwUserGroupMapping);
+    public List<?> findGroupIdsByUsername(String username) {
+        PathBuilder<QFwUser> userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
+        PathBuilder<QFwUserGroup> userGroupPathBuilder = getPathBuilder(QFwUserGroup.class, QFwUserGroup.fwUserGroup);
+        PathBuilder<QFwUserGroupMapping> userGroupMappingPathBuilder = getPathBuilder(QFwUserGroupMapping.class, QFwUserGroupMapping.fwUserGroupMapping);
 
-        Expression[] expressions = getExpressions(userGroupPathBuilder, "id");
+        var expressions = getExpressions(userGroupPathBuilder, "id");
 
-        SQLQuery query = queryFactory.select(expressions).from(userPathBuilder);
+        SQLQuery<Tuple> query = queryFactory.select(expressions).from(userPathBuilder);
 
         join(JoinType.LEFT_JOIN, query, userPathBuilder, userGroupMappingPathBuilder, "id", "user_id");
         join(JoinType.LEFT_JOIN, query, userGroupMappingPathBuilder, userGroupPathBuilder, "group_id", "id");
@@ -135,19 +134,19 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
 
     @Override
     @Transactional
-    public Optional findRefreshTokenByUsername(String username) {
-        PathBuilder userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
+    public Optional<?> findRefreshTokenByUsername(String username) {
+        PathBuilder<QFwUser> userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
 
-        Expression[] expressions = getExpressions(userPathBuilder, "refresh_token");
+        var expressions = getExpressions(userPathBuilder, "refresh_token");
 
-        SQLQuery query = queryFactory.select(expressions).from(userPathBuilder);
+        SQLQuery<Tuple> query = queryFactory.select(expressions).from(userPathBuilder);
 
         SearchCriteria criteria = new SearchCriteria("username", SearchOperation.EQUAL, username);
         addWhereClause(query, userPathBuilder, criteria);
 
         log.debug(query.getSQL().getSQL());
 
-        Tuple queryResult = (Tuple) query.fetchOne();
+        Tuple queryResult = query.fetchOne();
 
         return Optional.ofNullable(queryResult.get(0, String.class));
     }
@@ -155,7 +154,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     //===========================================
 
     private Predicate getEqualsUsernamePredicate(String username) {
-        PathBuilder userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
+        PathBuilder<QFwUser> userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
         return getPredicateFromSearchCriteria(userPathBuilder, new SearchCriteria("username", SearchOperation.EQUAL, username));
     }
 }

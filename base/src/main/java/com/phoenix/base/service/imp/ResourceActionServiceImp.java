@@ -49,13 +49,13 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
         Class<?> instanceClass;
         List<String> methodsName;
         String beanName;
-        String displayResource, displayAction, httpMethod, description;
+        String displayResource, httpMethod, description;
         boolean isEnabled;
 
         for (Object className : listClassName) {
             try {
                 instanceClass = Class.forName(String.valueOf(className));
-                methodsName = ReflectionUtil.getAllDeclaredMethodsMethodNames(instanceClass);
+                methodsName = ReflectionUtil.getAllPublicMethodNames(instanceClass);
 
                 beanName = getServiceBeanName(instanceClass);
 

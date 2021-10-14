@@ -2,6 +2,7 @@ package com.phoenix.base.repository;
 
 import com.phoenix.base.model.UserPrincipal;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +13,11 @@ public interface UserRepository {
      */
     Optional<UserPrincipal> findUserPrincipalByUsername(String username);
 
-    List findGroupIdsByUsername(String username);
+    @Transactional
+    List<?> findGroupIdsByUsername(String username);
 
     int updateRefreshTokenByUsername(String refreshToken, String username);
 
-    Optional findRefreshTokenByUsername(String username);
+    @Transactional
+    Optional<?> findRefreshTokenByUsername(String username);
 }

@@ -30,12 +30,12 @@ public class DefaultUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserPrincipal> optional = userRepositoryImp.findUserPrincipalByUsername(username);
 
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             throw new UsernameNotFoundException("Couldn't find a matching user username in the database for: " + username);
         }
 
         UserPrincipal userPrincipal = optional.get();
-        List<Integer> groups = userRepositoryImp.findGroupIdsByUsername(username);
+        List<?> groups = userRepositoryImp.findGroupIdsByUsername(username);
         userPrincipal.setGroups(groups.stream().map(String::valueOf).collect(Collectors.toList()));
 
         return new DefaultUserDetails(userPrincipal);

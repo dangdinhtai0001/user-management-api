@@ -9,10 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface AuthenticationService {
-    LinkedHashMap<String, String> login(Map loginRequest, HttpSession session) throws ApplicationException;
+    LinkedHashMap<String, String> login(Map<?, ?> loginRequest, HttpSession session) throws ApplicationException;
 
-    void logout(Map logoutRequest, HttpSession session);
+    void logout(Map<?, ?> logoutRequest, HttpSession session);
 
-    LinkedHashMap<String, String> refreshToken(Map refreshTokenRequest, HttpSession session) throws ApplicationException;
-
+    LinkedHashMap<String, String> refreshToken(Map<?, ?> refreshTokenRequest, HttpSession session) throws ApplicationException;
 }

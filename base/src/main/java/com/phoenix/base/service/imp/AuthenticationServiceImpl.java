@@ -2,6 +2,7 @@ package com.phoenix.base.service.imp;
 
 import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.base.constant.BeanIds;
+import com.phoenix.base.repository.UserRepository;
 import com.phoenix.base.repository.imp.DefaultUserDetailsRepository;
 import com.phoenix.base.service.AuthenticationService;
 import com.phoenix.base.service.BaseService;
@@ -32,7 +33,7 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     private final JwtProvider jwtProvider;
     private final UUIDFactory uuidFactory;
     private final AuthenticationManager authenticationManager;
-    private final DefaultUserDetailsRepository defaultUserDetailsRepository;
+    private final UserRepository defaultUserDetailsRepository;
 
     protected AuthenticationServiceImpl(
             @Qualifier(BeanIds.JWT_PROVIDER) JwtProvider jwtProvider,
@@ -47,14 +48,13 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     }
 
 
-
     @Override
-    public LinkedHashMap<String, String> login(Map loginRequest, HttpSession session) throws ApplicationException {
+    public LinkedHashMap<String, String> login(Map<?,?> loginRequest, HttpSession session) throws ApplicationException {
         try {
             //LinkedHashMap loginRequest = (LinkedHashMap) payload;
 
-            String username = getPropertyOfRequestBodyByKey(loginRequest, "username");
-            String password = getPropertyOfRequestBodyByKey(loginRequest, "password");
+            String username = getPropertyOfRequestBodyByKey(loginRequest, "username", String.class);
+            String password = getPropertyOfRequestBodyByKey(loginRequest, "password", String.class);
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(username, password);
@@ -80,22 +80,22 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     }
 
     @Override
-    public void logout(Map logoutRequest, HttpSession session) {
+    public void logout(Map<?,?> logoutRequest, HttpSession session) {
 
     }
 
     @Override
-    public LinkedHashMap<String, String> refreshToken(Map refreshTokenRequest, HttpSession session) throws ApplicationException {
-        String refreshToken = getPropertyOfRequestBodyByKey(refreshTokenRequest, "refresh_token");
-        String username = getPropertyOfRequestBodyByKey(refreshTokenRequest, "username");
+    public LinkedHashMap<String, String> refreshToken(Map<?,?> refreshTokenRequest, HttpSession session) throws ApplicationException {
+        String refreshToken = getPropertyOfRequestBodyByKey(refreshTokenRequest, "refresh_token", String.class);
+        String username = getPropertyOfRequestBodyByKey(refreshTokenRequest, "username", String.class);
 
         if (refreshToken == null || username == null) {
             log.error(("Bad request"));
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         }
 
-        Optional<String> refreshTokenOptional = defaultUserDetailsRepository.findRefreshTokenByUsername(username);
-        String oldRefreshToken = refreshTokenOptional.orElse(null);
+        Optional<?> refreshTokenOptional = defaultUserDetailsRepository.findRefreshTokenByUsername(username);
+        Object oldRefreshToken = refreshTokenOptional.orElse(null);
 
         if (oldRefreshToken == null) {
             log.error(String.format("Can't find user with username: %s", username));

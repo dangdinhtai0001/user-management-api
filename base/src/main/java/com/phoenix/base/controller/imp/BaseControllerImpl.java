@@ -78,8 +78,8 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
                 result = ReflectionUtil.invokeMethod(beanObject, action, requestBody);
             }
         } catch (NoSuchMethodException | NoSuchBeanDefinitionException e) {
-            //log.warn(e.getMessage());
-            log.warn(e);
+            log.warn(e.getMessage());
+            //log.warn(e);
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         } catch (InvocationTargetException | IllegalAccessException e) {
             log.error(e);

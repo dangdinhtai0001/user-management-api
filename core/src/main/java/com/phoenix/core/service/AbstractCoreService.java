@@ -35,14 +35,10 @@ public abstract class AbstractCoreService implements CoreService {
     }
 
     @Override
-    public String getPropertyOfRequestBodyByKey(@SuppressWarnings("rawtypes") Map requestBody, String key) {
-        Object value = requestBody.get(key);
+    public <T> T getPropertyOfRequestBodyByKey(Map<?,?> requestBody, String key, Class<T> typeOfResponse) {
+        Object value = requestBody.getOrDefault(key,null);
 
-        if (value == null) {
-            return null;
-        }
-
-        return String.valueOf(value);
+        return (T) value;
     }
 
     @Override
