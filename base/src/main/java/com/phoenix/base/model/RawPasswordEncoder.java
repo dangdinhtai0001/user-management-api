@@ -12,7 +12,7 @@ public class RawPasswordEncoder implements PasswordEncoder {
     }
 
     @Override
-    public boolean matches(CharSequence charSequence, String s) {
-        return encode(charSequence).equals(s);
+    public boolean matches(CharSequence charSequence, String encodedPassword) {
+        return encode(charSequence).equals(encodedPassword);
     }
 }

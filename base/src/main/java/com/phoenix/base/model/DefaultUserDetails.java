@@ -62,6 +62,10 @@ public class DefaultUserDetails implements UserDetails {
         return userPrincipal.getId();
     }
 
+    public String getHashAlgorithm() {
+        return userPrincipal.getHashAlgorithm();
+    }
+
     @Override
     public String toString() {
         return "DefaultUserDetails{" +

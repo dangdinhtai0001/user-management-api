@@ -9,11 +9,14 @@ import com.phoenix.base.entry_point.JwtAuthenticationEntryPoint;
 import com.phoenix.base.filter.JwtAuthenticationFilter;
 import com.phoenix.base.model.RawPasswordEncoder;
 import com.phoenix.common.auth.JwtProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,7 +32,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Application security config
@@ -42,6 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final DefaultAccessDeniedEntryPoint defaultAccessDeniedEntryPoint;
     private final Multimap<String, String> applicationParameters;
+    private AuthenticationProvider authenticationProvider;
 
 
     public SecurityConfiguration(
@@ -56,6 +63,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.defaultAccessDeniedEntryPoint = defaultAccessDeniedEntryPoint;
         this.applicationParameters = applicationParameters;
+    }
+
+    @Autowired
+    public void setAuthenticationProvider(@Qualifier(BeanIds.AUTHENTICATION_PROVIDER) AuthenticationProvider authenticationProvider) {
+        this.authenticationProvider = authenticationProvider;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider);
     }
 
     @Bean(name = BeanIds.JWT_AUTHENTICATION_FILTER)
@@ -75,13 +92,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean(name = BeanIds.PASSWORD_ENCODER)
     public PasswordEncoder delegatingPasswordEncoder() {
         String idForEncode = ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID;
+        return new DelegatingPasswordEncoder(idForEncode, passwordEncoderMap());
+    }
+
+    @Bean(name = BeanIds.PASSWORD_ENCODER_MAP)
+    public Map<String, PasswordEncoder> passwordEncoderMap() {
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put(ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID, new BCryptPasswordEncoder());
         encoders.put(ApplicationConstant.PASSWORD_ENCODER_PBKDF2_ID, new Pbkdf2PasswordEncoder());
         encoders.put(ApplicationConstant.PASSWORD_ENCODER_SCRYPT_ID, new SCryptPasswordEncoder());
         encoders.put(ApplicationConstant.PASSWORD_ENCODER_RAW_ID, new RawPasswordEncoder());
-
-        return new DelegatingPasswordEncoder(idForEncode, encoders);
+        return encoders;
     }
 
 

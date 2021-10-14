@@ -38,8 +38,6 @@ public class BeanIds {
     public static final String EXCEPTION_REPOSITORY_IMP = "FW_EXCEPTION_REPOSITORY_IMP";
     public static final String AUTHORIZATION_REPOSITORY_IMP = "FW_AUTHORIZATION_REPOSITORY_IMP";
     public static final String RESOURCE_ACTION_REPOSITORY_IMP = "FW_RESOURCE_ACTION_REPOSITORY_IMP";
-    public static final String MENU_REPOSITORY_IMP = "FW_MENU_REPOSITORY_IMP";
-    public static final String USER_REPOSITORY_IMP = "USER_REPOSITORY_IMP";
     public static final String APPLICATION_PARAMETER_REPOSITORY_IMP = "APPLICATION_PARAMETER_REPOSITORY_IMP";
 
 
@@ -54,5 +52,7 @@ public class BeanIds {
     //====================================================
     public static final String DEFAULT_AUTHENTICATION_MANAGER = "FW_DEFAULT_AUTHENTICATION_MANAGER";
     public static final String PASSWORD_ENCODER = "FW_PASSWORD_ENCODER";
+    public static final String PASSWORD_ENCODER_MAP = "FW_PASSWORD_ENCODER_MAP";
     public static final String JWT_AUTHENTICATION_FILTER = "FW_JWT_AUTHENTICATION_FILTER";
+    public static final String AUTHENTICATION_PROVIDER = "DEFAULT_AUTHENTICATION_PROVIDER";
 }
