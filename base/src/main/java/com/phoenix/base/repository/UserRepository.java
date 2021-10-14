@@ -13,11 +13,11 @@ public interface UserRepository {
      */
     Optional<UserPrincipal> findUserPrincipalByUsername(String username);
 
-    @Transactional
     List<?> findGroupIdsByUsername(String username);
 
     int updateRefreshTokenByUsername(String refreshToken, String username);
 
-    @Transactional
     Optional<?> findRefreshTokenByUsername(String username);
+
+    long createUser(String username, String encodedPassword);
 }

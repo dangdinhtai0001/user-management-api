@@ -17,4 +17,5 @@ public class ApplicationConstant {
 
 
     public static final String PARAM_KEY_PUBLIC_URLS_MATCHER = "PUBLIC_URLS_MATCHER";
+    public static final String PARAM_KEY_DEFAULT_PASSWORD_SALT = "DEFAULT_PASSWORD_SALT";
 }

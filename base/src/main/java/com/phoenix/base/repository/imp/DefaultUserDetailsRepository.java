@@ -1,5 +1,6 @@
 package com.phoenix.base.repository.imp;
 
+import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.UserPrincipal;
 import com.phoenix.base.model.querydsl.*;
@@ -17,6 +18,7 @@ import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.sql.RelationalPathBase;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
+import com.querydsl.sql.dml.SQLInsertClause;
 import com.querydsl.sql.dml.SQLUpdateClause;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -149,6 +151,21 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
         Tuple queryResult = query.fetchOne();
 
         return Optional.ofNullable(queryResult.get(0, String.class));
+    }
+
+    @Override
+    @Transactional
+    public long createUser(String username, String encodedPassword) {
+        RelationalPathBase<QFwUser> userPath = getRelationalPathMap().get(QFwUser.fwUser.getTableName(), RelationalPathBase.class);
+
+        SQLInsertClause sqlInsertClause = queryFactory.insert(userPath);
+
+        Path[] columns = getPaths(userPath, "username", "password", "hashAlgorithm");
+        encodedPassword = encodedPassword.substring(ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID.length() + 2);
+
+        sqlInsertClause.columns(columns[0], columns[1], columns[2]).values(username, encodedPassword, ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID);
+
+        return sqlInsertClause.execute();
     }
 
     //===========================================

@@ -76,7 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder delegatingPasswordEncoder() {
         String idForEncode = ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID;
         Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put(idForEncode, new BCryptPasswordEncoder());
+        encoders.put(ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID, new BCryptPasswordEncoder());
         encoders.put(ApplicationConstant.PASSWORD_ENCODER_PBKDF2_ID, new Pbkdf2PasswordEncoder());
         encoders.put(ApplicationConstant.PASSWORD_ENCODER_SCRYPT_ID, new SCryptPasswordEncoder());
         encoders.put(ApplicationConstant.PASSWORD_ENCODER_RAW_ID, new RawPasswordEncoder());
