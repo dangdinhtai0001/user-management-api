@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.25, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
 -- Host: localhost    Database: user_management
 -- ------------------------------------------------------
--- Server version	8.0.25
+-- Server version	8.0.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -125,7 +125,7 @@ CREATE TABLE `fw_user` (
   UNIQUE KEY `fw_user_username_uindex` (`username`),
   KEY `fw_user_fw_user_status_id_fk` (`status_id`),
   CONSTRAINT `fw_user_fw_user_status_id_fk` FOREIGN KEY (`status_id`) REFERENCES `fw_user_status` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,6 +290,14 @@ CREATE TABLE `user_title` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping events for database 'user_management'
+--
+
+--
+-- Dumping routines for database 'user_management'
+--
+
+--
 -- Final view structure for view `fw_resource_policies`
 --
 
@@ -316,4 +324,4 @@ CREATE TABLE `user_title` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-14 22:07:00
+-- Dump completed on 2021-10-15  0:21:59
