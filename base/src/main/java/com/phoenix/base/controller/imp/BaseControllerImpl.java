@@ -65,7 +65,7 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
             @RequestBody(required = false) Object requestBody,
             HttpServletRequest request
     ) throws ApplicationException {
-        Object result;
+        Object result = null;
 
         try {
             ResourceActionModel metadata = validateRequest(resource, action, request);
@@ -81,8 +81,15 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
             log.warn(e.getMessage());
             //log.warn(e);
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            log.error(e);
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof ApplicationException) {
+                throw (ApplicationException) e.getCause();
+            } else {
+                log.error(e.getMessage());
+                throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
+            }
+        } catch (IllegalAccessException e) {
+            log.error(e.getMessage());
             throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
         }
 

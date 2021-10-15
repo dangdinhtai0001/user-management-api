@@ -8,6 +8,7 @@ public class DefaultExceptionCode {
     public static final String ACCESS_DENIED = "0000004";
     public static final String INVALID_REFRESH_JWT = "0000005";
     public static final String ACCOUNT_CONFLICT = "0000006";
+    public static final String ACCOUNT_LENGTH_REQUIRED = "0000007";
     // ~ ---------------------------------------------------------
     // ~ Nhóm lỗi liên quan đến database 1___
     public static final String DATABASE_ERROR = "1000001";
