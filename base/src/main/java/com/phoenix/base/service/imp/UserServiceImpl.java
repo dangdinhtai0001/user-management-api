@@ -40,6 +40,9 @@ public class UserServiceImpl extends BaseService implements UserService {
         if (username == null || password == null) {
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         }
+        if(userRepository.findUserPrincipalByUsername(username).isPresent()){
+            throw getApplicationException(DefaultExceptionCode.ACCOUNT_CONFLICT);
+        }
     }
 
     // ============================================================================================================
