@@ -1,12 +1,11 @@
-package com.phoenix.base.service.imp;
+package com.phoenix.business.service.imp;
 
-import com.google.common.collect.Multimap;
 import com.google.gson.internal.LinkedTreeMap;
 import com.phoenix.base.constant.BeanIds;
-import com.phoenix.base.model.business.UserProfile;
+import com.phoenix.business.model.UserProfile;
 import com.phoenix.base.repository.UserRepository;
 import com.phoenix.base.service.BaseService;
-import com.phoenix.base.service.UserService;
+import com.phoenix.business.service.UserService;
 import com.phoenix.core.annotation.ApplicationResource;
 import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.exception.ApplicationException;
@@ -39,6 +38,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     private void validateCreatePayload(String username, String password) throws ApplicationException {
         if (username == null || password == null) {
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
+        }
+        if (userRepository.findUserPrincipalByUsername(username).isPresent()) {
+            throw getApplicationException("002001");
         }
     }
 
