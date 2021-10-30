@@ -2,9 +2,9 @@ package com.phoenix.base.repository.imp;
 
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.ResourceActionModel;
-import com.phoenix.base.model.querydsl.QFwException;
 import com.phoenix.base.model.querydsl.QFwResourceAction;
 import com.phoenix.base.repository.ResourceActionRepository;
+import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.repository.AbstractSingleQueryDslRepository;
 import com.querydsl.core.Tuple;
@@ -37,8 +37,8 @@ public class ResourceActionRepositoryImp extends AbstractSingleQueryDslRepositor
     }
 
     @Override
-    public Long insertAll(List<com.phoenix.common.structure.Tuple> tuples) {
-        return defaultInsert(tuples);
+    public Long insertAll(List<DefaultTuple> defaultTuples) {
+        return defaultInsert(defaultTuples);
     }
 
     @SuppressWarnings("unchecked")

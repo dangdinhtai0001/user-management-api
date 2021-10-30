@@ -1,10 +1,7 @@
 package com.phoenix.core.service;
 
-import com.phoenix.common.structure.Tuple;
+import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.core.exception.ApplicationException;
-import com.phoenix.core.model.pagination.DefaultPage;
-import com.phoenix.core.model.pagination.PaginationOption;
-import com.phoenix.core.model.query.SearchCriteriaRequest;
 import com.phoenix.core.repository.SingleQueryDslRepository;
 import lombok.extern.log4j.Log4j2;
 
@@ -21,8 +18,8 @@ public abstract class AbstractDefaultCrudService extends AbstractCoreService imp
     @Override
     public <T> Long create(T object, String... fields) throws ApplicationException {
         try {
-            Tuple tuples = convertObjectToTuple(object, fields);
-            return repository.defaultInsert(tuples);
+            DefaultTuple defaultTuples = convertObjectToTuple(object, fields);
+            return repository.defaultInsert(defaultTuples);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             log.error("Unable to create object.", e);
         }
@@ -32,8 +29,8 @@ public abstract class AbstractDefaultCrudService extends AbstractCoreService imp
     @Override
     public <T> Long createAll(List<T> list, String... fields) throws ApplicationException {
         try {
-            List<Tuple> tuples = convertListObjectToListTuple(list, fields);
-            return repository.defaultInsert(tuples);
+            List<DefaultTuple> defaultTuples = convertListObjectToListTuple(list, fields);
+            return repository.defaultInsert(defaultTuples);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             log.error("Unable to create list object.", e);
         }

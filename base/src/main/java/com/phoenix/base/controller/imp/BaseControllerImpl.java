@@ -1,6 +1,5 @@
 package com.phoenix.base.controller.imp;
 
-import com.google.gson.internal.LinkedTreeMap;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.controller.BaseController;
 import com.phoenix.base.model.ResourceActionModel;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 @RestController(value = BeanIds.BASE_CONTROLLER)
@@ -42,6 +40,7 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
         this.exceptionTranslator = exceptionTranslator;
     }
 
+    @Override
     @RequestMapping(value = "/ping")
     public ResponseEntity<String> ping() {
         return sendResponse("pong");
@@ -59,7 +58,7 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
      * @throws ApplicationException Khi validate sai hoặc service throw ra exception
      */
     @RequestMapping(value = "/{resource}/{action}")
-    public ResponseEntity<?> control(
+    public ResponseEntity<?> handleRequest(
             @PathVariable(name = "resource") String resource,
             @PathVariable(name = "action") String action,
             @RequestBody(required = false) Object requestBody,

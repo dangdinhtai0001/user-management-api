@@ -5,7 +5,8 @@ import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.UserPrincipal;
 import com.phoenix.base.model.querydsl.*;
 import com.phoenix.base.repository.UserRepository;
-import com.phoenix.common.structure.imp.DiTupleImpl;
+import com.phoenix.common.structure.DefaultTuple;
+import com.phoenix.common.structure.imp.DiDefaultTupleImpl;
 import com.phoenix.core.model.query.JoinType;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchOperation;
@@ -43,7 +44,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     }
 
     @Override
-    public com.phoenix.common.structure.Tuple getRelationalPathMap() {
+    public DefaultTuple getRelationalPathMap() {
         RelationalPathBase<QFwUser> userRelationalPath = new QFwUser("fw_user", getDefaultSchemaName());
         RelationalPathBase<QFwUserStatus> userStatusRelationalPath = new QFwUserStatus("fw_user_status", getDefaultSchemaName());
         RelationalPathBase<QFwUserGroup> userGroupRelationalPath = new QFwUserGroup("fw_user_group", getDefaultSchemaName());
@@ -53,7 +54,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
                 userGroupRelationalPath.getTableName(), userGroupMappingRelationalPath.getTableName()};
         Object[] args = {userRelationalPath, userStatusRelationalPath, userGroupRelationalPath, userGroupMappingRelationalPath};
 
-        return new DiTupleImpl(expressions, args);
+        return new DiDefaultTupleImpl(expressions, args);
     }
 
     @Override

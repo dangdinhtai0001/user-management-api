@@ -1,6 +1,7 @@
 package com.phoenix.core.service;
 
-import com.phoenix.common.structure.Tuple;
+import com.google.gson.internal.LinkedTreeMap;
+import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.core.exception.ApplicationException;
 import com.phoenix.core.model.DefaultAuthenticationToken;
 import com.phoenix.core.model.DefaultException;
@@ -31,11 +32,15 @@ public interface CoreService {
 
     List<SearchCriteria> getListOfSearchCriteria(List<SearchCriteriaRequest> listConditionRequests);
 
-    DefaultAuthenticationToken getCurrentSecurityToken();
 
-    Tuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException;
+    DefaultTuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException;
 
-    <T> List<Tuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException;
+    <T> List<DefaultTuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException;
 
     OrderBy getOrderBy(PaginationOption paginationOption, OrderDirection direction);
+
+    <T> T convert2Object(LinkedTreeMap<?, ?> object, Class<T> instanceClass);
+
+    DefaultAuthenticationToken getCurrentSecurityToken();
+
 }

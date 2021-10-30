@@ -1,5 +1,6 @@
 package com.phoenix.core.repository;
 
+import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.common.util.ReflectionUtil;
 import com.phoenix.core.annotation.BusinessObjectField;
 import com.phoenix.core.model.query.*;
@@ -17,7 +18,6 @@ import com.querydsl.sql.dml.SQLInsertClause;
 import com.querydsl.sql.dml.SQLUpdateClause;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.transaction.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
 
     //---------------------------------------------------------------------------------------------------
 
-    protected abstract com.phoenix.common.structure.Tuple getRelationalPathMap();
+    protected abstract DefaultTuple getRelationalPathMap();
 
     //---------------------------------------------------------------------------------------------------
 
@@ -550,17 +550,17 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
 
     @Override
     public <T extends RelationalPathBase<T>> SQLInsertClause createInsertClause(RelationalPathBase<T> relationalPathBase,
-                                                                                List<com.phoenix.common.structure.Tuple> tuples) {
+                                                                                List<DefaultTuple> defaultTuples) {
         SQLInsertClause sqlInsertClause = queryFactory.insert(relationalPathBase);
 
-        if (tuples == null || tuples.isEmpty()) {
+        if (defaultTuples == null || defaultTuples.isEmpty()) {
             return null;
         }
 
-        Path[] columns = getPaths(relationalPathBase, tuples.get(0).getArrayExpressions());
+        Path[] columns = getPaths(relationalPathBase, defaultTuples.get(0).getArrayExpressions());
 
-        for (com.phoenix.common.structure.Tuple tuple : tuples) {
-            sqlInsertClause.columns(columns).values(tuple.toArray()).addBatch();
+        for (DefaultTuple defaultTuple : defaultTuples) {
+            sqlInsertClause.columns(columns).values(defaultTuple.toArray()).addBatch();
         }
 
         return sqlInsertClause;
@@ -568,16 +568,16 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
 
     @Override
     public <T extends RelationalPathBase<T>> SQLInsertClause createInsertClause(RelationalPathBase<T> relationalPathBase,
-                                                                                com.phoenix.common.structure.Tuple tuple) {
+                                                                                DefaultTuple defaultTuple) {
         SQLInsertClause sqlInsertClause = queryFactory.insert(relationalPathBase);
 
-        if (tuple == null) {
+        if (defaultTuple == null) {
             return null;
         }
 
-        Path<?>[] columns = getPaths(relationalPathBase, tuple.getArrayExpressions());
+        Path<?>[] columns = getPaths(relationalPathBase, defaultTuple.getArrayExpressions());
 
-        sqlInsertClause.columns(columns).values(tuple.toArray()).addBatch();
+        sqlInsertClause.columns(columns).values(defaultTuple.toArray()).addBatch();
 
         return sqlInsertClause;
     }
