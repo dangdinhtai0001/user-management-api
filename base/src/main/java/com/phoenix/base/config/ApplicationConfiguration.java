@@ -18,9 +18,7 @@ import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.model.Model;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.*;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration(value = "ApplicationConfiguration")
+@ComponentScan(value = {"com.phoenix.base", "com.phoenix.business"})
 @Log4j2
 public class ApplicationConfiguration {
     @Value("${application.jwt.secret}")
