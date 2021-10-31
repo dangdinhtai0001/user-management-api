@@ -20,4 +20,10 @@ public interface UserRepository {
     Optional<?> findRefreshTokenByUsername(String username);
 
     long createUser(String username, String encodedPassword);
+
+    /**
+     * @param username Tên tài khoản
+     * @return trả về true nếu đã tồn tại tên tài khoản, false nếu ngược lại
+     */
+    boolean isExistsUsername(String username);
 }
