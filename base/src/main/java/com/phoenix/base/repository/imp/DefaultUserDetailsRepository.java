@@ -169,6 +169,22 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
         return sqlInsertClause.execute();
     }
 
+    @Override
+    @Transactional
+    public boolean isExistsUsername(String username) {
+        PathBuilder<QFwUser> userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
+        var expressions = getExpressions(userPathBuilder, "id");
+
+        SQLQuery<Tuple> query = queryFactory.select(expressions).from(userPathBuilder);
+
+        SearchCriteria criteria = new SearchCriteria("username", SearchOperation.EQUAL, username);
+        addWhereClause(query, userPathBuilder, criteria);
+
+        log.debug(query.getSQL().getSQL());
+
+        return query.fetchCount() > 0;
+    }
+
     //===========================================
 
     private Predicate getEqualsUsernamePredicate(String username) {
