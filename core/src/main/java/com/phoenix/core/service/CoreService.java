@@ -22,12 +22,6 @@ public interface CoreService {
      */
     ApplicationException getApplicationException(String code);
 
-    /**
-     * @param code Mã lỗi lưu ở bảng fw_exception
-     * @return {@link DefaultException}
-     */
-    <T extends Serializable> DefaultException<T> findExceptionByCode(String code);
-
     <T> T getPropertyOfRequestBodyByKey(Map<?, ?> requestBody, String key, Class<T> typeOfResponse);
 
     List<SearchCriteria> getListOfSearchCriteria(List<SearchCriteriaRequest> listConditionRequests);

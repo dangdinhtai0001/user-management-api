@@ -111,7 +111,7 @@ public class ReflectionUtil {
      * @param args       Danh sách tham số (Đúng thứ tự)
      * @return {@link Object}
      * @throws NoSuchMethodException     Khi không tìm tháy hàm
-     * @throws InvocationTargetException ___
+     * @throws InvocationTargetException The reflection layer wraps any exception in an InvocationTargetException
      * @throws IllegalAccessException    ___
      */
     public static Object invokeMethod(Object instance, String methodName, Object... args)

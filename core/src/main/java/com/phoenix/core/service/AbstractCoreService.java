@@ -27,16 +27,10 @@ public abstract class AbstractCoreService implements CoreService {
 
     @Override
     public ApplicationException getApplicationException(String code) {
-        DefaultException<Long> exception = findExceptionByCode(code);
+        DefaultException<Long> exception = exceptionTranslator.getOrDefault(code, null);
 
         return new ApplicationException(exception.getMessage(), code,
                 HttpStatus.valueOf(exception.getHttpCode()));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public DefaultException<Long> findExceptionByCode(String code) {
-        return exceptionTranslator.getOrDefault(code, null);
     }
 
     @Override
