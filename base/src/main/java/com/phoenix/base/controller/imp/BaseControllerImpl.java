@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +37,6 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
         this.exceptionTranslator = exceptionTranslator;
     }
 
-    @Override
     @RequestMapping(value = "/ping")
     public ResponseEntity<String> ping() {
         return sendResponse("pong");
@@ -62,6 +58,7 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
             @PathVariable(name = "resource") String resource,
             @PathVariable(name = "action") String action,
             @RequestBody(required = false) Object requestBody,
+            @RequestParam(required = false) Map<String, ?> requestParams,
             HttpServletRequest request
     ) throws ApplicationException {
         Object result;
@@ -71,16 +68,29 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
 
             Object beanObject = applicationContext.getBean(metadata.getBeanName());
 
-            if (requestBody == null) {
+            if (requestBody == null && requestParams.isEmpty()) {
                 result = ReflectionUtil.invokeMethod(beanObject, action);
-            } else {
+            } else if (requestBody != null && requestParams.isEmpty()) {
                 result = ReflectionUtil.invokeMethod(beanObject, action, requestBody);
+            } else if (requestBody == null && !requestParams.isEmpty()) {
+                result = ReflectionUtil.invokeMethod(beanObject, action, requestParams);
+            } else {
+                result = ReflectionUtil.invokeMethod(beanObject, action, requestBody, requestParams);
             }
-        } catch (NoSuchMethodException | NoSuchBeanDefinitionException e) {
+        } catch (NoSuchMethodException e) {
             log.warn(e.getMessage());
-            //log.warn(e);
+            throw getApplicationException(DefaultExceptionCode.NOT_FOUND);
+        } catch (NoSuchBeanDefinitionException e) {
+            log.warn(e.getMessage());
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
-        } catch (InvocationTargetException | IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof ApplicationException) {
+                throw (ApplicationException) e.getCause();
+            } else {
+                log.error(e);
+                throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
+            }
+        } catch (IllegalAccessException e) {
             log.error(e);
             throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
         }

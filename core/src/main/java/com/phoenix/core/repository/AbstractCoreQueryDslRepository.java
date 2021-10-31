@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@Transactional
 public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepository {
 
     @Value("${spring.datasource.username}")
