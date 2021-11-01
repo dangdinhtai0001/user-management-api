@@ -1,6 +1,6 @@
 package com.phoenix.base.model;
 
-import com.phoenix.common.util.TextUtil;
+import com.phoenix.common.util.StringUtils;
 import lombok.*;
 
 import java.util.LinkedList;
@@ -23,27 +23,27 @@ public class CasbinRule {
     public List<String> getArguments() {
         List<String> arguments = new LinkedList<>();
 
-        if (!TextUtil.isNullOrEmpty(arg1)) {
+        if (!StringUtils.isEmpty(arg1)) {
             arguments.add(arg1);
         }
 
-        if (!TextUtil.isNullOrEmpty(arg2)) {
+        if (!StringUtils.isEmpty(arg2)) {
             arguments.add(arg2);
         }
 
-        if (!TextUtil.isNullOrEmpty(arg3)) {
+        if (!StringUtils.isEmpty(arg3)) {
             arguments.add(arg3);
         }
 
-        if (!TextUtil.isNullOrEmpty(arg4)) {
+        if (!StringUtils.isEmpty(arg4)) {
             arguments.add(arg4);
         }
 
-        if (!TextUtil.isNullOrEmpty(arg5)) {
+        if (!StringUtils.isEmpty(arg5)) {
             arguments.add(arg5);
         }
 
-        if (!TextUtil.isNullOrEmpty(arg6)) {
+        if (!StringUtils.isEmpty(arg6)) {
             arguments.add(arg6);
         }
 
