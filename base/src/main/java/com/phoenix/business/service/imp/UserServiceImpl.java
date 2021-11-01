@@ -1,13 +1,11 @@
-package com.phoenix.base.service.imp;
+package com.phoenix.business.service.imp;
 
-import com.google.common.collect.Multimap;
 import com.google.gson.internal.LinkedTreeMap;
-import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.base.constant.BeanIds;
-import com.phoenix.base.model.business.UserProfile;
+import com.phoenix.business.model.UserProfile;
 import com.phoenix.base.repository.UserRepository;
 import com.phoenix.base.service.BaseService;
-import com.phoenix.base.service.UserService;
+import com.phoenix.business.service.UserService;
 import com.phoenix.core.annotation.ApplicationResource;
 import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.exception.ApplicationException;
@@ -24,7 +22,6 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    private Multimap<String, String> applicationParameters;
 
     @Override
     public Object create(LinkedTreeMap<?, ?> object) throws ApplicationException {
@@ -42,13 +39,8 @@ public class UserServiceImpl extends BaseService implements UserService {
         if (username == null || password == null) {
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         }
-
-        int defaultUsernameLength = Integer.parseInt(String.valueOf(applicationParameters.get(ApplicationConstant.PARAM_KEY_DEFAULT_ACCOUNT_LENGTH).toArray()[0]));
-        if (username.length() < defaultUsernameLength) {
-            throw getApplicationException(DefaultExceptionCode.ACCOUNT_LENGTH_REQUIRED);
-        }
-        if (userRepository.findUserPrincipalByUsername(username).isPresent()) {
-            throw getApplicationException(DefaultExceptionCode.ACCOUNT_CONFLICT);
+        if (userRepository.isExistsUsername(username)) {
+            throw getApplicationException("002001");
         }
     }
 
@@ -59,8 +51,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         return null;
     }
 
-    // ~ ============================================================================================================
-
     @Autowired
     public void setPasswordEncoder(@Qualifier(BeanIds.PASSWORD_ENCODER) PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -69,10 +59,5 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Autowired
     public void setUserRepository(@Qualifier(BeanIds.BASE_USER_REPOSITORY_IMP) UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setApplicationParameters(@Qualifier(BeanIds.APPLICATION_PARAMETER) Multimap<String, String> applicationParameters) {
-        this.applicationParameters = applicationParameters;
     }
 }

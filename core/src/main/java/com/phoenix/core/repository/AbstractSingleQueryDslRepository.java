@@ -1,11 +1,11 @@
 package com.phoenix.core.repository;
 
+import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.core.model.query.OrderBy;
 import com.phoenix.core.model.query.QueryExpression;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.sql.RelationalPathBase;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
@@ -54,9 +54,9 @@ public abstract class AbstractSingleQueryDslRepository extends AbstractCoreQuery
     //===================================================
 
     @Override
-    public <T extends RelationalPathBase<T>> Long defaultInsert(List<com.phoenix.common.structure.Tuple> tuples) {
+    public <T extends RelationalPathBase<T>> Long defaultInsert(List<DefaultTuple> defaultTuples) {
         RelationalPathBase<T> relationalPathBase = getRelationalPathBase();
-        SQLInsertClause sqlInsertClause = createInsertClause(relationalPathBase, tuples);
+        SQLInsertClause sqlInsertClause = createInsertClause(relationalPathBase, defaultTuples);
 
         if (sqlInsertClause == null) {
             return 0L;
@@ -66,9 +66,9 @@ public abstract class AbstractSingleQueryDslRepository extends AbstractCoreQuery
     }
 
     @Override
-    public <T extends RelationalPathBase<T>> Long defaultInsert(com.phoenix.common.structure.Tuple tuple) {
+    public <T extends RelationalPathBase<T>> Long defaultInsert(DefaultTuple defaultTuple) {
         RelationalPathBase<T> relationalPathBase = getRelationalPathBase();
-        SQLInsertClause sqlInsertClause = createInsertClause(relationalPathBase, tuple);
+        SQLInsertClause sqlInsertClause = createInsertClause(relationalPathBase, defaultTuple);
 
         if (sqlInsertClause == null) {
             return 0L;
@@ -164,7 +164,7 @@ public abstract class AbstractSingleQueryDslRepository extends AbstractCoreQuery
 
 
     @Override
-    protected com.phoenix.common.structure.Tuple getRelationalPathMap() {
+    protected DefaultTuple getRelationalPathMap() {
         return null;
     }
 }

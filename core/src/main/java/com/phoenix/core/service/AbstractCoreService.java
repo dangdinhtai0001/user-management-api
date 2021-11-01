@@ -1,7 +1,10 @@
 package com.phoenix.core.service;
 
-import com.phoenix.common.structure.Tuple;
-import com.phoenix.common.structure.imp.TriTupleImpl;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
+import com.phoenix.common.structure.DefaultTuple;
+import com.phoenix.common.structure.imp.TriDefaultTupleImpl;
 import com.phoenix.common.util.ReflectionUtil;
 import com.phoenix.core.exception.ApplicationException;
 import com.phoenix.core.model.DefaultException;
@@ -10,6 +13,8 @@ import com.phoenix.core.model.query.OrderBy;
 import com.phoenix.core.model.query.OrderDirection;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchCriteriaRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 
 import java.util.LinkedList;
@@ -22,16 +27,10 @@ public abstract class AbstractCoreService implements CoreService {
 
     @Override
     public ApplicationException getApplicationException(String code) {
-        DefaultException<Long> exception = findExceptionByCode(code);
+        DefaultException<Long> exception = exceptionTranslator.getOrDefault(code, null);
 
         return new ApplicationException(exception.getMessage(), code,
                 HttpStatus.valueOf(exception.getHttpCode()));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public DefaultException<Long> findExceptionByCode(String code) {
-        return exceptionTranslator.getOrDefault(code, null);
     }
 
     @Override
@@ -50,7 +49,7 @@ public abstract class AbstractCoreService implements CoreService {
     }
 
     @Override
-    public Tuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException {
+    public DefaultTuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException {
         Class<?> objectClass = object.getClass();
 
         Class<?>[] types = new Class[fields.length];
@@ -63,22 +62,22 @@ public abstract class AbstractCoreService implements CoreService {
             }
         }
 
-        return new TriTupleImpl(fields, types, args);
+        return new TriDefaultTupleImpl(fields, types, args);
     }
 
     @Override
-    public <T> List<Tuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException {
+    public <T> List<DefaultTuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException {
         if (list == null || list.isEmpty()) {
             return null;
         }
 
-        List<Tuple> tuples = new LinkedList<>();
+        List<DefaultTuple> defaultTuples = new LinkedList<>();
 
         for (Object instance : list) {
-            tuples.add(convertObjectToTuple(instance, fields));
+            defaultTuples.add(convertObjectToTuple(instance, fields));
         }
 
-        return tuples;
+        return defaultTuples;
     }
 
     @Override
@@ -92,7 +91,12 @@ public abstract class AbstractCoreService implements CoreService {
         }
 
         return new OrderBy(direction, sortBy);
+    }
 
-
+    @Override
+    public <T> T convert2Object(LinkedTreeMap<?, ?> object, Class<T> instanceClass) {
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.toJsonTree(object).getAsJsonObject();
+        return gson.fromJson(jsonObject, instanceClass);
     }
 }

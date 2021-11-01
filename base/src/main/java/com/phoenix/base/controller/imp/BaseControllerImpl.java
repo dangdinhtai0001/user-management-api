@@ -1,6 +1,5 @@
 package com.phoenix.base.controller.imp;
 
-import com.google.gson.internal.LinkedTreeMap;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.controller.BaseController;
 import com.phoenix.base.model.ResourceActionModel;
@@ -15,14 +14,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 @RestController(value = BeanIds.BASE_CONTROLLER)
@@ -59,37 +54,44 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
      * @throws ApplicationException Khi validate sai hoặc service throw ra exception
      */
     @RequestMapping(value = "/{resource}/{action}")
-    public ResponseEntity<?> control(
+    public ResponseEntity<?> handleRequest(
             @PathVariable(name = "resource") String resource,
             @PathVariable(name = "action") String action,
             @RequestBody(required = false) Object requestBody,
+            @RequestParam(required = false) Map<String, ?> requestParams,
             HttpServletRequest request
     ) throws ApplicationException {
-        Object result = null;
+        Object result;
 
         try {
             ResourceActionModel metadata = validateRequest(resource, action, request);
 
             Object beanObject = applicationContext.getBean(metadata.getBeanName());
 
-            if (requestBody == null) {
+            if (requestBody == null && requestParams.isEmpty()) {
                 result = ReflectionUtil.invokeMethod(beanObject, action);
-            } else {
+            } else if (requestBody != null && requestParams.isEmpty()) {
                 result = ReflectionUtil.invokeMethod(beanObject, action, requestBody);
+            } else if (requestBody == null && !requestParams.isEmpty()) {
+                result = ReflectionUtil.invokeMethod(beanObject, action, requestParams);
+            } else {
+                result = ReflectionUtil.invokeMethod(beanObject, action, requestBody, requestParams);
             }
-        } catch (NoSuchMethodException | NoSuchBeanDefinitionException e) {
+        } catch (NoSuchMethodException e) {
             log.warn(e.getMessage());
-            //log.warn(e);
+            throw getApplicationException(DefaultExceptionCode.NOT_FOUND);
+        } catch (NoSuchBeanDefinitionException e) {
+            log.warn(e.getMessage());
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         } catch (InvocationTargetException e) {
             if (e.getCause() instanceof ApplicationException) {
                 throw (ApplicationException) e.getCause();
             } else {
-                log.error(e.getMessage());
+                log.error(e);
                 throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
             }
         } catch (IllegalAccessException e) {
-            log.error(e.getMessage());
+            log.error(e);
             throw getApplicationException(DefaultExceptionCode.INTERNAL_ERROR);
         }
 

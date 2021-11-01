@@ -5,7 +5,8 @@ import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.UserPrincipal;
 import com.phoenix.base.model.querydsl.*;
 import com.phoenix.base.repository.UserRepository;
-import com.phoenix.common.structure.imp.DiTupleImpl;
+import com.phoenix.common.structure.DefaultTuple;
+import com.phoenix.common.structure.imp.DiDefaultTupleImpl;
 import com.phoenix.core.model.query.JoinType;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchOperation;
@@ -43,7 +44,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     }
 
     @Override
-    public com.phoenix.common.structure.Tuple getRelationalPathMap() {
+    public DefaultTuple getRelationalPathMap() {
         RelationalPathBase<QFwUser> userRelationalPath = new QFwUser("fw_user", getDefaultSchemaName());
         RelationalPathBase<QFwUserStatus> userStatusRelationalPath = new QFwUserStatus("fw_user_status", getDefaultSchemaName());
         RelationalPathBase<QFwUserGroup> userGroupRelationalPath = new QFwUserGroup("fw_user_group", getDefaultSchemaName());
@@ -53,7 +54,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
                 userGroupRelationalPath.getTableName(), userGroupMappingRelationalPath.getTableName()};
         Object[] args = {userRelationalPath, userStatusRelationalPath, userGroupRelationalPath, userGroupMappingRelationalPath};
 
-        return new DiTupleImpl(expressions, args);
+        return new DiDefaultTupleImpl(expressions, args);
     }
 
     @Override
@@ -166,6 +167,22 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
         sqlInsertClause.columns(columns[0], columns[1], columns[2]).values(username, encodedPassword, ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID);
 
         return sqlInsertClause.execute();
+    }
+
+    @Override
+    @Transactional
+    public boolean isExistsUsername(String username) {
+        PathBuilder<QFwUser> userPathBuilder = getPathBuilder(QFwUser.class, QFwUser.fwUser);
+        var expressions = getExpressions(userPathBuilder, "id");
+
+        SQLQuery<Tuple> query = queryFactory.select(expressions).from(userPathBuilder);
+
+        SearchCriteria criteria = new SearchCriteria("username", SearchOperation.EQUAL, username);
+        addWhereClause(query, userPathBuilder, criteria);
+
+        log.debug(query.getSQL().getSQL());
+
+        return query.fetchCount() > 0;
     }
 
     //===========================================

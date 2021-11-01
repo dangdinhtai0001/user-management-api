@@ -3,7 +3,7 @@ package com.phoenix.common.structure;
 import com.google.common.collect.ImmutableList;
 import com.phoenix.common.exceptions.SupportException;
 
-public interface Tuple {
+public interface DefaultTuple {
     <T> T get(int index) throws SupportException;
 
     <T> T get(String expr) throws SupportException;

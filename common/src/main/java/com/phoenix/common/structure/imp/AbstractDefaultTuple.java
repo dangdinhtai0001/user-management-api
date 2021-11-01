@@ -3,13 +3,13 @@ package com.phoenix.common.structure.imp;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.phoenix.common.structure.Tuple;
+import com.phoenix.common.structure.DefaultTuple;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractTuple implements Tuple, Serializable {
+public abstract class AbstractDefaultTuple implements DefaultTuple, Serializable {
     protected Object[] args;
     protected ImmutableList<String> expression;
     protected ImmutableMap<String, Integer> bindings;

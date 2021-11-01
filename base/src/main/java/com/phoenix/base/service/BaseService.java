@@ -29,10 +29,4 @@ public class BaseService extends AbstractCoreService {
     public Map<String, DefaultException<Long>> getExceptionTranslator() {
         return exceptionTranslator;
     }
-
-    protected <T> T convert2Object(LinkedTreeMap<?, ?> object, Class<T> instanceClass) {
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.toJsonTree(object).getAsJsonObject();
-        return gson.fromJson(jsonObject, instanceClass);
-    }
 }

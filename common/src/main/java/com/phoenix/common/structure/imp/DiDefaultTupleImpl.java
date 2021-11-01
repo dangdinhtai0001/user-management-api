@@ -5,8 +5,8 @@ import com.phoenix.common.exceptions.SupportException;
 
 import java.util.Arrays;
 
-public class DiTupleImpl extends AbstractTuple {
-    public DiTupleImpl(String[] expression, Object... args) {
+public class DiDefaultTupleImpl extends AbstractDefaultTuple {
+    public DiDefaultTupleImpl(String[] expression, Object... args) {
         this.args = args;
         this.expression = ImmutableList.copyOf(expression);
         this.bindings = this.createBindings(Arrays.asList(expression));

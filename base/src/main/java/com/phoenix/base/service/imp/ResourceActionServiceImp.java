@@ -5,7 +5,7 @@ import com.phoenix.base.model.ResourceActionModel;
 import com.phoenix.base.repository.ResourceActionRepository;
 import com.phoenix.base.service.BaseService;
 import com.phoenix.base.service.ResourceActionService;
-import com.phoenix.common.structure.Tuple;
+import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.common.util.ReflectionUtil;
 import com.phoenix.core.annotation.ApplicationResource;
 import com.phoenix.core.model.DefaultAuthenticationToken;
@@ -89,8 +89,8 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
         resourceActionList.removeAll(exitsResourceAction);
 
         try {
-            List<Tuple> tuples = convertListObjectToListTuple(resourceActionList, fields);
-            long r = resourceActionRepository.insertAll(tuples);
+            List<DefaultTuple> defaultTuples = convertListObjectToListTuple(resourceActionList, fields);
+            long r = resourceActionRepository.insertAll(defaultTuples);
 
             //Set giá trị này vào bean
             setServiceMetadata(exitsResourceAction);

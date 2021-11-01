@@ -1,5 +1,6 @@
 package com.phoenix.core.repository;
 
+import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.core.model.query.*;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.support.QueryBase;
@@ -227,10 +228,10 @@ public interface CoreQueryDslRepository {
     <T extends RelationalPathBase<T>> SQLInsertClause createInsertClause(RelationalPathBase<T> relationalPathBase, Path[] paths, Object[] values);
 
     <T extends RelationalPathBase<T>> SQLInsertClause createInsertClause(RelationalPathBase<T> relationalPathBase,
-                                                                         List<com.phoenix.common.structure.Tuple> tuples);
+                                                                         List<DefaultTuple> defaultTuples);
 
     <T extends RelationalPathBase<T>> SQLInsertClause createInsertClause(RelationalPathBase<T> relationalPathBase,
-                                                                         com.phoenix.common.structure.Tuple tuple);
+                                                                         DefaultTuple defaultTuple);
 
     <T extends RelationalPathBase<T>> SQLInsertClause createInsertClause(RelationalPathBase<T> relationalPathBase,
                                                                          SubQueryExpression subQueryExpression, String... columns);
