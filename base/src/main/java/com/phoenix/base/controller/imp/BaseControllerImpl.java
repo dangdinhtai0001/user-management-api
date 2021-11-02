@@ -3,7 +3,7 @@ package com.phoenix.base.controller.imp;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.controller.BaseController;
 import com.phoenix.base.model.ResourceActionModel;
-import com.phoenix.common.util.ReflectionUtil;
+import com.phoenix.common.reflection.MethodUtils;
 import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.controller.AbstractCoreController;
 import com.phoenix.core.exception.ApplicationException;
@@ -69,13 +69,13 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
             Object beanObject = applicationContext.getBean(metadata.getBeanName());
 
             if (requestBody == null && requestParams.isEmpty()) {
-                result = ReflectionUtil.invokeMethod(beanObject, action);
+                result = MethodUtils.invokeMethod(beanObject, action);
             } else if (requestBody != null && requestParams.isEmpty()) {
-                result = ReflectionUtil.invokeMethod(beanObject, action, requestBody);
+                result = MethodUtils.invokeMethod(beanObject, action, requestBody);
             } else if (requestBody == null && !requestParams.isEmpty()) {
-                result = ReflectionUtil.invokeMethod(beanObject, action, requestParams);
+                result = MethodUtils.invokeMethod(beanObject, action);
             } else {
-                result = ReflectionUtil.invokeMethod(beanObject, action, requestBody, requestParams);
+                result = MethodUtils.invokeMethod(beanObject, action, requestBody, requestParams);
             }
         } catch (NoSuchMethodException e) {
             log.warn(e.getMessage());
