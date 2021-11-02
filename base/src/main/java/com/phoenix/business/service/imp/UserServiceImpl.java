@@ -20,6 +20,8 @@ import java.util.List;
 @ApplicationResource(displayResource = "user", description = "User service")
 public class UserServiceImpl extends BaseService implements UserService {
 
+    private final String USERNAME_EXISTS_CODE = "002001";
+
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
@@ -40,7 +42,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             throw getApplicationException(DefaultExceptionCode.BAD_REQUEST);
         }
         if (userRepository.isExistsUsername(username)) {
-            throw getApplicationException("002001");
+            throw getApplicationException(USERNAME_EXISTS_CODE);
         }
     }
 

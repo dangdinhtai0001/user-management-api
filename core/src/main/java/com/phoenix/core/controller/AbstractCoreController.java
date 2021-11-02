@@ -18,14 +18,32 @@ import java.util.Map;
  */
 public abstract class AbstractCoreController implements CoreController {
 
+    private final String CODE_KEY = "code";
+    private final String MESSAGE_KEY = "message";
+    private final String TIMESTAMP_KEY = "timestamp";
+    private final String STATUS_KEY = "status";
+
+
+    /**
+     * The <code>@ExceptionHandler</code> method provides a consistent response
+     * when Exceptions are thrown from <code>@RequestMapping</code> annotated
+     * Controller methods.
+     *
+     * @param exception the Exception that was thrown
+     * @return the ResponseEntity with the exception message
+     */
     @SuppressWarnings("unchecked")
     @Override
     @ExceptionHandler({ApplicationException.class})
     public ResponseEntity<?> handleException(ApplicationException exception) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
 
-        responseBody.put("code", exception.getCode());
-        responseBody.put("message", exception.getMessage());
+
+        responseBody.put(CODE_KEY, exception.getCode());
+        responseBody.put(MESSAGE_KEY, exception.getMessage());
+        responseBody.put(TIMESTAMP_KEY, System.currentTimeMillis());
+        responseBody.put(STATUS_KEY, exception.getHttpStatus());
+
 
         if (exception.getHttpStatus() == null) {
             exception.setHttpStatus(HttpStatus.FOUND);

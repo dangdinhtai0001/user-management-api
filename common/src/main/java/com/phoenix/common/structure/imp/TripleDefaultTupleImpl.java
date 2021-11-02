@@ -4,11 +4,11 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.Arrays;
 
-public class TriDefaultTupleImpl extends AbstractDefaultTuple {
+public class TripleDefaultTupleImpl extends AbstractDefaultTuple {
 
     protected ImmutableList<Class> types;
 
-    public TriDefaultTupleImpl(String[] expression, Class[] types, Object... args) {
+    public TripleDefaultTupleImpl(String[] expression, Class[] types, Object... args) {
         this.args = args;
         this.expression = ImmutableList.copyOf(expression);
         this.types = ImmutableList.copyOf(types);

@@ -6,7 +6,7 @@ import com.phoenix.base.model.UserPrincipal;
 import com.phoenix.base.model.querydsl.*;
 import com.phoenix.base.repository.UserRepository;
 import com.phoenix.common.structure.DefaultTuple;
-import com.phoenix.common.structure.imp.DiDefaultTupleImpl;
+import com.phoenix.common.structure.imp.DoubleDefaultTupleImpl;
 import com.phoenix.core.model.query.JoinType;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchOperation;
@@ -54,7 +54,7 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
                 userGroupRelationalPath.getTableName(), userGroupMappingRelationalPath.getTableName()};
         Object[] args = {userRelationalPath, userStatusRelationalPath, userGroupRelationalPath, userGroupMappingRelationalPath};
 
-        return new DiDefaultTupleImpl(expressions, args);
+        return new DoubleDefaultTupleImpl(expressions, args);
     }
 
     @Override

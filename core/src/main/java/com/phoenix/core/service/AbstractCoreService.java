@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import com.phoenix.common.structure.DefaultTuple;
-import com.phoenix.common.structure.imp.TriDefaultTupleImpl;
+import com.phoenix.common.structure.imp.TripleDefaultTupleImpl;
 import com.phoenix.common.util.ReflectionUtil;
 import com.phoenix.core.exception.ApplicationException;
 import com.phoenix.core.model.DefaultException;
@@ -13,8 +13,6 @@ import com.phoenix.core.model.query.OrderBy;
 import com.phoenix.core.model.query.OrderDirection;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchCriteriaRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 
 import java.util.LinkedList;
@@ -62,7 +60,7 @@ public abstract class AbstractCoreService implements CoreService {
             }
         }
 
-        return new TriDefaultTupleImpl(fields, types, args);
+        return new TripleDefaultTupleImpl(fields, types, args);
     }
 
     @Override
