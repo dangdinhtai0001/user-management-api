@@ -1,12 +1,13 @@
 package com.phoenix.core.repository2;
 
-import com.phoenix.common.structure.DefaultTuple;
-import com.phoenix.common.structure.imp.TripleDefaultTupleImpl;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractCoreNativeQuery {
     protected EntityManager entityManager;
@@ -40,16 +41,27 @@ public abstract class AbstractCoreNativeQuery {
         return query;
     }
 
-    public DefaultTuple parseResult(Object result, String[] keys, Class<?>[] types) {
-        DefaultTuple tuple;
+    public Map<String, Object> parseResult(Object result, String[] keys) {
+        Map<String, Object> tuple = new LinkedHashMap<>(keys.length);
         if (result instanceof Object[]) {
             Object[] objects = (Object[]) result;
-            tuple = new TripleDefaultTupleImpl(keys, types, objects);
+            for (int i = 0; i < keys.length; i++) {
+                tuple.put(keys[i], objects[i]);
+            }
         } else {
-            tuple = new TripleDefaultTupleImpl(keys, types, result);
+            tuple.put(keys[0], result);
         }
 
         return tuple;
     }
 
+    public List<Map<String, Object>> parseResult(List<?> results, String[] keys) {
+        List<Map<String, Object>> defaultTuples = new LinkedList<>();
+
+        for (Object result : results) {
+            defaultTuples.add(parseResult(result, keys));
+        }
+
+        return defaultTuples;
+    }
 }
