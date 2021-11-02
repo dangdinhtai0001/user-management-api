@@ -70,7 +70,7 @@ public class CharSequenceUtils {
      * @param searchChar the char to be searched for
      * @param start      the start index, negative starts at the string start
      * @return the index where the search char was found, -1 if not found
-     * @since 3.6 updated to behave more like {@code String}
+     * Updated to behave more like {@code String}
      */
     static int indexOf(final CharSequence cs, final int searchChar, int start) {
         if (cs instanceof String) {

@@ -79,7 +79,6 @@ public class MethodUtils {
      * @throws NoSuchMethodException     if there is no such accessible method
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException    if the requested method is not accessible via reflection
-     * @since 3.5
      */
     public static Object invokeMethod(final Object object, final boolean forceAccess, final String methodName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {

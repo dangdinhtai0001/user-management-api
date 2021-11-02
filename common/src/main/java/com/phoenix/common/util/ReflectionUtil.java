@@ -24,7 +24,10 @@ import java.util.stream.Collectors;
 
 /**
  * Class gồm các hàm static hỗ trợ reflection
+ * <p>
+ * Chuyển sang sử dụng ConstructorUtils, MethodUtils, FieldUtils
  */
+@Deprecated
 public class ReflectionUtil {
 
     // -------------------------------------------------------------------------------------------------------------

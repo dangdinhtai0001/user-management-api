@@ -3,6 +3,7 @@ package com.phoenix.common.reflection;
 import com.phoenix.common.reflection.test.*;
 import com.phoenix.common.util.ArrayUtils;
 import junit.framework.TestCase;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -130,13 +131,13 @@ public class FieldUtilsTest {
 
     @Test
     public void testGetAllFieldsList() {
-        assertEquals(0, FieldUtils.getAllFieldsList(Object.class).size());
+        Assertions.assertEquals(0, FieldUtils.getAllFieldsList(Object.class).size());
         final List<Field> fieldsNumber = Arrays.asList(Number.class.getDeclaredFields());
-        assertEquals(fieldsNumber, FieldUtils.getAllFieldsList(Number.class));
+        Assertions.assertEquals(fieldsNumber, FieldUtils.getAllFieldsList(Number.class));
         final List<Field> fieldsInteger = Arrays.asList(Integer.class.getDeclaredFields());
         final List<Field> allFieldsInteger = new ArrayList<>(fieldsInteger);
         allFieldsInteger.addAll(fieldsNumber);
-        assertEquals(new HashSet(allFieldsInteger), new HashSet(FieldUtils.getAllFieldsList(Integer.class)));
+        Assertions.assertEquals(new HashSet(allFieldsInteger), new HashSet(FieldUtils.getAllFieldsList(Integer.class)));
         final List<Field> allFields = FieldUtils.getAllFieldsList(PublicChild.class);
         // Under Jacoco,0.8.1 and Java 10, the field count is 7.
         int expected = 5;
@@ -151,11 +152,11 @@ public class FieldUtilsTest {
 
     @Test
     public void testGetFieldsWithAnnotation() throws NoSuchFieldException {
-        assertArrayEquals(new Field[0], FieldUtils.getFieldsWithAnnotation(Object.class, Annotated.class));
+        Assertions.assertArrayEquals(new Field[0], FieldUtils.getFieldsWithAnnotation(Object.class, Annotated.class));
         final Field[] annotatedFields = (new Field[]{
                 FieldUtilsTest.class.getDeclaredField("publicChild"),
                 FieldUtilsTest.class.getDeclaredField("privatelyShadowedChild")});
-        assertArrayEquals(annotatedFields,
+        Assertions.assertArrayEquals(annotatedFields,
                 (FieldUtils.getFieldsWithAnnotation(FieldUtilsTest.class, Annotated.class)));
     }
 
