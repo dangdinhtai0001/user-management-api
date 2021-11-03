@@ -4,6 +4,7 @@ import com.phoenix.common.util.clone.Foo;
 import com.phoenix.common.util.clone.Parent;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,12 +25,17 @@ public class MapUtilsTest {
     }
 
     @Test
-    public void testConvertMap2Objects2() {
+    public void testConvertMap2Objects2() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         Map<String, Object> parentMap = new HashMap<>();
         Map<String, Object> childMap = new HashMap<>();
+        Map<String, Object> fooMap = new HashMap<>();
 
-        childMap.put("id", "id__");
-        childMap.put("name", "name__");
+        fooMap.put("name", "name__");
+        fooMap.put("address", "address__");
+        fooMap.put("age", 18);
+
+        childMap.put("id", "child id__");
+        childMap.put("foo", fooMap);
 
         parentMap.put("id", "pid__");
         parentMap.put("child", childMap);
