@@ -42,26 +42,26 @@ public abstract class AbstractCoreNativeQuery {
     }
 
     public Map<String, Object> parseResult(Object result, String[] keys) {
-        Map<String, Object> tuple = new LinkedHashMap<>(keys.length);
+        Map<String, Object> map = new LinkedHashMap<>(keys.length);
         if (result instanceof Object[]) {
             Object[] objects = (Object[]) result;
             for (int i = 0; i < keys.length; i++) {
-                tuple.put(keys[i], objects[i]);
+                map.put(keys[i], objects[i]);
             }
         } else {
-            tuple.put(keys[0], result);
+            map.put(keys[0], result);
         }
 
-        return tuple;
+        return map;
     }
 
     public List<Map<String, Object>> parseResult(List<?> results, String[] keys) {
-        List<Map<String, Object>> defaultTuples = new LinkedList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
 
         for (Object result : results) {
-            defaultTuples.add(parseResult(result, keys));
+            list.add(parseResult(result, keys));
         }
 
-        return defaultTuples;
+        return list;
     }
 }
