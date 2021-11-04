@@ -72,46 +72,59 @@ public class MapUtils {
      * <p> Ví dụ: map = {a=1, b=2, c=3, d={e=4, f=5}, g={h=6, i=7}} </p>
      * <p> Để lấy giá trị của map.d.e (4) thì các </p>
      * <ul>
-     *     <li>propertyName: d.e</li>
+     *     <li>propertyPath: d.e</li>
      *     <li>splitRegex: .</li>
      * </ul>
      *
      * @param map          Map cần lấy thông tin
-     * @param propertyName Tên thuộc tính cần lấy
+     * @param propertyPath Tên thuộc tính cần lấy
      * @param splitRegex   Phân tách các phần tử của thuộc tính
      * @param <T>          Kiểu trả về
-     * @return
+     * @return Value của thuộc tính theo propertyPath
      */
-    public static <T> T getProperty(Map<String, Object> map, String propertyName, String splitRegex) {
+    public static <T> T getProperty(Map<String, Object> map, String propertyPath, String splitRegex) {
         // Kiểm tra xem nếu map ban đầu rỗng thì trả về null
         if (map == null || map.isEmpty()) {
             return null;
         }
 
-        // Kiểm tra xem propertyName có phải là một chuỗi có chứa dấu phân cách hay không
-        boolean isKeepGoing = propertyName.contains(splitRegex);
+        // Kiểm tra xem propertyPath có phải là một chuỗi có chứa dấu phân cách hay không
+        boolean isKeepGoing = propertyPath.contains(splitRegex);
 
         String property;
-        // Nếu propertyName có chứa dấu phân cách thì lấy phần tử đầu tiên trước dấu phân cách
+        // Nếu propertyPath có chứa dấu phân cách thì lấy phần tử đầu tiên trước dấu phân cách
         if (isKeepGoing) {
-            property = propertyName.substring(0, propertyName.indexOf(splitRegex));
+            property = propertyPath.substring(0, propertyPath.indexOf(splitRegex));
         }
         // Nếu không thì lấy toàn bộ chuỗi
         else {
-            property = propertyName;
+            property = propertyPath;
         }
 
-        // Nếu map chứa propertyName thì trả về giá trị của property
+        // Nếu map chứa propertyPath thì trả về giá trị của property
         Object propertyValue = map.getOrDefault(property, null);
 
-        // Nếu propertyValue là một map thì gọi lại hàm này nhưng với map là propertyValue và propertyName là subProperty
+        // Nếu propertyValue là một map thì gọi lại hàm này nhưng với map là propertyValue và propertyPath là subProperty
         if (isKeepGoing && propertyValue instanceof Map) {
-            String subProperty = propertyName.substring(propertyName.indexOf(splitRegex) + 1);
+            String subProperty = propertyPath.substring(propertyPath.indexOf(splitRegex) + 1);
             //noinspection unchecked
             return getProperty((Map<String, Object>) propertyValue, subProperty, splitRegex);
         }
 
         //noinspection unchecked
         return (T) propertyValue;
+    }
+
+    /**
+     * <h1> Hàm lấy tra value của map nhiều level theo key path </h1>
+     *
+     * @param map          Map cần lấy thông tin
+     * @param propertyPath Tên thuộc tính cần lấy
+     * @param <T>          Kiểu trả về
+     * @return Value của thuộc tính theo propertyPath
+     * @see #getProperty(Map, String, String)
+     */
+    public static <T> T getProperty(Map<String, Object> map, String propertyPath) {
+        return getProperty(map, propertyPath, ".");
     }
 }

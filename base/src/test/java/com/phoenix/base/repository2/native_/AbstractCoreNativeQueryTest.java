@@ -1,16 +1,13 @@
-package com.phoenix.base.repository2;
+package com.phoenix.base.repository2.native_;
 
 import com.google.gson.Gson;
 import com.phoenix.common.exceptions.SupportException;
-import com.phoenix.common.structure.DefaultTuple;
-import com.phoenix.common.structure.imp.TripleDefaultTupleImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +54,7 @@ public class AbstractCoreNativeQueryTest {
 
     @Test
     public void testExecuteSqlWithParams() {
-        List<?> list = coreNativeQueryImp.executeNativeQuery("select * from fw_user where id < ?", 11);
+        List<?> list = coreNativeQueryImp.executeNativeQuery("select * from fw_user where id < ?", 11 );
 
         for (Object o : list) {
             //System.out.println(Arrays.toString(o));

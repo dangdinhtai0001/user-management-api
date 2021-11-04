@@ -1,4 +1,4 @@
-package com.phoenix.base.repository2;
+package com.phoenix.base.repository2.native_;
 
 import com.phoenix.core.repository2.AbstractCoreNativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
