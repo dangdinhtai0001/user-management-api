@@ -1,6 +1,8 @@
 package com.phoenix.common.util;
 
 public class StringUtils {
+    // region Field
+
     private static final int STRING_BUILDER_SIZE = 256;
 
     // Character access:
@@ -50,6 +52,8 @@ public class StringUtils {
      * <p>The maximum size to which the padding constant(s) can expand.</p>
      */
     private static final int PAD_LIMIT = 8192;
+
+    // endregion: Field
 
     /**
      * <p>Checks if a CharSequence is empty (""), null or whitespace only.</p>

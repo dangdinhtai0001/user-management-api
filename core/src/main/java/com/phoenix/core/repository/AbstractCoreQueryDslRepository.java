@@ -290,7 +290,6 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
                 .collect(Collectors.toList());
 
         switch (criteria.getSearchOperation()) {
-
             case BETWEEN:
                 return pathBuilder.getString(key).between(
                         String.valueOf(stringArguments.get(0)),
