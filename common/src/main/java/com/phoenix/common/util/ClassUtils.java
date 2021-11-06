@@ -38,10 +38,6 @@ public class ClassUtils {
         }
     }
 
-    // Field- END
-    //    ----------------------------------------------------------------------------------------------
-    //    ----------------------------------------------------------------------------------------------
-
     /**
      * <p>
      * Given a {@code List} of {@code Class} objects, this method converts them into class names.
@@ -539,6 +535,7 @@ public class ClassUtils {
         }
         return true;
     }
+
 
 
 }

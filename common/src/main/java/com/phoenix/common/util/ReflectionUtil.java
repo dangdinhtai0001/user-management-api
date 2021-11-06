@@ -331,7 +331,6 @@ public class ReflectionUtil {
      */
     public static Annotation getAnnotationOfClass(Class<?> instanceClass, Class<?> annotationClass) {
         Annotation[] annotations = instanceClass.getDeclaredAnnotations();
-
         for (Annotation annotation : annotations) {
             if (annotation.annotationType().equals(annotationClass)) {
                 return annotation;

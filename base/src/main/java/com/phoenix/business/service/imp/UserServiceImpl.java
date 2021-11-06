@@ -7,6 +7,7 @@ import com.phoenix.base.repository.UserRepository;
 import com.phoenix.base.service.BaseService;
 import com.phoenix.business.service.UserService;
 import com.phoenix.core.annotation.ApplicationResource;
+import com.phoenix.core.annotation.ApplicationResourceAction;
 import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class UserServiceImpl extends BaseService implements UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
+    @ApplicationResourceAction(
+            displayPath = "create",
+            httpMethod = "POST",
+            description = "Create user"
+    )
     @Override
     public Object create(LinkedTreeMap<?, ?> object) throws ApplicationException {
         String username = getPropertyOfRequestBodyByKey(object, "username", String.class);

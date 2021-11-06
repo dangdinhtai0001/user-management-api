@@ -44,6 +44,8 @@ public class MethodUtils {
     public MethodUtils() {
     }
 
+    // region invokeMethod
+
     /**
      * <p>Invokes a named method without parameters.</p>
      *
@@ -216,6 +218,9 @@ public class MethodUtils {
         return invokeMethod(object, false, methodName, args, parameterTypes);
     }
 
+    // endregion
+
+    // region invokeExactMethod
 
     /**
      * <p>Invokes a method whose parameter types match exactly the object
@@ -357,6 +362,8 @@ public class MethodUtils {
         return invokeStaticMethod(cls, methodName, args, ClassUtils.toClass(args));
     }
 
+    // endregion
+
     /**
      * <p>Invokes a named {@code static} method whose parameter type matches the object type.</p>
      *
@@ -473,6 +480,8 @@ public class MethodUtils {
         return newArgs;
     }
 
+    //region getAccessibleMethod
+
     /**
      * <p>Returns an accessible method (that is, one that can be invoked via
      * reflection) with given name and parameters. If no such method
@@ -525,6 +534,8 @@ public class MethodUtils {
         }
         return method;
     }
+
+    // endregion
 
     /**
      * <p>Returns an accessible method (that is, one that can be invoked via

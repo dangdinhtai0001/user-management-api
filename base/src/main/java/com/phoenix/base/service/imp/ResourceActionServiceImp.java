@@ -7,7 +7,9 @@ import com.phoenix.base.service.BaseService;
 import com.phoenix.base.service.ResourceActionService;
 import com.phoenix.common.reflection.MethodUtils;
 import com.phoenix.common.structure.DefaultTuple;
+import com.phoenix.common.util.ClassUtils;
 import com.phoenix.common.util.ReflectionUtil;
+import com.phoenix.common.util.StringUtils;
 import com.phoenix.core.annotation.ApplicationResource;
 import com.phoenix.core.annotation.ApplicationResourceAction;
 import com.phoenix.core.model.DefaultAuthenticationToken;
@@ -46,45 +48,13 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
 
     @Override
     public Long saveDataByListClassName(List<Object> listClassName) {
-        List<ResourceActionModel> resourceActionList = new LinkedList<>();
-        List<Object> allMethodsNamesList = new LinkedList<>();
-        Class<?> instanceClass;
-        List<String> methodsName;
-        String beanName;
-        String displayResource, httpMethod, description;
-        boolean isEnabled;
-
-        for (Object className : listClassName) {
-            try {
-                instanceClass = Class.forName(String.valueOf(className));
-                methodsName = ReflectionUtil.getAllPublicMethodNames(instanceClass);
-
-                List<Method> list = MethodUtils.getMethodsListWithAnnotation(instanceClass, ApplicationResourceAction.class);
-                for (Method method : list) {
-                    System.out.println(method.getName());
-                }
-
-                beanName = getServiceBeanName(instanceClass);
-
-                allMethodsNamesList.addAll(methodsName);
-
-                description = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "description");
-                displayResource = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "displayResource");
-                //displayAction = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "displayAction");
-                httpMethod = (String) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "httpMethod");
-                isEnabled = (boolean) ReflectionUtil.getValueOfAnnotationAttribute(instanceClass, ApplicationResource.class, "isEnabled");
-
-                for (String methodName : methodsName) {
-                    resourceActionList.add(buildResourceAction(String.valueOf(className), methodName, beanName, displayResource, methodName, httpMethod, isEnabled, description));
-                }
-
-            } catch (Exception e) {
-                log.error(e);
-            }
-        }
-
         //Tạo bộ điều kiện để query
         // Chưa rõ vì sao chạy vs list object còn list String thì không
+        List<ResourceActionModel> resourceActionList = new LinkedList<>();
+        List<Object> allMethodsNamesList = new LinkedList<>();
+
+        loadResourceActionAndMethodName(listClassName, resourceActionList, allMethodsNamesList);
+
         List<SearchCriteria> criteriaList = new LinkedList<>();
         criteriaList.add(new SearchCriteria("resource", SearchOperation.IN, listClassName));
         criteriaList.add(new SearchCriteria("action", SearchOperation.IN, allMethodsNamesList));
@@ -108,10 +78,65 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
             e.printStackTrace();
             return -1L;
         }
-//        return resourceActionRepository.saveAllAndFlush(resourceActionList);
     }
 
     //region Private methods
+
+    private void loadResourceActionAndMethodName(List<Object> listClassName,
+                                                 List<ResourceActionModel> resourceActionList,
+                                                 List<Object> allMethodsNamesList) {
+        Class<?> instanceClass;
+        List<String> methodNameList = new LinkedList<>();
+        Annotation annotation;
+        String beanName;
+        String displayResource, httpMethod = null, description = null, displayPath = null;
+        boolean isEnabled = false;
+
+        for (Object className : listClassName) {
+            try {
+                methodNameList.clear();
+
+                instanceClass = Class.forName(String.valueOf(className));
+                beanName = getServiceBeanName(instanceClass);
+
+                List<Method> list = MethodUtils.getMethodsListWithAnnotation(instanceClass, ApplicationResourceAction.class);
+
+                if (list.isEmpty()) {
+                    continue;
+                }
+
+                for (Method method : list) {
+                    methodNameList.add(method.getName());
+
+                    ApplicationResourceAction applicationResourceAction =
+                            MethodUtils.getAnnotation(method, ApplicationResourceAction.class, false, true);
+                    displayPath = String.valueOf(MethodUtils.invokeMethod(applicationResourceAction, "displayPath"));
+                    description = String.valueOf(MethodUtils.invokeMethod(applicationResourceAction, "description"));
+                    httpMethod = String.valueOf(MethodUtils.invokeMethod(applicationResourceAction, "httpMethod"));
+                    isEnabled = (boolean) MethodUtils.invokeMethod(applicationResourceAction, "isEnabled");
+                }
+
+                annotation = instanceClass.getAnnotation(ApplicationResource.class);
+                if (StringUtils.isEmpty(description)) {
+                    description = String.valueOf(MethodUtils.invokeMethod(annotation, "description"));
+                }
+                if (StringUtils.isEmpty(httpMethod)) {
+                    httpMethod = String.valueOf(MethodUtils.invokeMethod(annotation, "httpMethod"));
+                }
+                displayResource = String.valueOf(MethodUtils.invokeMethod(annotation, "displayResource"));
+
+                for (String methodName : methodNameList) {
+                    resourceActionList.add(buildResourceAction(String.valueOf(className), methodName, beanName,
+                            displayResource, displayPath, httpMethod, isEnabled, description));
+                }
+
+                allMethodsNamesList.addAll(methodNameList);
+
+            } catch (Exception e) {
+                log.error(e);
+            }
+        }
+    }
 
     private ResourceActionModel buildResourceAction(String resource, String action, String beanName,
                                                     String displayResource, String displayAction,
@@ -132,27 +157,28 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
     }
 
     /**
+     * <h1> Lấy thuộc tính value của @service của class </h1>
+     *
      * @param aClass : Class cần lấy value của @Service
      * @return thuộc tính value của @service
      */
     private String getServiceBeanName(Class<?> aClass) {
-        Annotation annotation = ReflectionUtil.getAnnotationOfClass(aClass, Service.class);
+        //  Tìm kiếm @Service trong class
+        Annotation annotation = aClass.getAnnotation(Service.class);
 
+        //  Nếu không có @Service thì trả về null luôn
         if (annotation == null) {
             return null;
         }
 
-        for (Method method : Service.class.getDeclaredMethods()) {
-            if ("value".equals(method.getName())) {
-                try {
-                    return String.valueOf(method.invoke(annotation));
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    return null;
-                }
-            }
+        try {
+            // Gọi hàm "value" trong anotation @Service (Tương đương vs việc lấy giá trị của thuộc tính đấy ra)
+            Object o = MethodUtils.invokeMethod(annotation, "value");
+            return String.valueOf(o);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
     private void setServiceMetadata(List<ResourceActionModel> list) {

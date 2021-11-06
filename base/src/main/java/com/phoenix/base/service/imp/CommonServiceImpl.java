@@ -16,8 +16,7 @@ public class CommonServiceImpl implements CommonService {
     @ApplicationResourceAction(
             displayPath = "ping",
             httpMethod = "PUT",
-            description = "abc xyz",
-            isEnabled = false
+            description = "abc xyz"
     )
     @Override
     public String ping() {
