@@ -30,6 +30,8 @@ public class FieldUtils {
     public FieldUtils() {
     }
 
+    // region getField
+
     /**
      * Gets an accessible {@link Field} by name respecting scope. Superclasses/interfaces will be considered.
      *
@@ -95,7 +97,10 @@ public class FieldUtils {
         }
         return match;
     }
+    // endregion
 
+
+    // region getDeclaredField
 
     /**
      * Gets an accessible {@link Field} by name respecting scope. Only the specified class will be considered.
@@ -140,6 +145,11 @@ public class FieldUtils {
         return null;
     }
 
+    //endregion
+
+
+    // region getAllFields
+
     /**
      * Gets all fields of the given class and its parents (if any).
      *
@@ -169,6 +179,11 @@ public class FieldUtils {
         }
         return allFields;
     }
+
+    // endregion
+
+
+    // region getFieldsWithAnnotation
 
     /**
      * Gets all fields of the given class and its parents (if any) that are annotated with the given annotation.
@@ -201,6 +216,11 @@ public class FieldUtils {
         }
         return annotatedFields;
     }
+
+    // endregion
+
+
+    // region readStaticField
 
     /**
      * Reads an accessible {@code static} {@link Field}.
@@ -264,6 +284,11 @@ public class FieldUtils {
         return readStaticField(field, false);
     }
 
+    // endregion
+
+
+    // region readDeclaredStaticField
+
     /**
      * Gets the value of a {@code static} {@link Field} by name. The field must be {@code public}. Only the specified
      * class will be considered.
@@ -298,6 +323,11 @@ public class FieldUtils {
         // already forced access above, don't repeat it here:
         return readStaticField(field, false);
     }
+
+
+    // endregion
+
+    // region readField
 
     /**
      * Reads an accessible {@link Field}.
@@ -367,6 +397,11 @@ public class FieldUtils {
         return readField(field, target, false);
     }
 
+    // endregion
+
+
+    // region readDeclaredField
+
     /**
      * Reads the named {@code public} {@link Field}. Only the class of the specified object will be considered.
      *
@@ -400,6 +435,11 @@ public class FieldUtils {
         // already forced access above, don't repeat it here:
         return readField(field, target, false);
     }
+
+    // endregion
+
+
+    // region writeStaticField
 
     /**
      * Writes a {@code public static} {@link Field}.
@@ -466,6 +506,11 @@ public class FieldUtils {
         writeStaticField(field, value, false);
     }
 
+    // endregion
+
+
+    // region writeDeclaredStaticField
+
     /**
      * Writes a named {@code public static} {@link Field}. Only the specified class will be considered.
      *
@@ -499,6 +544,11 @@ public class FieldUtils {
         // already forced access above, don't repeat it here:
         writeField(field, (Object) null, value, false);
     }
+
+    // endregion
+
+
+    // region writeField
 
     /**
      * Writes an accessible {@link Field}.
@@ -573,6 +623,11 @@ public class FieldUtils {
         writeField(field, target, value, false);
     }
 
+    // endregion
+
+
+    // region writeDeclaredField
+
     /**
      * Writes a {@code public} {@link Field}. Only the specified class will be considered.
      *
@@ -609,4 +664,6 @@ public class FieldUtils {
         // already forced access above, don't repeat it here:
         writeField(field, target, value, false);
     }
+
+    // endregion
 }

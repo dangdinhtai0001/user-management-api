@@ -2,15 +2,10 @@ package com.phoenix.core.repository2;
 
 import com.phoenix.common.reflection.ConstructorUtils;
 import com.phoenix.common.reflection.FieldUtils;
-import com.phoenix.common.reflection.MethodUtils;
 import com.phoenix.common.util.StringUtils;
 import com.phoenix.core.model.query.SearchCriteria;
-import com.phoenix.core.model.query.SearchOperation;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -219,7 +214,7 @@ public abstract class AbstractCoreQueryDslRepository {
 
         List<E> elements = new ArrayList<>(fieldNames.length);
 
-        Field field = null;
+        Field field;
         for (String fieldName : fieldNames) {
             field = FieldUtils.getField(type, fieldName);
             //noinspection unchecked

@@ -5,9 +5,11 @@ import com.phoenix.base.model.ResourceActionModel;
 import com.phoenix.base.repository.ResourceActionRepository;
 import com.phoenix.base.service.BaseService;
 import com.phoenix.base.service.ResourceActionService;
+import com.phoenix.common.reflection.MethodUtils;
 import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.common.util.ReflectionUtil;
 import com.phoenix.core.annotation.ApplicationResource;
+import com.phoenix.core.annotation.ApplicationResourceAction;
 import com.phoenix.core.model.DefaultAuthenticationToken;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchOperation;
@@ -57,6 +59,11 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
                 instanceClass = Class.forName(String.valueOf(className));
                 methodsName = ReflectionUtil.getAllPublicMethodNames(instanceClass);
 
+                List<Method> list = MethodUtils.getMethodsListWithAnnotation(instanceClass, ApplicationResourceAction.class);
+                for (Method method : list) {
+                    System.out.println(method.getName());
+                }
+
                 beanName = getServiceBeanName(instanceClass);
 
                 allMethodsNamesList.addAll(methodsName);
@@ -104,9 +111,7 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
 //        return resourceActionRepository.saveAllAndFlush(resourceActionList);
     }
 
-    //******************************************************************************************************
-    //******************************** region private methods
-    //******************************************************************************************************
+    //region Private methods
 
     private ResourceActionModel buildResourceAction(String resource, String action, String beanName,
                                                     String displayResource, String displayAction,
@@ -154,8 +159,11 @@ public class ResourceActionServiceImp extends BaseService implements ResourceAct
         String key;
         for (ResourceActionModel model : list) {
             key = model.getDisplayResource() + "|" + model.getDisplayAction();
+            //noinspection unchecked
             applicationContext.getBean(BeanIds.APPLICATION_SERVICE_METADATA, HashMap.class).put(key, model);
         }
 
     }
+
+    // endregion
 }

@@ -6,13 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface ApplicationResource {
-    String displayResource() default "";
-
+@Target(ElementType.METHOD)
+public @interface ApplicationResourceAction {
     String description() default "";
 
-    String httpMethod() default "POST";
+    String httpMethod() default "GET";
+
+    String displayPath() default "";
 
     boolean isEnabled() default true;
 }

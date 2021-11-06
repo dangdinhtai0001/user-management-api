@@ -4,7 +4,6 @@ import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.service.ResourceActionService;
 import com.phoenix.core.annotation.ApplicationResource;
-import com.phoenix.core.annotation.BusinessObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -19,7 +18,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
 import java.lang.annotation.Annotation;
@@ -53,22 +51,6 @@ public class DefaultApplicationListener implements EnvironmentAware {
     //******************************************************************************************************
     //region private methods
     //******************************************************************************************************
-
-    private void scanFilterMetadata() {
-        List<String> listClassName = new LinkedList<>();
-        ClassPathScanningCandidateComponentProvider scanner = getScanner();
-
-        AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(BusinessObject.class);
-        scanner.addIncludeFilter(annotationTypeFilter);
-
-        for (BeanDefinition beanDefinition : scanner.findCandidateComponents(ApplicationConstant.BASE_PACKAGE_NAME)) {
-            listClassName.add(beanDefinition.getBeanClassName());
-        }
-
-//        List result = filterMetadataService.saveDataByListClassName(listClassName);
-
-//        log.info(String.format("Loaded: %d field of %d business Object", result.size(), listClassName.size()));
-    }
 
     private void scanApplicationResources() {
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
