@@ -194,9 +194,20 @@ public abstract class AbstractCoreQueryDslRepository {
 
     // region getPath
 
+    public <T extends RelationalPathBase<T>> Field getRelationalPathBaseField(Class<T> type) {
+        List<Field> fields = FieldUtils.getAllFieldsList(type);
+        for (Field field : fields) {
+            if (field.getType().equals(type)) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+
     public <T extends RelationalPathBase<T>, E extends Path<T>> E getPath(
-            Class<T> type, String staticFiledName, String fieldName) throws IllegalAccessException {
-        Field sField = FieldUtils.getField(type, staticFiledName);
+            Class<T> type, String fieldName) throws IllegalAccessException {
+        Field sField = getRelationalPathBaseField(type);
         //noinspection unchecked
         T obj = (T) FieldUtils.readStaticField(sField);
 
@@ -207,8 +218,8 @@ public abstract class AbstractCoreQueryDslRepository {
     }
 
     public <T extends RelationalPathBase<T>, E extends Path<T>> List<E> getPath(
-            Class<T> type, String staticFiledName, String... fieldNames) throws IllegalAccessException {
-        Field sField = FieldUtils.getField(type, staticFiledName);
+            Class<T> type, String... fieldNames) throws IllegalAccessException {
+        Field sField = getRelationalPathBaseField(type);
         //noinspection unchecked
         T obj = (T) FieldUtils.readStaticField(sField);
 
@@ -272,6 +283,5 @@ public abstract class AbstractCoreQueryDslRepository {
     }
 
     // endregion
-
 
 }
