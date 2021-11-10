@@ -4,10 +4,13 @@ import com.phoenix.common.reflection.FieldUtils;
 import com.phoenix.common.reflection.MethodUtils;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.sql.RelationalPathBase;
 import com.querydsl.sql.dml.SQLInsertClause;
+import com.querydsl.sql.dml.SQLUpdateClause;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -56,6 +59,30 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
 
     // endregion
 
+    // region update
+
+    public <T extends RelationalPathBase<T>> long update(
+            Class<T> type, String[] columnNames, Object[] value, List<SearchCriteria> searchCriteriaList
+    ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        // Lấy Path từ danh sách các cột
+        List<Path<T>> expressions = this.getPath(type, columnNames);
+
+        // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
+        BooleanExpression[] predicateArray = this.getPredicateFromSearchCriteria(searchCriteriaList, type);
+
+        SQLUpdateClause sqlUpdateClause = this.getDefaultSQLQueryFactory()
+                .update(this.getQuerySource(type, this.getTableName(type)))
+                .where(predicateArray);
+
+        for (int i = 0; i < columnNames.length; i++) {
+            sqlUpdateClause.set(expressions.get(i), expressions.get(i));
+        }
+
+        return sqlUpdateClause.execute();
+    }
+
+    // endregion
+
     // region findByCondition
 
     public <T extends RelationalPathBase<T>> List<Map<String, Object>> findByCondition(
@@ -65,12 +92,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
         List<Path<T>> expressions = this.getPath(type, columnNames);
 
         // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
-        BooleanExpression[] predicateArray;
-        if (searchCriteriaList == null || searchCriteriaList.isEmpty()) {
-            predicateArray = new BooleanExpression[0];
-        } else {
-            predicateArray = this.getPredicate(searchCriteriaList, type, null);
-        }
+        BooleanExpression[] predicateArray = this.getPredicateFromSearchCriteria(searchCriteriaList, type);
 
         //Lấy source name từ class
         String source = this.getTableName(type);
@@ -109,5 +131,17 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
         //noinspection unchecked
         T obj = (T) FieldUtils.readStaticField(field);
         return String.valueOf(MethodUtils.invokeMethod(obj, "getTableName"));
+    }
+
+    protected BooleanExpression[] getPredicateFromSearchCriteria(List<SearchCriteria> searchCriteriaList, Class<?> type) {
+        // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
+        BooleanExpression[] predicateArray;
+        if (searchCriteriaList == null || searchCriteriaList.isEmpty()) {
+            predicateArray = new BooleanExpression[0];
+        } else {
+            predicateArray = this.getPredicate(searchCriteriaList, type, null);
+        }
+
+        return predicateArray;
     }
 }

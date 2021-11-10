@@ -309,8 +309,14 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
             columnTypes) {
         List<Map<String, Object>> list = new ArrayList<>(tuples.size());
 
-        for (Tuple tuple : tuples) {
-            list.add(convertTuple2Map(tuple, columnNames, columnTypes));
+        if (columnTypes == null || columnTypes.length == 0) {
+            for (Tuple tuple : tuples) {
+                list.add(convertTuple2Map(tuple, columnNames));
+            }
+        } else {
+            for (Tuple tuple : tuples) {
+                list.add(convertTuple2Map(tuple, columnNames, columnTypes));
+            }
         }
         return list;
     }
@@ -334,6 +340,17 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
 
         for (int i = 0; i < columnNames.length; i++) {
             map.put(columnNames[i], tuple.get(i, columnTypes[i]));
+        }
+
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> convertTuple2Map(Tuple tuple, String[] columnNames) {
+        Map<String, Object> map = new HashMap<>(columnNames.length);
+
+        for (int i = 0; i < columnNames.length; i++) {
+            map.put(columnNames[i], tuple.get(i, Object.class));
         }
 
         return map;

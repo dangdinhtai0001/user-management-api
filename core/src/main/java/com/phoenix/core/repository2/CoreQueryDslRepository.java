@@ -26,4 +26,6 @@ public interface CoreQueryDslRepository {
     List<Map<String, Object>> convertListTuple2ListMap(List<Tuple> tuples, String[] columnNames, Class<?>[] columnTypes);
 
     Map<String, Object> convertTuple2Map(Tuple tuple, String[] columnNames, Class<?>[] columnTypes);
+
+    Map<String, Object> convertTuple2Map(Tuple tuple, String[] columnNames);
 }
