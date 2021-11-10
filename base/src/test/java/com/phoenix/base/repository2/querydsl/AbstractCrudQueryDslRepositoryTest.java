@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,23 @@ public class AbstractCrudQueryDslRepositoryTest {
     public void testInsert() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         String[] columnNames = {"key_", "value_"};
         Object[] values = {"key1", "value1"};
+
+        long result = this.repository.create(QFwParameter.class, columnNames, values);
+
+        System.out.println(result);
+    }
+
+    @Test
+    @Transactional
+    public void testBatchInsert() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        String[] columnNames = {"key_", "value_"};
+
+        Object[] value0 = {"key0", "value0"};
+        Object[] value1 = {"key1", "value1"};
+        Object[] value2 = {"key2", "value2"};
+
+        List<Object[]> values = List.of(value0, value1, value2);
+
 
         long result = this.repository.create(QFwParameter.class, columnNames, values);
 

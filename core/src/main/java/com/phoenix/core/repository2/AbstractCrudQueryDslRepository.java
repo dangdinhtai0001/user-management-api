@@ -7,6 +7,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.sql.RelationalPathBase;
+import com.querydsl.sql.dml.SQLInsertClause;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,17 +25,33 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
     // region create
 
     public <T extends RelationalPathBase<T>> long create(
-            Class<T> type, String[] columnNames, Object[] values
+            Class<T> type, String[] columnNames, Object[] value
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
         // Lấy Path từ danh sách các cột
         List<Path<T>> expressions = this.getPath(type, columnNames);
 
         return this.getDefaultSQLQueryFactory()
                 .insert(this.getQuerySource(type, this.getTableName(type)))
                 .columns(expressions.toArray(new Path[0]))
-                .values(values)
+                .values(value)
                 .execute();
+    }
+
+    public <T extends RelationalPathBase<T>> long create(
+            Class<T> type, String[] columnNames, List<Object[]> values
+    ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        // Lấy Path từ danh sách các cột
+        List<Path<T>> expressions = this.getPath(type, columnNames);
+
+        SQLInsertClause insertClause = this.getDefaultSQLQueryFactory()
+                .insert(this.getQuerySource(type, this.getTableName(type)));
+
+        for (Object[] objects : values) {
+            insertClause.columns(expressions.toArray(new Path[0])).values(objects).addBatch();
+        }
+
+        return insertClause.execute();
+
     }
 
     // endregion
