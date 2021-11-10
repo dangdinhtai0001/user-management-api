@@ -35,13 +35,26 @@ import java.util.stream.Collectors;
  *     <li> orderBy: Add ordering of the result as an varargs array of order expressions. Use asc() and desc() on numeric, string and other comparable expression to access the OrderSpecifier instances.</li>
  *     <li> limit, offset, restrict: Set the paging of the result. Limit for max results, offset for skipping rows and restrict for defining both in one call.</li>
  * </ul>
+ *
+ * <p> Thông tin thêm </p>
+ *
+ * <ul>
+ *     <li> <p> Querydsl plugin sẽ generate ra các file class cần thiết để map với các đối tượng trong db khi compile. </p></li>
+ *     <li> <p> Mỗi class sẽ tương ứng với mỗi bảng, view,...  </p></li>
+ *     <li> <p> Mỗi trường sẽ tương ứng với mỗi field trong class đấy.</p></li>
+ *     <li> <p> Để sử dụng các thao tác truy vấn với trường đấy thì cần lấy đc Path của nó</p></li>
+ * </ul>
  */
-public abstract class AbstractCoreQueryDslRepository {
+public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepository {
+    protected SQLQueryFactory queryFactory;
+
+    @Override
+    public SQLQueryFactory getDefaultSQLQueryFactory() {
+        return this.queryFactory;
+    }
 
     // region abstract methods
     public abstract String getDefaultSchemaName();
-
-    public abstract SQLQueryFactory getDefaultSQLQueryFactory();
 
     protected abstract void setDefaultSQLQueryFactory(SQLQueryFactory queryFactory);
 
@@ -65,6 +78,7 @@ public abstract class AbstractCoreQueryDslRepository {
      * @param <T>    Kiểu của class đc querydsl plugin generate
      * @return Đối tượng được dùng cho hàm {@code ProjectableSQLQuery#form} và null nếu gặp lỗi
      */
+    @Override
     public <T> T getQuerySource(Class<T> type, String source) {
         try {
             return ConstructorUtils.invokeConstructor(type, source, getDefaultSchemaName());
@@ -76,6 +90,7 @@ public abstract class AbstractCoreQueryDslRepository {
 
     // region Predicate
 
+    @Override
     public <T> BooleanExpression[] getPredicate(List<SearchCriteria> searchCriteriaList, Class<T> pathBuilderType, String alias) {
         //List<BooleanExpression> predicateList = new ArrayList<>(searchCriteriaList.size());
 
@@ -90,6 +105,7 @@ public abstract class AbstractCoreQueryDslRepository {
         return predicateArray;
     }
 
+    @Override
     public <T> BooleanExpression getPredicate(SearchCriteria searchCriteria, Class<T> pathBuilderType, String alias) {
         // Validate search criteria
         if (searchCriteria == null
@@ -117,7 +133,7 @@ public abstract class AbstractCoreQueryDslRepository {
         }
     }
 
-    public <T> BooleanExpression getPredicateWithMultipleArguments(SearchCriteria searchCriteria, PathBuilder<T> entityPath, boolean isNumeric) {
+    protected <T> BooleanExpression getPredicateWithMultipleArguments(SearchCriteria searchCriteria, PathBuilder<T> entityPath, boolean isNumeric) {
         if (isNumeric) {
             NumberPath<Integer> path = entityPath.getNumber(searchCriteria.getKey(), Integer.class);
 
@@ -156,7 +172,7 @@ public abstract class AbstractCoreQueryDslRepository {
         return null;
     }
 
-    public <T> BooleanExpression getPredicateWithSingleArguments(SearchCriteria searchCriteria, PathBuilder<T> entityPath, boolean isNumeric) {
+    protected <T> BooleanExpression getPredicateWithSingleArguments(SearchCriteria searchCriteria, PathBuilder<T> entityPath, boolean isNumeric) {
         if (isNumeric) {
             NumberPath<Integer> path = entityPath.getNumber(searchCriteria.getKey(), Integer.class);
             int value = Integer.parseInt(searchCriteria.getArguments().get(0).toString());
@@ -194,7 +210,17 @@ public abstract class AbstractCoreQueryDslRepository {
 
     // region getPath
 
-    public <T extends RelationalPathBase<T>> Field getRelationalPathBaseField(Class<T> type) {
+    /**
+     * <h1> Hàm lấy trường Relational Path Base </h1>
+     * <p>
+     * Hàm lấy ra Field ứng với trường static của QueryDsl class (class được auto generate khi compile bằng querydsl plugin)
+     * </p>
+     *
+     * @param type : Class cần lấy path (Kiểu T)
+     * @param <T>  : Class cần lấy path
+     * @return Field tương ứng
+     */
+    protected <T extends RelationalPathBase<T>> Field getRelationalPathBaseField(Class<T> type) {
         List<Field> fields = FieldUtils.getAllFieldsList(type);
         for (Field field : fields) {
             if (field.getType().equals(type)) {
@@ -204,12 +230,30 @@ public abstract class AbstractCoreQueryDslRepository {
         return null;
     }
 
+    /**
+     * <h1> Hàm lấy giá trị trường Relational Path Base </h1>
+     *
+     * @param type Class cần lấy path (Kiểu T)
+     * @param <T>  Class cần lấy path
+     * @return Giá trị của field tương ứng
+     * @throws IllegalAccessException {@link Field#get(Object)}
+     */
+    protected <T extends RelationalPathBase<T>> T getRelationalPathBaseFieldValue(Class<T> type)
+            throws IllegalAccessException {
+        Field field = getRelationalPathBaseField(type);
 
+        if (field == null) {
+            return null;
+        } else {
+            //noinspection unchecked
+            return (T) FieldUtils.readStaticField(field);
+        }
+    }
+
+    @Override
     public <T extends RelationalPathBase<T>, E extends Path<T>> E getPath(
             Class<T> type, String fieldName) throws IllegalAccessException {
-        Field sField = getRelationalPathBaseField(type);
-        //noinspection unchecked
-        T obj = (T) FieldUtils.readStaticField(sField);
+        T obj = getRelationalPathBaseFieldValue(type);
 
         Field field = FieldUtils.getField(type, fieldName);
 
@@ -217,6 +261,17 @@ public abstract class AbstractCoreQueryDslRepository {
         return (E) FieldUtils.readField(field, obj);
     }
 
+    /**
+     * <h1> Lấy ra Path của trường tương ứng trong Querydsl class </h1>
+     *
+     * @param type       Class mà querydsl tạo ra (extend từ {@link RelationalPathBase})
+     * @param fieldNames MẢng các trường cần lấy
+     * @param <T>        Kiểu của class mà querydsl tạo ra
+     * @param <E>        Kiểu của trường cần lấy (extend từ {@link Path})
+     * @return {@code List<E>} List các {@link Path} tương ứng
+     * @throws IllegalAccessException Thường xảy ra khi class được auto-generate bị lỗi {@link FieldUtils#readStaticField(Field)}
+     */
+    @Override
     public <T extends RelationalPathBase<T>, E extends Path<T>> List<E> getPath(
             Class<T> type, String... fieldNames) throws IllegalAccessException {
         Field sField = getRelationalPathBaseField(type);
@@ -249,6 +304,7 @@ public abstract class AbstractCoreQueryDslRepository {
      * @return Danh sách gồm các đối tượng Map với các thuộc tính tương ứng với các cột
      * @see AbstractCoreQueryDslRepository#convertTuple2Map(Tuple, String[], Class[])
      */
+    @Override
     public List<Map<String, Object>> convertListTuple2ListMap(List<Tuple> tuples, String[] columnNames, Class<?>[]
             columnTypes) {
         List<Map<String, Object>> list = new ArrayList<>(tuples.size());
@@ -272,6 +328,7 @@ public abstract class AbstractCoreQueryDslRepository {
      * @param columnTypes Danh sách kiểu của các cột
      * @return Đối tượng Map với các thuộc tính tương ứng
      */
+    @Override
     public Map<String, Object> convertTuple2Map(Tuple tuple, String[] columnNames, Class<?>[] columnTypes) {
         Map<String, Object> map = new HashMap<>(columnNames.length);
 

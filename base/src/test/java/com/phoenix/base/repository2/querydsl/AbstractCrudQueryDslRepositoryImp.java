@@ -10,23 +10,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("AbstractCrudQueryDslRepositoryImp")
-public class AbstractCrudQueryDslRepositoryImp extends AbstractCrudQueryDslRepository {
+public class AbstractCrudQueryDslRepositoryImp extends AbstractCrudQueryDslRepository<QFwException> {
     @Value("${spring.datasource.username}")
     private String datasourceUsername;
-    private SQLQueryFactory queryFactory;
+
+    public AbstractCrudQueryDslRepositoryImp() {
+        super(QFwException.class);
+    }
 
     @Override
     public String getDefaultSchemaName() {
         return datasourceUsername;
     }
 
-    @Override
-    public SQLQueryFactory getDefaultSQLQueryFactory() {
-        return queryFactory;
-    }
-
-    @Override
     @Autowired
+    @Override
     protected void setDefaultSQLQueryFactory(@Qualifier(BeanIds.SQL_QUERY_FACTORY) SQLQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }

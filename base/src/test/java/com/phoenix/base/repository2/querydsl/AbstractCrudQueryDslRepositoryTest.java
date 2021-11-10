@@ -1,6 +1,7 @@
 package com.phoenix.base.repository2.querydsl;
 
 import com.phoenix.base.model.querydsl.QFwException;
+import com.phoenix.base.model.querydsl.QFwParameter;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchOperation;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,6 @@ public class AbstractCrudQueryDslRepositoryTest {
                 repository.findByCondition(QFwException.class, columns, types);
 
         System.out.println(result);
-
     }
 
     @Test
@@ -45,6 +45,31 @@ public class AbstractCrudQueryDslRepositoryTest {
                 repository.findByCondition(QFwException.class, columns, types, searchCriteriaList);
 
         System.out.println(result);
+    }
 
+    @Test
+    @Transactional
+    public void testFindWithConditionAndDefaultTypes() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        String[] columns = {"id", "code_"};
+        Class<?>[] types = {String.class, String.class};
+        List<SearchCriteria> searchCriteriaList = List.of(
+                new SearchCriteria("id", SearchOperation.IN, 1, 4, 7)
+        );
+
+        List<Map<String, Object>> result =
+                repository.findByCondition(columns, types, searchCriteriaList);
+
+        System.out.println(result);
+    }
+
+    @Test
+    @Transactional
+    public void testInsert() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        String[] columnNames = {"key_", "value_"};
+        Object[] values = {"key1", "value1"};
+
+        long result = this.repository.create(QFwParameter.class, columnNames, values);
+
+        System.out.println(result);
     }
 }

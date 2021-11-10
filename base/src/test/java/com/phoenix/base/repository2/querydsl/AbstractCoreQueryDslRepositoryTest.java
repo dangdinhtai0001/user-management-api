@@ -73,10 +73,4 @@ public class AbstractCoreQueryDslRepositoryTest {
         System.out.println(gson.toJson(results));
 
     }
-
-    @Test
-    public void testGetRelationalPathBaseField(){
-        Field field = this.repository.getRelationalPathBaseField(QFwException.class);
-        System.out.println(field.getName());
-    }
 }

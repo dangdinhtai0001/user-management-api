@@ -13,7 +13,32 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractCrudQueryDslRepository extends AbstractCoreQueryDslRepository {
+public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBase<E>> extends AbstractCoreQueryDslRepository {
+
+    protected final Class<E> defaultType;
+
+    protected AbstractCrudQueryDslRepository(Class<E> defaultType) {
+        this.defaultType = defaultType;
+    }
+
+    // region create
+
+    public <T extends RelationalPathBase<T>> long create(
+            Class<T> type, String[] columnNames, Object[] values
+    ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+        // Lấy Path từ danh sách các cột
+        List<Path<T>> expressions = this.getPath(type, columnNames);
+
+        return this.getDefaultSQLQueryFactory()
+                .insert(this.getQuerySource(type, this.getTableName(type)))
+                .columns(expressions.toArray(new Path[0]))
+                .values(values)
+                .execute();
+    }
+
+    // endregion
+
     // region findByCondition
 
     public <T extends RelationalPathBase<T>> List<Map<String, Object>> findByCondition(
@@ -48,6 +73,17 @@ public abstract class AbstractCrudQueryDslRepository extends AbstractCoreQueryDs
         return this.findByCondition(type, columnNames, columnTypes, null);
     }
 
+    public List<Map<String, Object>> findByCondition(String[] columnNames, Class<?>[] columnTypes)
+            throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        return this.findByCondition(defaultType, columnNames, columnTypes, null);
+    }
+
+    public List<Map<String, Object>> findByCondition(String[] columnNames, Class<?>[] columnTypes,
+                                                     List<SearchCriteria> searchCriteriaList
+    ) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        return this.findByCondition(defaultType, columnNames, columnTypes, searchCriteriaList);
+    }
+
     // endregion
 
     protected <T extends RelationalPathBase<T>> String getTableName(Class<T> type)
@@ -57,5 +93,4 @@ public abstract class AbstractCrudQueryDslRepository extends AbstractCoreQueryDs
         T obj = (T) FieldUtils.readStaticField(field);
         return String.valueOf(MethodUtils.invokeMethod(obj, "getTableName"));
     }
-
 }
