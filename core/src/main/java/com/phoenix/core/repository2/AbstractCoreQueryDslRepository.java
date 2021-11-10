@@ -79,7 +79,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
      * @return Đối tượng được dùng cho hàm {@code ProjectableSQLQuery#form} và null nếu gặp lỗi
      */
     @Override
-    public <T> T getQuerySource(Class<T> type, String source) {
+    public <T extends RelationalPathBase<T>> T getQuerySource(Class<T> type, String source) {
         try {
             return ConstructorUtils.invokeConstructor(type, source, getDefaultSchemaName());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -345,6 +345,16 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
         return map;
     }
 
+    /**
+     * <h1> Chuyển đổi từ Tuple thành Map </h1>
+     * <p>
+     * Tương tự {@link AbstractCoreQueryDslRepository#convertTuple2Map(Tuple, String[], Class[])}
+     * nhưng không cần truyền vào columTypes
+     *
+     * @param tuple       Đối tượng cần chuyển đổi
+     * @param columnNames Danh sách tên các cột
+     * @return Đối tượng Map với các thuộc tính tương ứng
+     */
     @Override
     public Map<String, Object> convertTuple2Map(Tuple tuple, String[] columnNames) {
         Map<String, Object> map = new HashMap<>(columnNames.length);

@@ -85,7 +85,7 @@ public class AbstractCrudQueryDslRepositoryTest {
 
         List<Object[]> values = List.of(value0, value1, value2);
 
-
+        QFwParameter qFwParameter = QFwParameter.fwParameter;
         long result = this.repository.create(QFwParameter.class, columnNames, values);
 
         System.out.println(result);

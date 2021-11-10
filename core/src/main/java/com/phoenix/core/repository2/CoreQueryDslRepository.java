@@ -13,7 +13,7 @@ import java.util.Map;
 public interface CoreQueryDslRepository {
     SQLQueryFactory getDefaultSQLQueryFactory();
 
-    <T> T getQuerySource(Class<T> type, String source);
+    <T extends RelationalPathBase<T>> T getQuerySource(Class<T> type, String source);
 
     <T> BooleanExpression[] getPredicate(List<SearchCriteria> searchCriteriaList, Class<T> pathBuilderType, String alias);
 

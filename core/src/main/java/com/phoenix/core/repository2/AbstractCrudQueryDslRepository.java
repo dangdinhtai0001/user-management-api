@@ -8,6 +8,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.sql.RelationalPathBase;
 import com.querydsl.sql.dml.SQLInsertClause;
 import com.querydsl.sql.dml.SQLUpdateClause;
@@ -71,13 +72,14 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
         BooleanExpression[] predicateArray = this.getPredicateFromSearchCriteria(searchCriteriaList, type);
 
         SQLUpdateClause sqlUpdateClause = this.getDefaultSQLQueryFactory()
-                .update(this.getQuerySource(type, this.getTableName(type)))
-                .where(predicateArray);
+                .update(this.getQuerySource(type, this.getTableName(type)));
 
         for (int i = 0; i < columnNames.length; i++) {
-            sqlUpdateClause.set(expressions.get(i), expressions.get(i));
+//            sqlUpdateClause.set(expressions.get(i), "").addBatch();
         }
 
+        System.out.println(sqlUpdateClause.getSQL().size());
+        System.out.println(sqlUpdateClause.getSQL().get(0).getSQL());
         return sqlUpdateClause.execute();
     }
 
