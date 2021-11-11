@@ -2,7 +2,7 @@ package com.phoenix.base.repository.imp;
 
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.ResourceActionModel;
-import com.phoenix.base.model.querydsl.QFwResourceAction;
+import com.phoenix.base.model.querydsl.QFwServiceMetadata;
 import com.phoenix.base.repository.ResourceActionRepository;
 import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.core.model.query.SearchCriteria;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository(BeanIds.RESOURCE_ACTION_REPOSITORY_IMP)
+//@Repository(BeanIds.RESOURCE_ACTION_REPOSITORY_IMP)
+@Repository("ResourceActionRepositoryImp")
 public class ResourceActionRepositoryImp extends AbstractSingleQueryDslRepository implements ResourceActionRepository {
     protected ResourceActionRepositoryImp(
             @Qualifier(BeanIds.SQL_QUERY_FACTORY) SQLQueryFactory queryFactory
@@ -43,14 +44,14 @@ public class ResourceActionRepositoryImp extends AbstractSingleQueryDslRepositor
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Class<QFwResourceAction> getRelationalPathBaseClass() {
-        return QFwResourceAction.class;
+    protected Class<QFwServiceMetadata> getRelationalPathBaseClass() {
+        return QFwServiceMetadata.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected RelationalPathBase<QFwResourceAction> getRelationalPathBase() {
-        return new QFwResourceAction("fw_resource_action", getDefaultSchemaName());
+    protected RelationalPathBase<QFwServiceMetadata> getRelationalPathBase() {
+        return new QFwServiceMetadata("fw_resource_action", getDefaultSchemaName());
     }
 
 }

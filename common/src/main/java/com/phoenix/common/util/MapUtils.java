@@ -5,6 +5,7 @@ import com.phoenix.common.reflection.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +61,29 @@ public class MapUtils {
         return instance;
     }
 
+
     /**
-     * <h1> Hàm lấy tra value của map nhiều level theo key path </h1>
+     * <h1> Hàm convert list Map thành list Object</h1>
+     * <p>
+     * Chạy vòng lặp theo list và gọi hàm {@link #convertMap2Object(Map, Class)} để convert từng map thành object
+     */
+    public static <T> List<T> convertMap2Object(List<Map<String, Object>> list, Class<T> clazz)
+            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+        List<T> result = new ArrayList<>(list.size());
+
+        if (list.isEmpty()) {
+            return result;
+        }
+
+        for (Map<String, Object> map : list) {
+            result.add(convertMap2Object(map, clazz));
+        }
+
+        return result;
+    }
+
+    /**
+     * <h1> Hàm lấy ra value của map nhiều level theo key path </h1>
      *
      * <ul>
      *   <li>Hàm trả về giá trị của 1 map theo key path</li>

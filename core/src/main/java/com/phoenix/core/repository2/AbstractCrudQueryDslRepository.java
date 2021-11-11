@@ -15,6 +15,7 @@ import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
 import com.querydsl.sql.dml.SQLUpdateClause;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.repository.CrudRepository;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j2
-public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBase<E>> extends AbstractCoreQueryDslRepository {
+public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBase<E>>
+        extends AbstractCoreQueryDslRepository implements CrudQueryDslRepository<E> {
 
     protected final Class<E> defaultType;
 
@@ -32,6 +34,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
 
     // region create
 
+    @Override
     public <T extends RelationalPathBase<T>> long create(
             Class<T> type, String[] columnNames, Object[] value
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -45,6 +48,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
                 .execute();
     }
 
+    @Override
     public <T extends RelationalPathBase<T>> long create(
             Class<T> type, String[] columnNames, List<Object[]> values
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -66,6 +70,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
 
     // region update
 
+    @Override
     public <T extends RelationalPathBase<T>> long update(
             Class<T> type, String[] columnNames, Object[] value, List<SearchCriteria> searchCriteriaList
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -92,6 +97,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
 
     // region findByCondition
 
+    @Override
     public <T extends RelationalPathBase<T>> List<Map<String, Object>> findByCondition(
             Class<T> type, String[] columnNames, Class<?>[] columnTypes, List<SearchCriteria> searchCriteriaList
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -116,17 +122,20 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
         return this.convertListTuple2ListMap(tuples, columnNames, columnTypes);
     }
 
+    @Override
     public <T extends RelationalPathBase<T>> List<Map<String, Object>> findByCondition(
             Class<T> type, String[] columnNames, Class<?>[] columnTypes)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         return this.findByCondition(type, columnNames, columnTypes, null);
     }
 
+    @Override
     public List<Map<String, Object>> findByCondition(String[] columnNames, Class<?>[] columnTypes)
             throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         return this.findByCondition(defaultType, columnNames, columnTypes, null);
     }
 
+    @Override
     public List<Map<String, Object>> findByCondition(String[] columnNames, Class<?>[] columnTypes,
                                                      List<SearchCriteria> searchCriteriaList
     ) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
@@ -137,6 +146,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
 
     // region delete
 
+    @Override
     public <T extends RelationalPathBase<T>> long delete(Class<T> type, List<SearchCriteria> searchCriteriaList)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
@@ -149,6 +159,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
         return deleteClause.execute();
     }
 
+    @Override
     public <T extends RelationalPathBase<T>> long delete(List<SearchCriteria> searchCriteriaList)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         return this.delete(defaultType, searchCriteriaList);
