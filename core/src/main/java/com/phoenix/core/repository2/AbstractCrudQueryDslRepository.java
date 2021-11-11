@@ -10,14 +10,18 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.sql.RelationalPathBase;
+import com.querydsl.sql.SQLQuery;
+import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
 import com.querydsl.sql.dml.SQLUpdateClause;
+import lombok.extern.log4j.Log4j2;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
+@Log4j2
 public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBase<E>> extends AbstractCoreQueryDslRepository {
 
     protected final Class<E> defaultType;
@@ -66,20 +70,21 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
             Class<T> type, String[] columnNames, Object[] value, List<SearchCriteria> searchCriteriaList
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         // Lấy Path từ danh sách các cột
-        List<Path<T>> expressions = this.getPath(type, columnNames);
+        List<Path<Object>> expressions = this.getPath(type, columnNames);
 
         // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
         BooleanExpression[] predicateArray = this.getPredicateFromSearchCriteria(searchCriteriaList, type);
 
         SQLUpdateClause sqlUpdateClause = this.getDefaultSQLQueryFactory()
-                .update(this.getQuerySource(type, this.getTableName(type)));
+                .update(this.getQuerySource(type, this.getTableName(type)))
+                .where(predicateArray);
 
         for (int i = 0; i < columnNames.length; i++) {
-//            sqlUpdateClause.set(expressions.get(i), "").addBatch();
+            sqlUpdateClause.set(expressions.get(i), value[i]).addBatch();
         }
 
-        System.out.println(sqlUpdateClause.getSQL().size());
-        System.out.println(sqlUpdateClause.getSQL().get(0).getSQL());
+        log.debug("Update query: {}", sqlUpdateClause.toString());
+
         return sqlUpdateClause.execute();
     }
 
@@ -99,11 +104,14 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
         //Lấy source name từ class
         String source = this.getTableName(type);
 
-        List<Tuple> tuples = this.getDefaultSQLQueryFactory()
+        SQLQuery<Tuple> query = this.getDefaultSQLQueryFactory()
                 .select(expressions.toArray(new Path[0]))
                 .from(this.getQuerySource(type, source))
-                .where(predicateArray)
-                .fetch();
+                .where(predicateArray);
+
+        log.debug("Query: {}", query.toString());
+
+        List<Tuple> tuples = query.fetch();
 
         return this.convertListTuple2ListMap(tuples, columnNames, columnTypes);
     }
@@ -123,6 +131,27 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
                                                      List<SearchCriteria> searchCriteriaList
     ) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         return this.findByCondition(defaultType, columnNames, columnTypes, searchCriteriaList);
+    }
+
+    // endregion
+
+    // region delete
+
+    public <T extends RelationalPathBase<T>> long delete(Class<T> type, List<SearchCriteria> searchCriteriaList)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
+        BooleanExpression[] predicateArray = this.getPredicateFromSearchCriteria(searchCriteriaList, type);
+
+        SQLDeleteClause deleteClause = this.getDefaultSQLQueryFactory()
+                .delete(this.getQuerySource(type, this.getTableName(type)))
+                .where(predicateArray);
+
+        return deleteClause.execute();
+    }
+
+    public <T extends RelationalPathBase<T>> long delete(List<SearchCriteria> searchCriteriaList)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        return this.delete(defaultType, searchCriteriaList);
     }
 
     // endregion

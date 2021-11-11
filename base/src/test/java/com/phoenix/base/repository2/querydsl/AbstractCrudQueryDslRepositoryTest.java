@@ -94,13 +94,16 @@ public class AbstractCrudQueryDslRepositoryTest {
     @Test
     @Transactional
     public void testUpdate() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        String[] columnNames = {"key_", "value_"};
-        Object[] values = {"key1", "value1"};
+        String[] columnNames = {"message_"};
+        Object[] values = {"message_0"};
+        List<SearchCriteria> searchCriteriaList = List.of(
+                new SearchCriteria("id", SearchOperation.IN, 1, 4, 7)
+        );
 
-        long result = this.repository.update(QFwParameter.class, columnNames, values, null);
+        long result = this.repository.update(QFwException.class, columnNames, values, searchCriteriaList);
 
         System.out.println(result);
 
-        System.out.println(this.repository.findByCondition(QFwParameter.class, columnNames, null));
+        System.out.println(this.repository.findByCondition(QFwException.class, columnNames, null));
     }
 }

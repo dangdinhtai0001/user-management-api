@@ -250,8 +250,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
         }
     }
 
-    @Override
-    public <T extends RelationalPathBase<T>, E extends Path<T>> E getPath(
+    public <T extends RelationalPathBase<T>, E extends Path<?>> E getPath(
             Class<T> type, String fieldName) throws IllegalAccessException {
         T obj = getRelationalPathBaseFieldValue(type);
 
@@ -271,8 +270,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
      * @return {@code List<E>} List các {@link Path} tương ứng
      * @throws IllegalAccessException Thường xảy ra khi class được auto-generate bị lỗi {@link FieldUtils#readStaticField(Field)}
      */
-    @Override
-    public <T extends RelationalPathBase<T>, E extends Path<T>> List<E> getPath(
+    public <T extends RelationalPathBase<T>, E extends Path<?>> List<E> getPath(
             Class<T> type, String... fieldNames) throws IllegalAccessException {
         Field sField = getRelationalPathBaseField(type);
         //noinspection unchecked
