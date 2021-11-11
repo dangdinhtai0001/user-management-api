@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.27, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.25, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: user_management
 -- ------------------------------------------------------
--- Server version	8.0.27
+-- Server version	8.0.25
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -62,27 +62,6 @@ CREATE TABLE `fw_parameter` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `fw_resource_action`
---
-
-DROP TABLE IF EXISTS `fw_resource_action`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fw_resource_action` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `action` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  `resource` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  `bean_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  `display_action` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  `display_resource` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  `http_method` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  `enabled` tinyint(1) DEFAULT '1',
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Temporary view structure for view `fw_resource_policies`
 --
 
@@ -101,6 +80,27 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `fw_service_metadata`
+--
+
+DROP TABLE IF EXISTS `fw_service_metadata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fw_service_metadata` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `action` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `resource` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `bean_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `display_action` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `display_resource` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `http_method` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `fw_user`
 --
 
@@ -109,14 +109,14 @@ DROP TABLE IF EXISTS `fw_user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fw_user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
   `password_reminder_expire` datetime DEFAULT NULL,
   `password_reminder_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `password_salt` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `refresh_token` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `status_id` int DEFAULT NULL,
-  `hash_algorithm` varchar(50) COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
+  `hash_algorithm` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT NULL,
   `created_by` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT 'NONE',
   `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   `last_modified_by` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci DEFAULT 'NONE',
@@ -163,18 +163,18 @@ CREATE TABLE `fw_user_group_mapping` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `fw_user_group_resource_action_mapping`
+-- Table structure for table `fw_user_group_service_mapping`
 --
 
-DROP TABLE IF EXISTS `fw_user_group_resource_action_mapping`;
+DROP TABLE IF EXISTS `fw_user_group_service_mapping`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fw_user_group_resource_action_mapping` (
+CREATE TABLE `fw_user_group_service_mapping` (
   `resource_action_id` int NOT NULL,
   `user_group_id` int NOT NULL,
   KEY `fw_user_group_resource_action_mapping_fw_resource_action_id_fk` (`resource_action_id`),
   KEY `fw_user_group_resource_action_mapping_fw_user_group_id_fk` (`user_group_id`),
-  CONSTRAINT `fw_user_group_resource_action_mapping_fw_resource_action_id_fk` FOREIGN KEY (`resource_action_id`) REFERENCES `fw_resource_action` (`id`),
+  CONSTRAINT `fw_user_group_resource_action_mapping_fw_resource_action_id_fk` FOREIGN KEY (`resource_action_id`) REFERENCES `fw_service_metadata` (`id`),
   CONSTRAINT `fw_user_group_resource_action_mapping_fw_user_group_id_fk` FOREIGN KEY (`user_group_id`) REFERENCES `fw_user_group` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -302,7 +302,7 @@ CREATE TABLE `user_title` (
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`user_management`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `fw_resource_policies` AS select 'g' AS `type`,`fu`.`username` AS `arg_1`,`fug`.`name` AS `arg_2`,NULL AS `arg_3`,NULL AS `arg_4`,NULL AS `arg_5`,NULL AS `arg_6` from ((`fw_user` `fu` left join `fw_user_group_mapping` `fugm` on((`fu`.`id` = `fugm`.`user_id`))) left join `fw_user_group` `fug` on((`fug`.`id` = `fugm`.`group_id`))) where (`fug`.`id` is not null) union all select 'p' AS `type`,`fug`.`name` AS `arg_1`,`fra`.`resource` AS `arg_2`,`fra`.`action` AS `arg_3`,NULL AS `arg_4`,NULL AS `arg_5`,NULL AS `arg_6` from ((`fw_resource_action` `fra` left join `fw_user_group_resource_action_mapping` `fugram` on((`fra`.`id` = `fugram`.`resource_action_id`))) left join `fw_user_group` `fug` on((`fug`.`id` = `fugram`.`user_group_id`))) */;
+/*!50001 VIEW `fw_resource_policies` AS select 'g' AS `type`,`fu`.`username` AS `arg_1`,`fug`.`name` AS `arg_2`,NULL AS `arg_3`,NULL AS `arg_4`,NULL AS `arg_5`,NULL AS `arg_6` from ((`fw_user` `fu` left join `fw_user_group_mapping` `fugm` on((`fu`.`id` = `fugm`.`user_id`))) left join `fw_user_group` `fug` on((`fug`.`id` = `fugm`.`group_id`))) where (`fug`.`id` is not null) union all select 'p' AS `type`,`fug`.`name` AS `arg_1`,`fra`.`resource` AS `arg_2`,`fra`.`action` AS `arg_3`,NULL AS `arg_4`,NULL AS `arg_5`,NULL AS `arg_6` from ((`fw_service_metadata` `fra` left join `fw_user_group_service_mapping` `fugram` on((`fra`.`id` = `fugram`.`resource_action_id`))) left join `fw_user_group` `fug` on((`fug`.`id` = `fugram`.`user_group_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -316,4 +316,4 @@ CREATE TABLE `user_title` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-01  0:33:13
+-- Dump completed on 2021-11-11 17:31:42

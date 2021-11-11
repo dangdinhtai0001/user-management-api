@@ -160,7 +160,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
     }
 
     @Override
-    public <T extends RelationalPathBase<T>> long delete(List<SearchCriteria> searchCriteriaList)
+    public long delete(List<SearchCriteria> searchCriteriaList)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         return this.delete(defaultType, searchCriteriaList);
     }

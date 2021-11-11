@@ -38,6 +38,6 @@ public interface CrudQueryDslRepository<E extends RelationalPathBase<E>> extends
     <T extends RelationalPathBase<T>> long delete(Class<T> type, List<SearchCriteria> searchCriteriaList)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
-    <T extends RelationalPathBase<T>> long delete(List<SearchCriteria> searchCriteriaList)
+    long delete(List<SearchCriteria> searchCriteriaList)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 }
