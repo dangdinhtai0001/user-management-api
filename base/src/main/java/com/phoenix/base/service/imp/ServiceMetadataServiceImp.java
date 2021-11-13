@@ -4,11 +4,9 @@ import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.ResourceActionModel;
 import com.phoenix.base.repository.ResourceActionRepository;
 import com.phoenix.base.service.BaseService;
-import com.phoenix.base.service.ResourceActionService;
+import com.phoenix.base.service.ServiceMetadataService;
 import com.phoenix.common.reflection.MethodUtils;
 import com.phoenix.common.structure.DefaultTuple;
-import com.phoenix.common.util.ClassUtils;
-import com.phoenix.common.util.ReflectionUtil;
 import com.phoenix.common.util.StringUtils;
 import com.phoenix.core.annotation.ApplicationResource;
 import com.phoenix.core.annotation.ApplicationResourceAction;
@@ -29,11 +27,11 @@ import java.util.List;
 
 @Service(BeanIds.RESOURCE_ACTION_SERVICES)
 @Log4j2
-public class ResourceActionServiceImp extends BaseService implements ResourceActionService {
+public class ServiceMetadataServiceImp extends BaseService implements ServiceMetadataService {
     private final ResourceActionRepository resourceActionRepository;
     private final ApplicationContext applicationContext;
 
-    protected ResourceActionServiceImp(
+    protected ServiceMetadataServiceImp(
             ApplicationContext applicationContext,
             @Qualifier(BeanIds.RESOURCE_ACTION_REPOSITORY_IMP) ResourceActionRepository resourceActionRepository) {
         this.applicationContext = applicationContext;

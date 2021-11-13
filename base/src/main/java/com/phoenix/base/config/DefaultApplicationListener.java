@@ -2,7 +2,7 @@ package com.phoenix.base.config;
 
 import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.base.constant.BeanIds;
-import com.phoenix.base.service.ResourceActionService;
+import com.phoenix.base.service.ServiceMetadataService;
 import com.phoenix.core.annotation.ApplicationResource;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,13 +33,13 @@ public class DefaultApplicationListener implements EnvironmentAware {
     private ResourceLoader resourceLoader;
     private ClassLoader classLoader;
 
-    private final ResourceActionService resourceActionService;
+    private final ServiceMetadataService serviceMetadataService;
 
 
     public DefaultApplicationListener(
-            @Qualifier(BeanIds.RESOURCE_ACTION_SERVICES) ResourceActionService resourceActionService
+            @Qualifier(BeanIds.RESOURCE_ACTION_SERVICES) ServiceMetadataService serviceMetadataService
     ) {
-        this.resourceActionService = resourceActionService;
+        this.serviceMetadataService = serviceMetadataService;
     }
 
     @EventListener(classes = {ContextRefreshedEvent.class})
@@ -65,7 +65,7 @@ public class DefaultApplicationListener implements EnvironmentAware {
             listClassName.add(className);
         }
 
-        Long result = resourceActionService.saveDataByListClassName(listClassName);
+        Long result = serviceMetadataService.saveDataByListClassName(listClassName);
 
         log.info(String.format("Loaded: %d application resource action of %d resource.", result, listClassName.size()));
     }
