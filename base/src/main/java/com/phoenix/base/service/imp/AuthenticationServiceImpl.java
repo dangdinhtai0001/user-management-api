@@ -54,10 +54,8 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     @Override
     public Map<String, Object> login(Map<String, Object> loginRequest, HttpSession session) throws ApplicationException {
         try {
-            //LinkedHashMap loginRequest = (LinkedHashMap) payload;
-
-            String username = getPropertyOfRequestBodyByKey(loginRequest, "username", String.class);
-            String password = getPropertyOfRequestBodyByKey(loginRequest, "password", String.class);
+            String username = MapUtils.getProperty(loginRequest, "username");
+            String password = MapUtils.getProperty(loginRequest, "password");
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(username, password);
@@ -71,13 +69,13 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
             return generateToken(username, session);
 
         } catch (BadCredentialsException e) {
-            log.error(e.getMessage());
+            log.warn(e.getMessage());
             throw getApplicationException(DefaultExceptionCode.BAD_CREDENTIALS);
         } catch (LockedException e) {
-            log.error(e.getMessage());
+            log.warn(e.getMessage());
             throw getApplicationException(DefaultExceptionCode.ACCOUNT_LOCKED);
         } catch (AccountExpiredException e) {
-            log.error(e.getMessage());
+            log.warn(e.getMessage());
             throw getApplicationException(DefaultExceptionCode.ACCOUNT_EXPIRE);
         }
     }
@@ -90,15 +88,15 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
         }
 
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("message", "logout success");
+        result.put("message", "Logout success");
 
         return result;
     }
 
     @Override
     public Map<String, Object> refreshToken(Map<String, Object> refreshTokenRequest, HttpSession session) throws ApplicationException {
-        String refreshToken = getPropertyOfRequestBodyByKey(refreshTokenRequest, "refresh_token", String.class);
-        String username = getPropertyOfRequestBodyByKey(refreshTokenRequest, "username", String.class);
+        String refreshToken = MapUtils.getProperty(refreshTokenRequest, "refresh_token");
+        String username = MapUtils.getProperty(refreshTokenRequest, "username");
 
         if (refreshToken == null || username == null) {
             log.error(("Bad request"));
