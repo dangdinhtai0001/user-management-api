@@ -32,9 +32,10 @@ public abstract class AbstractCoreService implements CoreService {
     }
 
     @Override
-    public <T> T getPropertyOfRequestBodyByKey(Map<?,?> requestBody, String key, Class<T> typeOfResponse) {
-        Object value = requestBody.getOrDefault(key,null);
+    public <T> T getPropertyOfRequestBodyByKey(Map<?, ?> requestBody, String key, Class<T> typeOfResponse) {
+        Object value = requestBody.getOrDefault(key, null);
 
+        //noinspection unchecked
         return (T) value;
     }
 

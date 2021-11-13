@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,7 +42,8 @@ public class AuthenticationControllerImp extends AbstractCoreController implemen
 
     @Override
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(Map logoutRequest, HttpSession session) throws ApplicationException {
-        return null;
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ApplicationException {
+        return sendResponse(authenticationService.logout(request, response, session));
     }
 }

@@ -9,6 +9,7 @@ import com.phoenix.base.service.BaseService;
 import com.phoenix.common.auth.JwtProvider;
 import com.phoenix.common.time.TimeProvider;
 import com.phoenix.common.time.imp.SystemTimeProvider;
+import com.phoenix.common.util.MapUtils;
 import com.phoenix.common.util.UUIDFactory;
 import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.exception.ApplicationException;
@@ -19,8 +20,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,7 +52,7 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
 
 
     @Override
-    public LinkedHashMap<String, String> login(Map<?,?> loginRequest, HttpSession session) throws ApplicationException {
+    public Map<String, Object> login(Map<String, Object> loginRequest, HttpSession session) throws ApplicationException {
         try {
             //LinkedHashMap loginRequest = (LinkedHashMap) payload;
 
@@ -79,12 +83,20 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     }
 
     @Override
-    public void logout(Map<?,?> logoutRequest, HttpSession session) {
+    public Map<String, Object> logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
 
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("message", "logout success");
+
+        return result;
     }
 
     @Override
-    public LinkedHashMap<String, String> refreshToken(Map<?,?> refreshTokenRequest, HttpSession session) throws ApplicationException {
+    public Map<String, Object> refreshToken(Map<String, Object> refreshTokenRequest, HttpSession session) throws ApplicationException {
         String refreshToken = getPropertyOfRequestBodyByKey(refreshTokenRequest, "refresh_token", String.class);
         String username = getPropertyOfRequestBodyByKey(refreshTokenRequest, "username", String.class);
 
@@ -112,7 +124,7 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     //-----------------------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------------------
 
-    private LinkedHashMap<String, String> generateToken(String username, HttpSession session) throws ApplicationException {
+    private LinkedHashMap<String, Object> generateToken(String username, HttpSession session) throws ApplicationException {
         Claims claims = new DefaultClaims();
         claims.setSubject(username);
 
@@ -121,7 +133,7 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
         TimeProvider timeProvider = new SystemTimeProvider();
         long now = timeProvider.getTime();
 
-        LinkedHashMap<String, String> token = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> token = new LinkedHashMap<>();
         token.put("accessToken", accessToken);
         token.put("refreshToken", refreshToken);
         token.put("tokenType", ApplicationConstant.JWT_TOKEN_TYPE);
