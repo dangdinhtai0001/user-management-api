@@ -3,7 +3,6 @@ package com.phoenix.base.repository.imp;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.ResourceActionModel;
 import com.phoenix.base.model.querydsl.QFwServiceMetadata;
-import com.phoenix.base.repository.ResourceActionRepository;
 import com.phoenix.base.repository.ServiceMetadataRepository;
 import com.phoenix.common.exceptions.SupportException;
 import com.phoenix.common.structure.DefaultTuple;
@@ -11,6 +10,7 @@ import com.phoenix.common.util.MapUtils;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.repository2.AbstractCrudQueryDslRepository;
 import com.querydsl.sql.SQLQueryFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Log4j2
 @Repository(BeanIds.RESOURCE_ACTION_REPOSITORY_IMP)
 public class ServiceMetadataRepositoryImp
-        extends AbstractCrudQueryDslRepository<QFwServiceMetadata> implements ResourceActionRepository {
+        extends AbstractCrudQueryDslRepository<QFwServiceMetadata> implements ServiceMetadataRepository {
 
     @Value("${spring.datasource.username}")
     private String datasourceUsername;
@@ -63,7 +64,8 @@ public class ServiceMetadataRepositoryImp
             List<Map<String, Object>> list = this.findByCondition(fields, null, criteriaList);
             return MapUtils.convertMap2Object(list, ResourceActionModel.class);
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException | InstantiationException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            log.warn(e.getMessage(),e);
             return null;
         }
     }

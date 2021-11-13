@@ -26,7 +26,7 @@ public class BeanIds {
     public static final String DEFAULT_USER_DETAIL_SERVICES = "FW_DEFAULT_USER_DETAIL_SERVICES";
     public static final String AUTHENTICATION_SERVICES = "FW_AUTHENTICATION_SERVICES";
     public static final String AUTHORIZATION_SERVICES = "FW_AUTHORIZATION_SERVICES";
-    public static final String RESOURCE_ACTION_SERVICES = "FW_RESOURCE_ACTION_SERVICES";
+    public static final String SERVICE_METADATA_SERVICES = "FW_RESOURCE_ACTION_SERVICES";
     public static final String USER_SERVICES = "FW_USER_SERVICES";
 
     // ====================================================

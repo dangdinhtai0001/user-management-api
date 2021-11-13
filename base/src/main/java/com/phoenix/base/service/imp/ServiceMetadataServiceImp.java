@@ -2,7 +2,7 @@ package com.phoenix.base.service.imp;
 
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.ResourceActionModel;
-import com.phoenix.base.repository.ResourceActionRepository;
+import com.phoenix.base.repository.ServiceMetadataRepository;
 import com.phoenix.base.service.BaseService;
 import com.phoenix.base.service.ServiceMetadataService;
 import com.phoenix.common.reflection.MethodUtils;
@@ -25,17 +25,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-@Service(BeanIds.RESOURCE_ACTION_SERVICES)
+@Service(BeanIds.SERVICE_METADATA_SERVICES)
 @Log4j2
 public class ServiceMetadataServiceImp extends BaseService implements ServiceMetadataService {
-    private final ResourceActionRepository resourceActionRepository;
+    private final ServiceMetadataRepository serviceMetadataRepository;
     private final ApplicationContext applicationContext;
 
     protected ServiceMetadataServiceImp(
             ApplicationContext applicationContext,
-            @Qualifier(BeanIds.RESOURCE_ACTION_REPOSITORY_IMP) ResourceActionRepository resourceActionRepository) {
+            @Qualifier(BeanIds.RESOURCE_ACTION_REPOSITORY_IMP) ServiceMetadataRepository serviceMetadataRepository) {
         this.applicationContext = applicationContext;
-        this.resourceActionRepository = resourceActionRepository;
+        this.serviceMetadataRepository = serviceMetadataRepository;
     }
 
     @Override
@@ -59,13 +59,13 @@ public class ServiceMetadataServiceImp extends BaseService implements ServiceMet
 
         //Tìm các bản ghi đã tồn tại trong database
         String[] fields = {"id", "action", "resource", "beanName", "displayAction", "displayResource", "httpMethod", "enabled", "description"};
-        List<ResourceActionModel> exitsResourceAction = resourceActionRepository.findAll(criteriaList, fields);
+        List<ResourceActionModel> exitsResourceAction = serviceMetadataRepository.findAll(criteriaList, fields);
 
         resourceActionList.removeAll(exitsResourceAction);
 
         try {
             List<DefaultTuple> defaultTuples = convertListObjectToListTuple(resourceActionList, fields);
-            long r = resourceActionRepository.insertAll(defaultTuples);
+            long r = serviceMetadataRepository.insertAll(defaultTuples);
 
             //Set giá trị này vào bean
             setServiceMetadata(exitsResourceAction);

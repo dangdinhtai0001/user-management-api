@@ -37,7 +37,7 @@ public class DefaultApplicationListener implements EnvironmentAware {
 
 
     public DefaultApplicationListener(
-            @Qualifier(BeanIds.RESOURCE_ACTION_SERVICES) ServiceMetadataService serviceMetadataService
+            @Qualifier(BeanIds.SERVICE_METADATA_SERVICES) ServiceMetadataService serviceMetadataService
     ) {
         this.serviceMetadataService = serviceMetadataService;
     }
