@@ -33,9 +33,9 @@
         <!--        global variables-->
 
         <!--        module version-->
-        <module.common.version>0.1.1</module.common.version>
+        <module.common.version>0.1.2</module.common.version>
         <module.core.version>0.7.0</module.core.version>
-        <module.base.version>0.7.0</module.base.version>
+        <module.base.version>0.7.1</module.base.version>
         <module.root.version>0.0.0</module.root.version>
         <!--        module version-->
 
