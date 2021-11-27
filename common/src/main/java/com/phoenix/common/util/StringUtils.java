@@ -39,7 +39,6 @@ public class StringUtils {
      *
      * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.10.6">JLF: Escape Sequences
      * for Character and String Literals</a>
-     * @since 3.2
      */
     public static final String CR = "\r";
 
@@ -70,8 +69,6 @@ public class StringUtils {
      *
      * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is null, empty or whitespace only
-     * @since 2.0
-     * @since 3.0 Changed signature from isBlank(String) to isBlank(CharSequence)
      */
     public static boolean isBlank(final CharSequence cs) {
         final int strLen = length(cs);
@@ -200,8 +197,6 @@ public class StringUtils {
      *
      * @param cs the CharSequence to check, may be null
      * @return {@code true} if only contains digits, and is non-null
-     * @since 3.0 Changed signature from isNumeric(String) to isNumeric(CharSequence)
-     * @since 3.0 Changed "" to return false and not true
      */
     public static boolean isNumeric(final CharSequence cs) {
         if (isEmpty(cs)) {
@@ -233,8 +228,6 @@ public class StringUtils {
      * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is
      * not empty and not null and not whitespace only
-     * @since 2.0
-     * @since 3.0 Changed signature from isNotBlank(String) to isNotBlank(CharSequence)
      */
     public static boolean isNotBlank(final CharSequence cs) {
         return !isBlank(cs);
@@ -253,7 +246,6 @@ public class StringUtils {
      *
      * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is not empty and not null
-     * @since 3.0 Changed signature from isNotEmpty(String) to isNotEmpty(CharSequence)
      */
     public static boolean isNotEmpty(final CharSequence cs) {
         return !isEmpty(cs);
@@ -296,4 +288,41 @@ public class StringUtils {
         }
         return true;
     }
+
+    /**
+     * <p>Gets the substring after the first occurrence of a separator.
+     * The separator is not returned.</p>
+     *
+     * <p>A {@code null} string input will return {@code null}.
+     * An empty ("") string input will return the empty string.
+     *
+     * <p>If nothing is found, the empty string is returned.</p>
+     *
+     * <pre>
+     * StringUtils.substringAfter(null, *)      = null
+     * StringUtils.substringAfter("", *)        = ""
+     * StringUtils.substringAfter("abc", 'a')   = "bc"
+     * StringUtils.substringAfter("abcba", 'b') = "cba"
+     * StringUtils.substringAfter("abc", 'c')   = ""
+     * StringUtils.substringAfter("abc", 'd')   = ""
+     * StringUtils.substringAfter(" abc", 32)   = "abc"
+     * </pre>
+     *
+     * @param str  the String to get a substring from, may be null
+     * @param separator  the character (Unicode code point) to search.
+     * @return the substring after the first occurrence of the separator,
+     *  {@code null} if null String input
+     * @since 3.11
+     */
+    public static String substringAfter(final String str, final int separator) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        final int pos = str.indexOf(separator);
+        if (pos == INDEX_NOT_FOUND) {
+            return EMPTY;
+        }
+        return str.substring(pos + 1);
+    }
+
 }
