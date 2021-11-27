@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 public class CacheConfiguration {
     @Bean
-    public Caffeine caffeineConfig() {
+    public Caffeine<Object, Object> caffeineConfig() {
         return Caffeine.newBuilder()
                 .initialCapacity(100)
                 .maximumSize(500)
@@ -23,7 +23,7 @@ public class CacheConfiguration {
     }
 
     @Bean
-    public CacheManager cacheManager(Caffeine caffeine) {
+    public CacheManager cacheManager(Caffeine<Object, Object> caffeine) {
         CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
         caffeineCacheManager.setCaffeine(caffeine);
         return caffeineCacheManager;

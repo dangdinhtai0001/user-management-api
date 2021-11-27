@@ -6,6 +6,7 @@ import com.phoenix.business.model.UserProfile;
 import com.phoenix.base.repository.UserRepository;
 import com.phoenix.base.service.BaseService;
 import com.phoenix.business.service.UserService;
+import com.phoenix.common.util.MapUtils;
 import com.phoenix.core.annotation.ApplicationResource;
 import com.phoenix.core.annotation.ApplicationResourceAction;
 import com.phoenix.core.config.DefaultExceptionCode;
@@ -16,12 +17,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service(BeanIds.USER_SERVICES)
 @ApplicationResource(displayResource = "user", description = "User service")
 public class UserServiceImpl extends BaseService implements UserService {
 
     private final String USERNAME_EXISTS_CODE = "002001";
+    private final String USERNAME_KEY = "username";
+    private final String PASSWORD_KEY = "password";
+    private final String CREATE_SUCCESS_MESSAGE = "";
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
@@ -32,9 +37,9 @@ public class UserServiceImpl extends BaseService implements UserService {
             description = "Create user"
     )
     @Override
-    public Object create(LinkedTreeMap<?, ?> object) throws ApplicationException {
-        String username = getPropertyOfRequestBodyByKey(object, "username", String.class);
-        String password = getPropertyOfRequestBodyByKey(object, "password", String.class);
+    public Object create(Map<String, Object> object) throws ApplicationException {
+        String username = MapUtils.getProperty(object, USERNAME_KEY);
+        String password = MapUtils.getProperty(object, PASSWORD_KEY);
 
         validateCreatePayload(username, password);
 
