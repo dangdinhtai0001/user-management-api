@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -19,5 +21,11 @@ class DefaultUserDetailsRepositoryTest {
     @Test
     public void testIsExistsUsername() {
         System.out.println(repository.isExistsUsername("user_2"));
+    }
+
+    @Transactional
+    @Test
+    public void testFindUserByUsername() throws IllegalAccessException {
+        System.out.println(repository.findUserPrincipalByUsername("user_0"));
     }
 }

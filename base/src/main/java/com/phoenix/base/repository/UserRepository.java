@@ -11,7 +11,7 @@ public interface UserRepository {
      * @param username Tài khoản cần tìm kiếm
      * @return Optional của UserPrincipal có username cần tìm, optional empty nếu không tìm thấy
      */
-    Optional<UserPrincipal> findUserPrincipalByUsername(String username);
+    Optional<UserPrincipal> findUserPrincipalByUsername(String username) throws IllegalAccessException;
 
     List<?> findGroupIdsByUsername(String username);
 

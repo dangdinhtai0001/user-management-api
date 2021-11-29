@@ -28,7 +28,13 @@ public class DefaultUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserPrincipal> optional = userRepositoryImp.findUserPrincipalByUsername(username);
+        Optional<UserPrincipal> optional;
+        try {
+            optional = userRepositoryImp.findUserPrincipalByUsername(username);
+        } catch (IllegalAccessException e) {
+            log.warn(e.getMessage(), e);
+            optional = Optional.empty();
+        }
 
         if (optional.isEmpty()) {
             throw new UsernameNotFoundException("Couldn't find a matching user username in the database for: " + username);
