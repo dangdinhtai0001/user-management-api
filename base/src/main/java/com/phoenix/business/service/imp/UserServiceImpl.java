@@ -59,8 +59,13 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     // ============================================================================================================
 
+    @ApplicationResourceAction(
+            displayPath = "find",
+            httpMethod = "POST",
+            description = "FInd user"
+    )
     @Override
-    public List<UserProfile> find(Object object) {
+    public List<UserProfile> find(Map<String, Object> object) {
         return null;
     }
 

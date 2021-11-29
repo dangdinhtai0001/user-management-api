@@ -9,5 +9,5 @@ import java.util.Map;
 public interface UserService {
     Object create(Map<String,Object> object) throws ApplicationException;
 
-    List<UserProfile> find(Object object);
+    List<UserProfile> find(Map<String, Object> object);
 }
