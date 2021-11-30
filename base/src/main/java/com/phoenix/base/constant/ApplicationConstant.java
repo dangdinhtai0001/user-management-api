@@ -10,6 +10,7 @@ public class ApplicationConstant {
     public static final String PASSWORD_ENCODER_BCRYPT_ID = "bcrypt";
     public static final String PASSWORD_ENCODER_SCRYPT_ID = "scrypt";
     public static final String PASSWORD_ENCODER_RAW_ID = "raw";
+    public static final String PASSWORD_ENCODER_DEFAULT_ = PASSWORD_ENCODER_BCRYPT_ID;
 
     public static final String USER_DETAILS_STATUS_LOCKED = "LOCKED";
     public static final String USER_DETAILS_STATUS_ENABLED = "ENABLED";

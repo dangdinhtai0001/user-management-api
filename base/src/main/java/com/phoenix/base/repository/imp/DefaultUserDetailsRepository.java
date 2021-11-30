@@ -1,9 +1,12 @@
 package com.phoenix.base.repository.imp;
 
 
+import com.phoenix.base.constant.ApplicationConstant;
 import com.phoenix.base.constant.BeanIds;
 import com.phoenix.base.model.UserPrincipal;
 import com.phoenix.base.model.querydsl.QFwUser;
+import com.phoenix.base.model.querydsl.QFwUserGroup;
+import com.phoenix.base.model.querydsl.QFwUserGroupMapping;
 import com.phoenix.base.model.querydsl.QFwUserStatus;
 import com.phoenix.base.repository.UserRepository;
 import com.phoenix.core.repository2.AbstractCoreQueryDslRepository;
@@ -11,6 +14,8 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Path;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
+import com.querydsl.sql.dml.SQLInsertClause;
+import com.querydsl.sql.dml.SQLUpdateClause;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository(BeanIds.BASE_USER_REPOSITORY_IMP)
 @Log4j2
@@ -37,7 +43,6 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
                 .rightJoin(this.getQuerySource(QFwUserStatus.class, "fw_user_status"))
                 .on(QFwUser.fwUser.statusId.eq(QFwUserStatus.fwUserStatus.id))
                 .where(QFwUser.fwUser.username.eq(username));
-        ;
 
         log.debug(query.getSQL().getSQL());
 
@@ -63,27 +68,78 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
 
     @Override
     public List<?> findGroupIdsByUsername(String username) {
-        return null;
+        Path<?>[] expressions = {QFwUserGroup.fwUserGroup.id};
+        SQLQuery<Tuple> query = this.queryFactory
+                .select(expressions)
+                .from(this.getQuerySource(QFwUser.class, "fw_user"))
+                .leftJoin(this.getQuerySource(QFwUserGroupMapping.class, "fw_user_group_mapping"))
+                .on(QFwUser.fwUser.id.eq(QFwUserGroupMapping.fwUserGroupMapping.userId))
+                .leftJoin(this.getQuerySource(QFwUserGroup.class, "fw_user_group"))
+                .on(QFwUserGroupMapping.fwUserGroupMapping.groupId.eq(QFwUserGroup.fwUserGroup.id))
+                .where(QFwUser.fwUser.username.eq(username));
+        log.debug(query.getSQL().getSQL());
+
+        List<Tuple> queryResult = query.fetch();
+
+        return queryResult.stream().map(tuple -> tuple.get(0, Integer.class)).collect(Collectors.toList());
     }
 
     @Override
     public int updateRefreshTokenByUsername(String refreshToken, String username) {
-        return 0;
+        SQLUpdateClause query =
+                queryFactory.update(this.getQuerySource(QFwUser.class, "u"))
+                        .set(QFwUser.fwUser.refreshToken, refreshToken)
+                        .where(QFwUser.fwUser.username.eq(username));
+
+        return (int) query.execute();
     }
 
     @Override
     public Optional<?> findRefreshTokenByUsername(String username) {
-        return Optional.empty();
+        Path<?>[] expressions = {QFwUser.fwUser.refreshToken};
+        SQLQuery<Tuple> query = this.queryFactory
+                .select(expressions)
+                .from(this.getQuerySource(QFwUser.class, "fw_user"))
+                .where(QFwUser.fwUser.username.eq(username));
+
+        log.debug(query.getSQL().getSQL());
+
+        Tuple queryResult = query.fetchOne();
+
+        if (queryResult == null) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(queryResult.get(0, String.class));
     }
 
     @Override
     public long createUser(String username, String encodedPassword) {
-        return 0;
+        Path<?>[] columns = {QFwUser.fwUser.username, QFwUser.fwUser.password, QFwUser.fwUser.hashAlgorithm};
+
+        SQLInsertClause sqlInsertClause =
+                queryFactory.insert(this.getQuerySource(QFwUser.class, "fw_user"));
+
+        encodedPassword = encodedPassword.substring(ApplicationConstant.PASSWORD_ENCODER_DEFAULT_.length() + 2);
+
+        sqlInsertClause.columns(columns).values(username, encodedPassword, ApplicationConstant.PASSWORD_ENCODER_DEFAULT_);
+
+        log.debug(sqlInsertClause.getSQL());
+
+        return sqlInsertClause.execute();
     }
 
     @Override
     public boolean isExistsUsername(String username) {
-        return false;
+        Path<?>[] expressions = {QFwUser.fwUser.id};
+        SQLQuery<Tuple> query = this.queryFactory
+                .select(expressions)
+                .from(this.getQuerySource(QFwUser.class, "fw_user"))
+                .where(QFwUser.fwUser.username.eq(username));
+
+        log.debug(query.getSQL().getSQL());
+
+        return query.fetchCount() > 0;
     }
 
     // region abstract methods

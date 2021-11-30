@@ -91,7 +91,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean(name = BeanIds.PASSWORD_ENCODER)
     public PasswordEncoder delegatingPasswordEncoder() {
-        String idForEncode = ApplicationConstant.PASSWORD_ENCODER_BCRYPT_ID;
+        String idForEncode = ApplicationConstant.PASSWORD_ENCODER_DEFAULT_;
         return new DelegatingPasswordEncoder(idForEncode, passwordEncoderMap());
     }
 
