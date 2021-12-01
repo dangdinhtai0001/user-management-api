@@ -39,6 +39,15 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     private final AuthenticationManager authenticationManager;
     private final UserRepository defaultUserDetailsRepository;
 
+    private final static String ACCESS_TOKEN_KEY = "access_token";
+    private final static String REFRESH_TOKEN_KEY = "refresh_token";
+    private final static String TOKEN_TYPE_KEY = "token_type";
+    private final static String SESSION_ID_KEY = "session_id";
+    private final static String EXPIRES_IN_KEY = "expires_in";
+    private final static String USERNAME_KEY = "username";
+    private final static String PASSWORD_KEY = "password";
+
+
     protected AuthenticationServiceImpl(
             @Qualifier(BeanIds.JWT_PROVIDER) JwtProvider jwtProvider,
             @Qualifier(BeanIds.UUID_FACTORY) UUIDFactory uuidFactory,
@@ -56,8 +65,8 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     @Override
     public Map<String, Object> login(Map<String, Object> loginRequest, HttpSession session) throws ApplicationException {
         try {
-            String username = MapUtils.getProperty(loginRequest, "username");
-            String password = MapUtils.getProperty(loginRequest, "password");
+            String username = MapUtils.getProperty(loginRequest, USERNAME_KEY);
+            String password = MapUtils.getProperty(loginRequest, PASSWORD_KEY);
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(username, password);
@@ -98,8 +107,8 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     @Transactional
     @Override
     public Map<String, Object> refreshToken(Map<String, Object> refreshTokenRequest, HttpSession session) throws ApplicationException {
-        String refreshToken = MapUtils.getProperty(refreshTokenRequest, "refresh_token");
-        String username = MapUtils.getProperty(refreshTokenRequest, "username");
+        String refreshToken = MapUtils.getProperty(refreshTokenRequest, REFRESH_TOKEN_KEY);
+        String username = MapUtils.getProperty(refreshTokenRequest, USERNAME_KEY);
 
         if (refreshToken == null || username == null) {
             log.error(("Bad request"));
@@ -135,11 +144,11 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
         long now = timeProvider.getTime();
 
         LinkedHashMap<String, Object> token = new LinkedHashMap<>();
-        token.put("accessToken", accessToken);
-        token.put("refreshToken", refreshToken);
-        token.put("tokenType", ApplicationConstant.JWT_TOKEN_TYPE);
-        token.put("sessionId", session.getId());
-        token.put("expiresIn", String.valueOf((now + jwtProvider.getTtlMillis())));
+        token.put(ACCESS_TOKEN_KEY, accessToken);
+        token.put(REFRESH_TOKEN_KEY, refreshToken);
+        token.put(TOKEN_TYPE_KEY, ApplicationConstant.JWT_TOKEN_TYPE);
+        token.put(SESSION_ID_KEY, session.getId());
+        token.put(EXPIRES_IN_KEY, String.valueOf((now + jwtProvider.getTtlMillis())));
 
         int result = defaultUserDetailsRepository.updateRefreshTokenByUsername(refreshToken, username);
 

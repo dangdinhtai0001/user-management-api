@@ -30,20 +30,19 @@ public class AuthenticationControllerImp extends AbstractCoreController implemen
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map loginRequest, HttpSession session) throws ApplicationException {
+    public ResponseEntity<?> login(@RequestBody Map<String, Object> loginRequest, HttpSession session) throws ApplicationException {
         return sendResponse(authenticationService.login(loginRequest, session));
     }
 
     @Override
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestBody Map refreshTokenRequest, HttpSession session) throws ApplicationException {
+    public ResponseEntity<?> refreshToken(@RequestBody Map<String, Object> refreshTokenRequest, HttpSession session) throws ApplicationException {
         return sendResponse(authenticationService.refreshToken(refreshTokenRequest, session));
     }
 
     @Override
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response, HttpSession session)
-            throws ApplicationException {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         return sendResponse(authenticationService.logout(request, response, session));
     }
 }
