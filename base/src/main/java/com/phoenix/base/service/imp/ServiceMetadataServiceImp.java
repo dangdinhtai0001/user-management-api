@@ -6,7 +6,6 @@ import com.phoenix.base.repository.ServiceMetadataRepository;
 import com.phoenix.base.service.BaseService;
 import com.phoenix.base.service.ServiceMetadataService;
 import com.phoenix.common.reflection.MethodUtils;
-import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.common.util.StringUtils;
 import com.phoenix.core.annotation.ApplicationResource;
 import com.phoenix.core.annotation.ApplicationResourceAction;
@@ -24,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
 
 @Service(BeanIds.SERVICE_METADATA_SERVICES)
 @Log4j2
@@ -63,19 +63,15 @@ public class ServiceMetadataServiceImp extends BaseService implements ServiceMet
 
         resourceActionList.removeAll(exitsResourceAction);
 
-        try {
-            List<DefaultTuple> defaultTuples = convertListObjectToListTuple(resourceActionList, fields);
-            long r = serviceMetadataRepository.insertAll(defaultTuples);
+        //            List<DefaultTuple> defaultTuples = convertListObjectToListTuple(resourceActionList, fields);
+//            long r = serviceMetadataRepository.insertAll(defaultTuples);
+        long r = serviceMetadataRepository.insertAll(fields, resourceActionList);
 
-            //Set giá trị này vào bean
-            setServiceMetadata(exitsResourceAction);
-            setServiceMetadata(resourceActionList);
+        //Set giá trị này vào bean
+        setServiceMetadata(exitsResourceAction);
+        setServiceMetadata(resourceActionList);
 
-            return r;
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-            return -1L;
-        }
+        return r;
     }
 
     //region Private methods
@@ -106,29 +102,34 @@ public class ServiceMetadataServiceImp extends BaseService implements ServiceMet
                 for (Method method : list) {
                     methodNameList.add(method.getName());
 
+                    // Lấy thông tin ở trong annotation đặt ở method
                     ApplicationResourceAction applicationResourceAction =
                             MethodUtils.getAnnotation(method, ApplicationResourceAction.class, false, true);
                     displayPath = String.valueOf(MethodUtils.invokeMethod(applicationResourceAction, "displayPath"));
                     description = String.valueOf(MethodUtils.invokeMethod(applicationResourceAction, "description"));
                     httpMethod = String.valueOf(MethodUtils.invokeMethod(applicationResourceAction, "httpMethod"));
                     isEnabled = (boolean) MethodUtils.invokeMethod(applicationResourceAction, "isEnabled");
+//                }
+
+                    // Lấy thông tin ở trong annotation đặt ở class
+                    annotation = instanceClass.getAnnotation(ApplicationResource.class);
+                    if (StringUtils.isEmpty(description)) {
+                        description = String.valueOf(MethodUtils.invokeMethod(annotation, "description"));
+                    }
+                    if (StringUtils.isEmpty(httpMethod)) {
+                        httpMethod = String.valueOf(MethodUtils.invokeMethod(annotation, "httpMethod"));
+                    }
+                    displayResource = String.valueOf(MethodUtils.invokeMethod(annotation, "displayResource"));
+
+                    for (String methodName : methodNameList) {
+                        resourceActionList.add(buildResourceAction(String.valueOf(className), methodName, beanName,
+                                displayResource, displayPath, httpMethod, isEnabled, description));
+                    }
+
+                    allMethodsNamesList.addAll(methodNameList);
+                    methodNameList.clear();
                 }
 
-                annotation = instanceClass.getAnnotation(ApplicationResource.class);
-                if (StringUtils.isEmpty(description)) {
-                    description = String.valueOf(MethodUtils.invokeMethod(annotation, "description"));
-                }
-                if (StringUtils.isEmpty(httpMethod)) {
-                    httpMethod = String.valueOf(MethodUtils.invokeMethod(annotation, "httpMethod"));
-                }
-                displayResource = String.valueOf(MethodUtils.invokeMethod(annotation, "displayResource"));
-
-                for (String methodName : methodNameList) {
-                    resourceActionList.add(buildResourceAction(String.valueOf(className), methodName, beanName,
-                            displayResource, displayPath, httpMethod, isEnabled, description));
-                }
-
-                allMethodsNamesList.addAll(methodNameList);
 
             } catch (Exception e) {
                 log.error(e);

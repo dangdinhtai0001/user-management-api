@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 public class CommonServiceImpl implements CommonService {
 
     @ApplicationResourceAction(
-            displayPath = "ping",
-            httpMethod = "PUT",
-            description = "abc xyz"
+            displayPath = "ping"
     )
     @Override
     public String ping() {

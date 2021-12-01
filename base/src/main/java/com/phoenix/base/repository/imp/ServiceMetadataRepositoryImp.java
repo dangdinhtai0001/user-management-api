@@ -5,6 +5,7 @@ import com.phoenix.base.model.ResourceActionModel;
 import com.phoenix.base.model.querydsl.QFwServiceMetadata;
 import com.phoenix.base.repository.ServiceMetadataRepository;
 import com.phoenix.common.exceptions.SupportException;
+import com.phoenix.common.reflection.FieldUtils;
 import com.phoenix.common.structure.DefaultTuple;
 import com.phoenix.common.util.MapUtils;
 import com.phoenix.core.model.query.SearchCriteria;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,29 +67,33 @@ public class ServiceMetadataRepositoryImp
             return MapUtils.convertMap2Object(list, ResourceActionModel.class);
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException | InstantiationException e) {
             //e.printStackTrace();
-            log.warn(e.getMessage(),e);
+            log.warn(e.getMessage(), e);
             return null;
         }
     }
 
     @Override
     @Transactional
-    public Long insertAll(List<DefaultTuple> defaultTuples) {
-        if (defaultTuples == null || defaultTuples.size() == 0) {
+    public Long insertAll(String[] columnNames, List<ResourceActionModel> resourceActionModels) {
+        if (resourceActionModels == null || resourceActionModels.size() == 0) {
             return 0L;
         }
-        String[] columnNames = defaultTuples.get(0).getArrayExpressions();
-        List<Object[]> values = new ArrayList<>(defaultTuples.size());
+        List<Object[]> values = new ArrayList<>(resourceActionModels.size());
+        Field[] allFields = FieldUtils.getAllFields(ResourceActionModel.class);
 
-        for (int i = 0; i < defaultTuples.size(); i++) {
+
+        for (ResourceActionModel resourceActionModel : resourceActionModels) {
             Object[] value = new Object[columnNames.length];
-            for (int j = 0; j < columnNames.length; j++) {
+
+            for (int j = 0; j < allFields.length; j++) {
                 try {
-                    value[j] = defaultTuples.get(i).get(j);
-                } catch (SupportException e) {
-                    value[i] = null;
+                    value[j] = FieldUtils.readField(allFields[j], resourceActionModel, true);
+                } catch (IllegalAccessException e) {
+                    log.warn("{}", e.getMessage());
+                    value[j] = null;
                 }
             }
+
             values.add(value);
         }
         try {

@@ -31,71 +31,63 @@ public abstract class AbstractCoreService implements CoreService {
                 HttpStatus.valueOf(exception.getHttpCode()));
     }
 
-    @Override
-    public <T> T getPropertyOfRequestBodyByKey(Map<?, ?> requestBody, String key, Class<T> typeOfResponse) {
-        Object value = requestBody.getOrDefault(key, null);
-
-        //noinspection unchecked
-        return (T) value;
-    }
-
-    @Override
-    public List<SearchCriteria> getListOfSearchCriteria(List<SearchCriteriaRequest> listConditionRequests) {
-        if (listConditionRequests == null || listConditionRequests.isEmpty()) {
-            return null;
-        }
-        return listConditionRequests.stream().map(SearchCriteriaRequest::getSearchCriteria).collect(Collectors.toList());
-    }
-
-    @Override
-    public DefaultTuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException {
-        Class<?> objectClass = object.getClass();
-
-        Class<?>[] types = new Class[fields.length];
-        Object[] args = new Object[fields.length];
-
-        for (int i = 0; i < fields.length; i++) {
-            types[i] = ReflectionUtil.getTypeOfFieldByName(objectClass, fields[i]);
-            if (types[i] != null) {
-                args[i] = ReflectionUtil.getFieldValue(object, fields[i], types[i]);
-            }
-        }
-
-        return new TripleDefaultTupleImpl(fields, types, args);
-    }
-
-    @Override
-    public <T> List<DefaultTuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException {
-        if (list == null || list.isEmpty()) {
-            return null;
-        }
-
-        List<DefaultTuple> defaultTuples = new LinkedList<>();
-
-        for (Object instance : list) {
-            defaultTuples.add(convertObjectToTuple(instance, fields));
-        }
-
-        return defaultTuples;
-    }
-
-    @Override
-    public OrderBy getOrderBy(PaginationOption paginationOption, OrderDirection direction) {
-        String[] sortBy = new String[0];
-        if (direction == OrderDirection.ASC) {
-            sortBy = paginationOption.getSortAscending();
-        }
-        if (direction == OrderDirection.DESC) {
-            sortBy = paginationOption.getSortDescending();
-        }
-
-        return new OrderBy(direction, sortBy);
-    }
-
-    @Override
-    public <T> T convert2Object(LinkedTreeMap<?, ?> object, Class<T> instanceClass) {
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.toJsonTree(object).getAsJsonObject();
-        return gson.fromJson(jsonObject, instanceClass);
-    }
+//    @Override
+//    public List<SearchCriteria> getListOfSearchCriteria(List<SearchCriteriaRequest> listConditionRequests) {
+//        if (listConditionRequests == null || listConditionRequests.isEmpty()) {
+//            return null;
+//        }
+//        return listConditionRequests.stream().map(SearchCriteriaRequest::getSearchCriteria).collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public DefaultTuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException {
+//        Class<?> objectClass = object.getClass();
+//
+//        Class<?>[] types = new Class[fields.length];
+//        Object[] args = new Object[fields.length];
+//
+//        for (int i = 0; i < fields.length; i++) {
+//            types[i] = ReflectionUtil.getTypeOfFieldByName(objectClass, fields[i]);
+//            if (types[i] != null) {
+//                args[i] = ReflectionUtil.getFieldValue(object, fields[i], types[i]);
+//            }
+//        }
+//
+//        return new TripleDefaultTupleImpl(fields, types, args);
+//    }
+//
+//    @Override
+//    public <T> List<DefaultTuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException {
+//        if (list == null || list.isEmpty()) {
+//            return null;
+//        }
+//
+//        List<DefaultTuple> defaultTuples = new LinkedList<>();
+//
+//        for (Object instance : list) {
+//            defaultTuples.add(convertObjectToTuple(instance, fields));
+//        }
+//
+//        return defaultTuples;
+//    }
+//
+//    @Override
+//    public OrderBy getOrderBy(PaginationOption paginationOption, OrderDirection direction) {
+//        String[] sortBy = new String[0];
+//        if (direction == OrderDirection.ASC) {
+//            sortBy = paginationOption.getSortAscending();
+//        }
+//        if (direction == OrderDirection.DESC) {
+//            sortBy = paginationOption.getSortDescending();
+//        }
+//
+//        return new OrderBy(direction, sortBy);
+//    }
+//
+//    @Override
+//    public <T> T convert2Object(LinkedTreeMap<?, ?> object, Class<T> instanceClass) {
+//        Gson gson = new Gson();
+//        JsonObject jsonObject = gson.toJsonTree(object).getAsJsonObject();
+//        return gson.fromJson(jsonObject, instanceClass);
+//    }
 }

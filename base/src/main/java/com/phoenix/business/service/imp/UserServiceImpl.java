@@ -1,10 +1,9 @@
 package com.phoenix.business.service.imp;
 
-import com.google.gson.internal.LinkedTreeMap;
 import com.phoenix.base.constant.BeanIds;
-import com.phoenix.business.model.UserProfile;
 import com.phoenix.base.repository.UserRepository;
 import com.phoenix.base.service.BaseService;
+import com.phoenix.business.model.UserProfile;
 import com.phoenix.business.service.UserService;
 import com.phoenix.common.util.MapUtils;
 import com.phoenix.core.annotation.ApplicationResource;
@@ -64,7 +63,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     @ApplicationResourceAction(
             displayPath = "find",
             httpMethod = "POST",
-            description = "FInd user"
+            description = "Find user"
     )
     @Override
     public List<UserProfile> find(Map<String, Object> object) {

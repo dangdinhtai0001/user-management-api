@@ -22,18 +22,16 @@ public interface CoreService {
      */
     ApplicationException getApplicationException(String code);
 
-    <T> T getPropertyOfRequestBodyByKey(Map<?, ?> requestBody, String key, Class<T> typeOfResponse);
-
-    List<SearchCriteria> getListOfSearchCriteria(List<SearchCriteriaRequest> listConditionRequests);
-
-
-    DefaultTuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException;
-
-    <T> List<DefaultTuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException;
-
-    OrderBy getOrderBy(PaginationOption paginationOption, OrderDirection direction);
-
-    <T> T convert2Object(LinkedTreeMap<?, ?> object, Class<T> instanceClass);
+//    List<SearchCriteria> getListOfSearchCriteria(List<SearchCriteriaRequest> listConditionRequests);
+//
+//
+//    DefaultTuple convertObjectToTuple(Object object, String... fields) throws NoSuchFieldException, IllegalAccessException;
+//
+//    <T> List<DefaultTuple> convertListObjectToListTuple(List<T> list, String... fields) throws NoSuchFieldException, IllegalAccessException;
+//
+//    OrderBy getOrderBy(PaginationOption paginationOption, OrderDirection direction);
+//
+//    <T> T convert2Object(LinkedTreeMap<?, ?> object, Class<T> instanceClass);
 
     DefaultAuthenticationToken getCurrentSecurityToken();
 
