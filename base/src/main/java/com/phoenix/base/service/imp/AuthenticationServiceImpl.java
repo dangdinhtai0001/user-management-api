@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -51,6 +52,7 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
     }
 
 
+    @Transactional
     @Override
     public Map<String, Object> login(Map<String, Object> loginRequest, HttpSession session) throws ApplicationException {
         try {
@@ -93,6 +95,7 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
         return result;
     }
 
+    @Transactional
     @Override
     public Map<String, Object> refreshToken(Map<String, Object> refreshTokenRequest, HttpSession session) throws ApplicationException {
         String refreshToken = MapUtils.getProperty(refreshTokenRequest, "refresh_token");

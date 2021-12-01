@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             description = "Create user"
     )
     @Override
+    @Transactional
     public Object create(Map<String, Object> object) throws ApplicationException {
         String username = MapUtils.getProperty(object, USERNAME_KEY);
         String password = MapUtils.getProperty(object, PASSWORD_KEY);
