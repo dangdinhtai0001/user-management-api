@@ -15,6 +15,7 @@ import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.exception.ApplicationException;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchCriteriaRequest;
+import com.phoenix.core.service.SearchCriteriaConvertor;
 import com.querydsl.core.types.Path;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,17 @@ public class UserServiceImpl extends BaseService implements UserService {
     public List<Map<String, Object>> find(Map<String, Object> object) {
         List<Map<String, Object>> searchCriteria = MapUtils.getProperty(object, SEARCH_CRITERIA_KEY);
 
+        Multimap<String, SearchCriteria> searchCriteriaMap = formatSearchCriteriaList(searchCriteria);
+
+        Path<?>[] expressions = {QFwUser.fwUser.id, QFwUser.fwUser.username, QFwUserStatus.fwUserStatus.name};
+        String[] names = {"id", "username", "status"};
+        Class<?>[] types = {Long.class, String.class, String.class};
+
+        return userRepository.findUserBy(searchCriteriaMap, expressions, names, types);
+    }
+
+    @Override
+    protected Multimap<String, SearchCriteria> formatSearchCriteriaList(List<Map<String, Object>> searchCriteria) {
         Multimap<String, SearchCriteria> searchCriteriaMap = LinkedListMultimap.create(searchCriteria.size());
 
         for (Map<String, Object> searchCriteriaItem : searchCriteria) {
@@ -91,11 +103,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             }
         }
 
-        Path<?>[] expressions = {QFwUser.fwUser.id, QFwUser.fwUser.username, QFwUserStatus.fwUserStatus.name};
-        String[] names = {"id", "username", "status"};
-        Class<?>[] types = {Long.class, String.class, String.class};
-
-        return userRepository.findUserBy(searchCriteriaMap, expressions, names, types);
+        return searchCriteriaMap;
     }
 
     @Autowired
