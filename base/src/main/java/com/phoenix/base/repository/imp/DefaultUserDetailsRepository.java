@@ -101,13 +101,13 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
 
     @Override
     public long createUser(String username, String encodedPassword) {
-        Path<?>[] columns = {QFwUser.fwUser.username, QFwUser.fwUser.password, QFwUser.fwUser.hashAlgorithm};
+        Path<?>[] columns = {QFwUser.fwUser.username, QFwUser.fwUser.password, QFwUser.fwUser.hashAlgorithm, QFwUser.fwUser.statusId};
 
         SQLInsertClause sqlInsertClause = queryFactory.insert(this.getQuerySource(QFwUser.class, "fw_user"));
 
         encodedPassword = encodedPassword.substring(ApplicationConstant.PASSWORD_ENCODER_DEFAULT_.length() + 2);
 
-        sqlInsertClause.columns(columns).values(username, encodedPassword, ApplicationConstant.PASSWORD_ENCODER_DEFAULT_);
+        sqlInsertClause.columns(columns).values(username, encodedPassword, ApplicationConstant.PASSWORD_ENCODER_DEFAULT_, 4);
 
         log.debug(sqlInsertClause.getSQL());
 
@@ -125,15 +125,9 @@ public class DefaultUserDetailsRepository extends AbstractCoreQueryDslRepository
     }
 
     @Override
-    public List<Map<String, Object>> findUserBy(Multimap<String, SearchCriteria> mapSearchCriteria, Path<?>[] expressions,
-                                                String[] names, Class<?>[] types) {
+    public List<Map<String, Object>> findUserBy(Multimap<String, SearchCriteria> mapSearchCriteria, Path<?>[] expressions, String[] names, Class<?>[] types) {
         //noinspection DuplicatedCode
-        SQLQuery<Tuple> query = this.queryFactory.select(expressions)
-                .from(this.getQuerySource(QFwUser.class, "fw_user"))
-                .rightJoin(this.getQuerySource(QFwUserStatus.class, "fw_user_status"))
-                .on(QFwUser.fwUser.statusId.eq(QFwUserStatus.fwUserStatus.id))
-                .where(this.getPredicate(new ArrayList<>(mapSearchCriteria.get("fw_user")), QFwUser.class, "fw_user"))
-                .where(this.getPredicate(new ArrayList<>(mapSearchCriteria.get("fw_user_status")), QFwUserStatus.class, "fw_user_status"));
+        SQLQuery<Tuple> query = this.queryFactory.select(expressions).from(this.getQuerySource(QFwUser.class, "fw_user")).rightJoin(this.getQuerySource(QFwUserStatus.class, "fw_user_status")).on(QFwUser.fwUser.statusId.eq(QFwUserStatus.fwUserStatus.id)).where(this.getPredicate(new ArrayList<>(mapSearchCriteria.get("fw_user")), QFwUser.class, "fw_user")).where(this.getPredicate(new ArrayList<>(mapSearchCriteria.get("fw_user_status")), QFwUserStatus.class, "fw_user_status"));
 
         log.debug(query.getSQL().getSQL());
 

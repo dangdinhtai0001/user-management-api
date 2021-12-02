@@ -15,6 +15,7 @@ public class ApplicationConstant {
     public static final String USER_DETAILS_STATUS_LOCKED = "LOCKED";
     public static final String USER_DETAILS_STATUS_ENABLED = "ENABLED";
     public static final String USER_DETAILS_STATUS_EXPIRED = "EXPIRED";
+    public static final String USER_DETAILS_STATUS_DISABLED = "DISABLED";
 
 
     public static final String PARAM_KEY_PUBLIC_URLS_MATCHER = "PUBLIC_URLS_MATCHER";

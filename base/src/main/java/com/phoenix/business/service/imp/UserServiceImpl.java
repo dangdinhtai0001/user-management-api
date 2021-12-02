@@ -15,7 +15,6 @@ import com.phoenix.core.config.DefaultExceptionCode;
 import com.phoenix.core.exception.ApplicationException;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.phoenix.core.model.query.SearchCriteriaRequest;
-import com.phoenix.core.service.SearchCriteriaConvertor;
 import com.querydsl.core.types.Path;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
