@@ -28,8 +28,7 @@ public class MapUtils {
      * @throws IllegalAccessException    @see {@link ConstructorUtils#invokeConstructor(Class, Object...)}
      * @throws InstantiationException    @see {@link ConstructorUtils#invokeConstructor(Class, Object...)}
      */
-    public static <T> T convertMap2Object(Map<String, Object> map, Class<T> clazz)
-            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public static <T> T convertMap2Object(Map<String, Object> map, Class<T> clazz) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         // Kiểm tra xem map có rỗng hay không
         if (map == null || map.isEmpty()) {
             return null;
@@ -67,8 +66,7 @@ public class MapUtils {
      * <p>
      * Chạy vòng lặp theo list và gọi hàm {@link #convertMap2Object(Map, Class)} để convert từng map thành object
      */
-    public static <T> List<T> convertMap2Object(List<Map<String, Object>> list, Class<T> clazz)
-            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public static <T> List<T> convertMap2Object(List<Map<String, Object>> list, Class<T> clazz) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         List<T> result = new ArrayList<>(list.size());
 
         if (list.isEmpty()) {

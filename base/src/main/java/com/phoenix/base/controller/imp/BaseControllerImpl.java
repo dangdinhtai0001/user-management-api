@@ -72,7 +72,7 @@ public class BaseControllerImpl extends AbstractCoreController implements BaseCo
                 result = MethodUtils.invokeMethod(beanObject, action);
             } else if (requestBody != null && requestParams.isEmpty()) {
                 result = MethodUtils.invokeMethod(beanObject, action, requestBody);
-            } else if (requestBody == null && !requestParams.isEmpty()) {
+            } else if (requestBody == null) {
                 result = MethodUtils.invokeMethod(beanObject, action);
             } else {
                 result = MethodUtils.invokeMethod(beanObject, action, requestBody, requestParams);

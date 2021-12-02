@@ -22,8 +22,4 @@ public class BaseService extends AbstractCoreService {
             @Qualifier(BeanIds.EXCEPTION_TRANSLATOR) Map<String, DefaultException<Long>> exceptionTranslator) {
         this.exceptionTranslator = exceptionTranslator;
     }
-
-    protected Map<String, DefaultException<Long>> getExceptionTranslator() {
-        return exceptionTranslator;
-    }
 }
