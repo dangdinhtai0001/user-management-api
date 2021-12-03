@@ -5,11 +5,9 @@ import com.phoenix.common.reflection.FieldUtils;
 import com.phoenix.common.util.StringUtils;
 import com.phoenix.core.model.query.SearchCriteria;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.PathBuilder;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.sql.RelationalPathBase;
 import com.querydsl.sql.SQLQueryFactory;
 
@@ -108,11 +106,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
     @Override
     public <T> BooleanExpression getPredicate(SearchCriteria searchCriteria, Class<T> pathBuilderType, String alias) {
         // Validate search criteria
-        if (searchCriteria == null
-                || StringUtils.isEmpty(searchCriteria.getKey())
-                || searchCriteria.getSearchOperation() == null
-                || searchCriteria.getArguments().isEmpty()
-        ) {
+        if (searchCriteria == null || StringUtils.isEmpty(searchCriteria.getKey()) || searchCriteria.getSearchOperation() == null || searchCriteria.getArguments().isEmpty()) {
             return null;
         }
 
@@ -137,9 +131,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
         if (isNumeric) {
             NumberPath<Integer> path = entityPath.getNumber(searchCriteria.getKey(), Integer.class);
 
-            List<Integer> value = searchCriteria.getArguments().stream()
-                    .map(e -> Integer.parseInt(String.valueOf(e)))
-                    .collect(Collectors.toList());
+            List<Integer> value = searchCriteria.getArguments().stream().map(e -> Integer.parseInt(String.valueOf(e))).collect(Collectors.toList());
 
             //noinspection DuplicatedCode
             switch (searchCriteria.getSearchOperation()) {
@@ -153,9 +145,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
         } else {
             StringPath path = entityPath.getString(searchCriteria.getKey());
 
-            List<String> value = searchCriteria.getArguments().stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.toList());
+            List<String> value = searchCriteria.getArguments().stream().map(String::valueOf).collect(Collectors.toList());
 
             //noinspection DuplicatedCode
             switch (searchCriteria.getSearchOperation()) {
@@ -238,8 +228,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
      * @return Giá trị của field tương ứng
      * @throws IllegalAccessException {@link Field#get(Object)}
      */
-    protected <T extends RelationalPathBase<T>> T getRelationalPathBaseFieldValue(Class<T> type)
-            throws IllegalAccessException {
+    protected <T extends RelationalPathBase<T>> T getRelationalPathBaseFieldValue(Class<T> type) throws IllegalAccessException {
         Field field = getRelationalPathBaseField(type);
 
         if (field == null) {
@@ -250,42 +239,25 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
         }
     }
 
-    public <T extends RelationalPathBase<T>, E extends Path<?>> E getPath(
-            Class<T> type, String fieldName) throws IllegalAccessException {
-        T obj = getRelationalPathBaseFieldValue(type);
+    public <T extends RelationalPathBase<T>> Path<?> getPath(Class<T> type, String property) {
+        return Expressions.path(type, property);
 
-        Field field = FieldUtils.getField(type, fieldName);
-
-        //noinspection unchecked
-        return (E) FieldUtils.readField(field, obj);
     }
 
-    /**
-     * <h1> Lấy ra Path của trường tương ứng trong Querydsl class </h1>
-     *
-     * @param type       Class mà querydsl tạo ra (extend từ {@link RelationalPathBase})
-     * @param fieldNames MẢng các trường cần lấy
-     * @param <T>        Kiểu của class mà querydsl tạo ra
-     * @param <E>        Kiểu của trường cần lấy (extend từ {@link Path})
-     * @return {@code List<E>} List các {@link Path} tương ứng
-     * @throws IllegalAccessException Thường xảy ra khi class được auto-generate bị lỗi {@link FieldUtils#readStaticField(Field)}
-     */
-    public <T extends RelationalPathBase<T>, E extends Path<?>> List<E> getPath(
-            Class<T> type, String... fieldNames) throws IllegalAccessException {
-        Field sField = getRelationalPathBaseField(type);
-        //noinspection unchecked
-        T obj = (T) FieldUtils.readStaticField(sField);
+    public <T extends RelationalPathBase<T>> List<Path<?>> getPath(Class<T> type, String... properties) {
+        List<Path<?>> paths = new ArrayList<>(properties.length);
 
-        List<E> elements = new ArrayList<>(fieldNames.length);
-
-        Field field;
-        for (String fieldName : fieldNames) {
-            field = FieldUtils.getField(type, fieldName);
-            //noinspection unchecked
-            elements.add((E) FieldUtils.readField(field, obj));
+        for (String property : properties) {
+            paths.add(getPath(type, property));
         }
 
-        return elements;
+        return paths;
+    }
+
+    public <T, E extends RelationalPathBase<E>> Path<T> getPath(Class<E> sourceType, String sourceName,
+                                                                Class<T> propertyType, String property) {
+        Path<E> sourcePath = Expressions.path(sourceType, sourceName);
+        return Expressions.path(propertyType, sourcePath, property);
     }
 
     // endregion
@@ -303,8 +275,7 @@ public abstract class AbstractCoreQueryDslRepository implements CoreQueryDslRepo
      * @see AbstractCoreQueryDslRepository#convertTuple2Map(Tuple, String[], Class[])
      */
     @Override
-    public List<Map<String, Object>> convertListTuple2ListMap(List<Tuple> tuples, String[] columnNames, Class<?>[]
-            columnTypes) {
+    public List<Map<String, Object>> convertListTuple2ListMap(List<Tuple> tuples, String[] columnNames, Class<?>[] columnTypes) {
         List<Map<String, Object>> list = new ArrayList<>(tuples.size());
 
         if (columnTypes == null || columnTypes.length == 0) {

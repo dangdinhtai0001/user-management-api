@@ -58,7 +58,8 @@ public class ServiceMetadataServiceImp extends BaseService implements ServiceMet
         criteriaList.add(new SearchCriteria("action", SearchOperation.IN, allMethodsNamesList));
 
         //Tìm các bản ghi đã tồn tại trong database
-        String[] fields = {"id", "action", "resource", "beanName", "displayAction", "displayResource", "httpMethod", "enabled", "description"};
+//        String[] fields = {"id", "action", "resource", "beanName", "displayAction", "displayResource", "httpMethod", "enabled", "description"};
+        String[] fields = {"id", "action", "resource", "bean_name", "display_action", "display_resource", "http_method", "enabled", "description"};
         List<ResourceActionModel> exitsResourceAction = serviceMetadataRepository.findAll(criteriaList, fields);
 
         resourceActionList.removeAll(exitsResourceAction);

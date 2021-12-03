@@ -39,7 +39,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
             Class<T> type, String[] columnNames, Object[] value
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         // Lấy Path từ danh sách các cột
-        List<Path<T>> expressions = this.getPath(type, columnNames);
+        List<Path<?>> expressions = this.getPath(type, columnNames);
 
         return this.getDefaultSQLQueryFactory()
                 .insert(this.getQuerySource(type, this.getTableName(type)))
@@ -53,7 +53,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
             Class<T> type, String[] columnNames, List<Object[]> values
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         // Lấy Path từ danh sách các cột
-        List<Path<T>> expressions = this.getPath(type, columnNames);
+        List<Path<?>> expressions = this.getPath(type, columnNames);
 
         SQLInsertClause insertClause = this.getDefaultSQLQueryFactory()
                 .insert(this.getQuerySource(type, this.getTableName(type)));
@@ -74,18 +74,20 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
     public <T extends RelationalPathBase<T>> long update(
             Class<T> type, String[] columnNames, Object[] value, List<SearchCriteria> searchCriteriaList
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        // Lấy Path từ danh sách các cột
-        List<Path<Object>> expressions = this.getPath(type, columnNames);
+        String tableName = this.getTableName(type);
 
         // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
         BooleanExpression[] predicateArray = this.getPredicateFromSearchCriteria(searchCriteriaList, type);
 
         SQLUpdateClause sqlUpdateClause = this.getDefaultSQLQueryFactory()
-                .update(this.getQuerySource(type, this.getTableName(type)))
+                .update(this.getQuerySource(type, tableName))
                 .where(predicateArray);
 
         for (int i = 0; i < columnNames.length; i++) {
-            sqlUpdateClause.set(expressions.get(i), value[i]).addBatch();
+            sqlUpdateClause.set(
+                            this.getPath(type, tableName, Object.class, columnNames[i]),
+                            value[i])
+                    .addBatch();
         }
 
         log.debug("Update query: {}", sqlUpdateClause.toString());
@@ -102,7 +104,7 @@ public abstract class AbstractCrudQueryDslRepository<E extends RelationalPathBas
             Class<T> type, String[] columnNames, Class<?>[] columnTypes, List<SearchCriteria> searchCriteriaList
     ) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         // Lấy Path từ danh sách các cột cần tìm kiếm
-        List<Path<T>> expressions = this.getPath(type, columnNames);
+        List<Path<?>> expressions = this.getPath(type, columnNames);
 
         // Lấy danh sách các biểu thức điều kiện từ searchCriteriaList
         BooleanExpression[] predicateArray = this.getPredicateFromSearchCriteria(searchCriteriaList, type);

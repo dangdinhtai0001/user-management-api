@@ -8,6 +8,8 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.sql.RelationalPathBase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +31,11 @@ public class AbstractCoreQueryDslRepositoryTest {
 
     @Test
     @Transactional
-    public void testSelect() throws IllegalAccessException {
+    public void testSelect() {
         String[] columnNames = {"id", "code_", "message_", "httpCode"};
         Class<?>[] columnTypes = {Long.class, String.class, String.class, Integer.class};
 
-        List<Path<QFwException>> expression = repository.getPath(QFwException.class, columnNames);
+        List<Path<?>> expression = repository.getPath(QFwException.class, columnNames);
 
         List<Tuple> list = repository.getDefaultSQLQueryFactory()
                 .select(expression.toArray(new Expression[0]))
@@ -58,7 +61,7 @@ public class AbstractCoreQueryDslRepositoryTest {
 
         //---------------------------------------------------------
 
-        List<Path<QFwException>> expression = repository.getPath(QFwException.class, columnNames);
+        List<Path<?>> expression = repository.getPath(QFwException.class, columnNames);
         BooleanExpression[] predicateArray = repository.getPredicate(searchCriteriaList, QFwException.class, null);
 
         List<Tuple> list = repository.getDefaultSQLQueryFactory()
